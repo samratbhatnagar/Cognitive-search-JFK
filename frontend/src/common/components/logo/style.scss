@@ -1,0 +1,9 @@
+@import "../../../theme/_palette.scss";
+
+.logo {
+  .st0 {
+    fill-rule: evenodd;
+    clip-rule: evenodd;
+    fill: $appLogoColor;
+  }
+}

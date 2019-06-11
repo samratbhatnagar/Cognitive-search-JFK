@@ -1,0 +1,73 @@
+@import "./_theme-setup.scss";
+
+$colorWhite: $white;
+$colorBlack: $black;
+$colorGrey: $default-gray;
+
+$themeType: $app-theme-type;
+$defaultBodyTextColor: $default-text-color;
+
+$colorPrimary: $app-primary-color;
+$colorPrimaryDark: shade($colorPrimary, 20%);
+$colorPrimaryDarker: shade($colorPrimary, 40%);
+$colorSecondary: $app-secondary-color;
+$colorError: $app-error-color;
+
+$appLogoColor: $app-logo-color;
+
+@function defineBgColor($customBg, $appTheme) {
+  @if $customBg == null and $appTheme == light {
+    @return #eeeeee;
+  } @else if $customBg == null and $appTheme == dark {
+    @return #303030;
+  } @else {
+    @return $customBg;
+  }
+}
+
+$customBackgroundColor: defineBgColor(
+  $app-custom-background-color,
+  $app-theme-type
+);
+
+$colorPaper: transparent;
+
+$btnGradientStart: $colorSecondary;
+$btnGradientEnd: darken($colorSecondary, 14%);
+
+@mixin button-gradient {
+  background: $btnGradientStart;
+  background: -moz-linear-gradient(
+    top,
+    $btnGradientStart 0%,
+    $btnGradientEnd 100%
+  );
+  background: -webkit-linear-gradient(
+    top,
+    $btnGradientStart 0%,
+    $btnGradientEnd 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    $btnGradientStart 0%,
+    $btnGradientEnd 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(
+    startColorstr='#{$btnGradientStart}',
+    endColorstr='#{$btnGradientEnd}',
+    GradientType=0
+  );
+}
+
+:export {
+  themeType: $themeType;
+  colorWhite: $colorWhite;
+  colorBlack: $colorBlack;
+  colorPrimary: $colorPrimary;
+  colorPrimaryDark: $colorPrimaryDark;
+  colorSecondary: $colorSecondary;
+  colorError: $colorError;
+  customBackgroundColor: $customBackgroundColor;
+  colorPaper: $colorPaper;
+  colorGrey: $colorGrey;
+}
