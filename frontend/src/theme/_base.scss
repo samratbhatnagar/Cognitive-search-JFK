@@ -10,6 +10,16 @@
   }
 }
 
+@mixin setCustomBgColor {
+  @if $app-custom-background-color == null and $appTheme == light {
+    background-color: #eeeeee;
+  } @else if $app-custom-background-color == null and $appTheme == dark {
+    background-color: #303030;
+  } @else {
+    background-color: $app-custom-background-color;
+  }
+}
+
 // Setup body.
 
 // To get the bundler adding this image
@@ -19,8 +29,13 @@
 
 body {
   margin: 0;
+
+  // Default font style.
   font-family: $baseFontFamily;
+
+  // Default background style.
   color: $defaultBodyTextColor;
+  @include setCustomBgColor;
   // This will loaded once the react app is ready
   background-position: center;
   background-size: cover;

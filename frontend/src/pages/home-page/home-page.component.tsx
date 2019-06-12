@@ -1,6 +1,5 @@
 import * as React from "react";
 import { searchPath } from "../search-page";
-import { LogoJFKComponent } from "../../common/components/logo-jfk";
 import { LogoComponent } from "../../common/components/logo";
 import { SearchButton } from "./components/search";
 import { CaptionComponent } from "./components/caption";
@@ -21,7 +20,7 @@ export const HomePageComponent: React.StatelessComponent<
   return (
     <div className={style.container}>
       <LogoComponent
-        classes={{ container: style.logoContainer, svg: style.logoSvg }}
+        classes={{ container: style.logoContainer, img: style.logoSvg }}
       />
       <div className={style.main}>
         <CaptionComponent />

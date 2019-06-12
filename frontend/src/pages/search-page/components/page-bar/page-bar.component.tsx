@@ -22,7 +22,7 @@ export const PageBarComponent = props => {
       <Toolbar classes={{ root: style.toolbar }} disableGutters={true}>
         <MenuButton className={style.menuButton} onClick={props.onMenuClick} />
         <LogoComponent
-          classes={{ container: style.logoContainer, svg: style.logoSvg }}
+          classes={{ container: style.logoContainer, img: style.logoSvg }}
         />
         <ResultViewModeToggler {...props} />
       </Toolbar>

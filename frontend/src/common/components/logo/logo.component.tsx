@@ -1,8 +1,8 @@
 import * as React from "react";
-import { LogoSvg } from "./svg.component";
+import { LogoImg } from "./img.component";
 
 export const LogoComponent = ({ classes }) => (
   <div className={classes.container}>
-    <LogoSvg className={classes.svg} />
+    <LogoImg className={classes.img} />
   </div>
 );
