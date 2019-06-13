@@ -21,6 +21,13 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
     @include respond-to-desktop {
       height: 26rem;
     }
+
+    &.jsonMedia {
+      height: auto;
+      padding: 01rem;
+      background-color: #ffffff;
+      color: black;
+    }
   }
 
   .caption {
@@ -91,7 +98,6 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
     height: 0;
   }
 }
-
 
 .tag {
   margin: 0.15rem;

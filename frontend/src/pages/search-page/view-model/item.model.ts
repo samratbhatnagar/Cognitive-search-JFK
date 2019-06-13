@@ -4,7 +4,7 @@ export interface Item {
   thumbnail?: string;
   excerpt?: string;
   rating?: number;
-  extraFields?: any[];
+  extraFields?: any;
   metadata?: any;
   demoInitialPage?: number;
   type?: string;
