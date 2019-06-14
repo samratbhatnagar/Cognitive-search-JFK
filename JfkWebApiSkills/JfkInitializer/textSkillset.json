@@ -72,6 +72,25 @@
           "targetName": "entities"
         }
       ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+      "description": "Generate JSON for document display",
+      "uri": "[AzureFunctionEndpointUrl]/api/json-generator?code=[AzureFunctionDefaultHostKey]",
+      "batchSize": 1,
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "fullDocument",
+          "source": "/document"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "jsonDocument",
+          "targetName": "jsonDocument"
+        }
+      ]
     }
   ],
   "cognitiveServices": {
