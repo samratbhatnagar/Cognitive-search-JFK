@@ -20,6 +20,7 @@
   "author": "Javier Calzado",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^6.10.0",
     "babel-polyfill": "^6.26.0",
     "d3": "4.13.0",
     "downshift": "^1.28.0",

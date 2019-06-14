@@ -8,7 +8,7 @@
   padding-left: 1rem;
 
   .checkbox {
-    color: $colorWhite;
+    color: $defaultBodyTextColor;
     font-size: inherit;
     width: 2rem;
     height: 2rem;
@@ -19,7 +19,7 @@
   }
 
   .label {
-    color: $colorWhite;
+    color: $defaultBodyTextColor;
     font-size: inherit;
 
     .highlight {
@@ -27,5 +27,3 @@
     }
   }
 }
-
-

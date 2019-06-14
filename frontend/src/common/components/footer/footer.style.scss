@@ -2,7 +2,7 @@
 @import "./../../../theme/_palette.scss";
 
 @mixin footer-text {
-  color: $colorWhite;
+  color: $defaultBodyTextColor;
   font-size: 0.65rem;
 
   @include respond-to-desktop {
@@ -30,7 +30,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    
+
     .logo-svg {
       flex-shrink: 0;
       flex-grow: 0;
@@ -41,7 +41,6 @@
       }
     }
   }
-
 
   .link-area {
     display: flex;
@@ -64,9 +63,8 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    width: 10rem;    
+    width: 10rem;
 
     opacity: 0.5;
   }
 }
-

@@ -1,3 +1,5 @@
+@import "../../../../theme/_palette.scss";
+
 @mixin default-fill {
   fill: none;
   pointer-events: fill;
@@ -31,12 +33,10 @@
 
   &:hover,
   &.highlight {
-    fill: #99cfff;
+    fill: lighten($colorPrimary, 32%);
     opacity: 0.5;
-    stroke: #007eff;
+    stroke: lighten($colorPrimary, 8%);
     stroke-width: 3;
     stroke-dasharray: 0;
   }
 }
-
-

@@ -2,7 +2,7 @@
 @import "../../../../theme/_palette.scss";
 
 .button {
-  @include red-gradient;
+  @include button-gradient;
 
   flex: 0 0 auto;
   border-radius: 6px !important;

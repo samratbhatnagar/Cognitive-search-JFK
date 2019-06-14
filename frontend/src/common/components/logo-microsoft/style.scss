@@ -1,7 +1,16 @@
 @import "../../../theme/_palette.scss";
 
+@mixin setLogoColor {
+  @if $themeType == light {
+    fill: rgba($colorBlack, 0.5);
+  } @else if $themeType == dark {
+    fill: $colorWhite;
+  }
+}
+
 @mixin common {
-  fill: $colorWhite;
+  @include setLogoColor;
+  // fill: $colorWhite;
 }
 
 .logo {
