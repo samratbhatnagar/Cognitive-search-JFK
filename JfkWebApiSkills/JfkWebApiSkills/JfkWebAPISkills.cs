@@ -1,3 +1,4 @@
+using JfkWebApiSkills.HeaderExtractor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -7,6 +8,7 @@ using Microsoft.CognitiveSearch.Search;
 using Microsoft.CognitiveSearch.Skills.Cryptonyms;
 using Microsoft.CognitiveSearch.Skills.Hocr;
 using Microsoft.CognitiveSearch.Skills.Image;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -19,7 +21,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
     public static class JfkWebApiSkills
     {
         [FunctionName("facet-graph-nodes")]
-        public static IActionResult GetFacetGraphNodes([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequest req, TraceWriter log, ExecutionContext executionContext)
+        public static IActionResult GetFacetGraphNodes([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             if (!req.QueryString.HasValue)
@@ -45,7 +47,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
         }
 
         [FunctionName("link-cryptonyms")]
-        public static IActionResult RunCryptonymLinker([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log, ExecutionContext executionContext)
+        public static IActionResult RunCryptonymLinker([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
@@ -69,7 +71,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
         }
 
         [FunctionName("link-cryptonyms-list")]
-        public static IActionResult RunCryptonymLinkerForLists([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log, ExecutionContext executionContext)
+        public static IActionResult RunCryptonymLinkerForLists([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
@@ -100,7 +102,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
         }
 
         [FunctionName("image-store")]
-        public static async Task<IActionResult> RunImageStore([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log, ExecutionContext executionContext)
+        public static async Task<IActionResult> RunImageStore([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
@@ -129,7 +131,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
         }
 
         [FunctionName("hocr-generator")]
-        public static IActionResult RunHocrGenerator([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log, ExecutionContext executionContext)
+        public static IActionResult RunHocrGenerator([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
@@ -159,6 +161,41 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
 
             return (ActionResult)new OkObjectResult(response);
         }
+        [FunctionName("json-generator")]
+        public static IActionResult RunJsonGenerator([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
+        {
+            string skillName = executionContext.FunctionName;
+            IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
+            //if (requestRecords == null || requestRecords.Count() != 1)
+            //{
+            //    return new BadRequestObjectResult($"{skillName} - Invalid request record array: Skill requires exactly 1 image per request.");
+            //}
+
+            WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
+                (inRecord, outRecord) => {
+                    var hocrDocument = Newtonsoft.Json.JsonConvert.SerializeObject(inRecord.Data["fullDocument"]);
+                    outRecord.Data["jsonDocument"] = hocrDocument;
+                    return outRecord;
+                });
+
+            return (ActionResult)new OkObjectResult(response);
+        }
+        [FunctionName("header-extract")]
+        public static IActionResult HeaderExtraction([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
+        {
+            string skillName = executionContext.FunctionName;
+            IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
+
+            WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
+                (inRecord, outRecord) => {
+                    var fileLocation = string.Format("{0}?{1}", inRecord.Data["path"], inRecord.Data["token"]);
+                    outRecord.Data["headings"] = HeaderExtractor.GetHeadersForDocument(fileLocation, inRecord.Data["contentType"].ToString());
+                    return outRecord;
+                });
+
+            return (ActionResult)new OkObjectResult(response);
+        }
+
 
         private static string GetAppSetting(string key)
         {

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JfkWebApiSkills": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --useHttps --cert \"backslashdev.pfx\" --password \"P@ssw0rd\""
+    }
+  }
+}
