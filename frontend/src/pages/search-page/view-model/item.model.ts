@@ -9,6 +9,8 @@ export interface Item {
   demoInitialPage?: number;
   type?: string;
   highlightWords: string[];
+  headings?: string[];
+  text?: string;
 }
 
 export type ItemCollection = Item[];

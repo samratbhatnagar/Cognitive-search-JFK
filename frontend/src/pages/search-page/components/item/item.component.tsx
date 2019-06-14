@@ -87,7 +87,7 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
   targetWords,
   onClick
 }) => {
-  const myObj = item.extraFields;
+  const myObj = item.metadata;
   const myObjectStr = JSON.stringify(myObj);
   // const myObjectParse = JSON.parse(myObjectStr);
   console.log(Object.keys(myObj));

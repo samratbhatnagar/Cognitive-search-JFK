@@ -91,6 +91,30 @@
           "targetName": "jsonDocument"
         }
       ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Util.ConditionalSkill",
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "condition",
+          "source": "= true"
+        },
+        {
+          "name": "whenTrue",
+          "source": "= 'json'"
+        },
+        {
+          "name": "whenFalse",
+          "source": "= false"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "targetName": "type"
+        }
+      ]
     }
   ],
   "cognitiveServices": {

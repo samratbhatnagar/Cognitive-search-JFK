@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
+using OpenXmlPowerTools;
 
 namespace JfkApiTest.Controllers
 {
@@ -19,7 +21,28 @@ namespace JfkApiTest.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            using (var fStream = System.IO.File.Open(@"c:\temp\DVTk RIS Emulator User Manual.docx", FileMode.Open))
+            {
+                using (var doc = WordprocessingDocument.Open(fStream, false))
+                {
+                    HtmlConverterSettings settings = new HtmlConverterSettings()
+                    {
+                        PageTitle = "My Page Title"
+                    };
+                    XElement html = HtmlConverter.ConvertToHtml(doc, settings);
+
+                    // Note: the XHTML returned by ConvertToHtmlTransform contains objects of type
+                    // XEntity. PtOpenXmlUtil.cs defines the XEntity class. See
+                    // http://blogs.msdn.com/ericwhite/archive/2010/01/21/writing-entity-references-using-linq-to-xml.aspx
+                    // for detailed explanation.
+                    //
+                    // If you further transform the XML tree returned by ConvertToHtmlTransform, you
+                    // must do it correctly, or entities do not serialize properly.
+
+                    System.IO.File.WriteAllText(@"c:\temp\Test.html", html.ToStringNewLineOnAttributes());
+                }
+            }
+                return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5

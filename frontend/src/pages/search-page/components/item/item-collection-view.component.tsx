@@ -12,9 +12,9 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt, nisi ut tempor luctus, ligula elit dictum metus.",
-    metadata: ["test", "data"],
+    extraFields:["test", "data"]
+,
+    metadata: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt, nisi ut tempor luctus, ligula elit dictum metus.",
     demoInitialPage: 0,
     type: "json",
     highlightWords: ["Hello", "Sir"]
@@ -25,8 +25,8 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields: { Name: "Abc", Age: 15, Location: "Bangalore" },
-    metadata: ["test2", "data2", "more", "information"],
+    extraFields: ["test2", "data2", "more", "information"],
+    metadata: { Name: "Abc", Age: 15, Location: "Bangalore" },
     demoInitialPage: 0,
     type: "json",
     highlightWords: ["Hello", "Sir"]
@@ -37,12 +37,12 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields: {
+    extraFields: ["test3", "data3", "more", "information", "third"],
+    metadata: {
       id: 1,
       name: "node1",
       children: [{ name: "child1", id: 2 }, { name: "child2", id: 3 }]
     },
-    metadata: ["test3", "data3", "more", "information", "third"],
     demoInitialPage: 0,
     type: "json",
     highlightWords: ["Hello", "Sir"]
