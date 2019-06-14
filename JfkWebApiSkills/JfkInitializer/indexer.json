@@ -15,18 +15,7 @@
         }
     },
     "fieldMappings": [
-        {
-            "sourceFieldName": "metadata_storage_name",
-            "targetFieldName": "fileName"
-        },
-        {
-            "sourceFieldName": "metadata_custom_demoBoost",
-            "targetFieldName": "demoBoost"
-        },
-        {
-            "sourceFieldName": "metadata_custom_demoInitialPage",
-            "targetFieldName": "demoInitialPage"
-        }
+
     ],
     "outputFieldMappings": [
         {

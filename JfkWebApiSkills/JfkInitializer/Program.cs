@@ -21,13 +21,17 @@ namespace JfkInitializer
         // Configurable names, these can be changed in the App.config file if you like
         private static string DataSourceName;
         private static string IndexName;
-        private static string SkillsetName;
-        private static string IndexerName;
+        private static string FileSkillsetName;
+        private static string TextSkillsetName;
+
+        private static IndexSource[] IndexSources;
+
+        private static string IndexerPrefix;
         private static string SynonymMapName;
         private static string BlobContainerNameForImageStore;
 
         // Set this to true to see additional debugging information in the console.
-        private static bool DebugMode = false;
+        private static bool DebugMode = true;
 
         // Set this to true if you would like this app to deploy the JFK files frontend to your Azure site.
         private static bool ShouldDeployWebsite = true;
@@ -43,8 +47,9 @@ namespace JfkInitializer
         {
             DataSourceName = ConfigurationManager.AppSettings["DataSourceName"];
             IndexName = ConfigurationManager.AppSettings["IndexName"];
-            SkillsetName = ConfigurationManager.AppSettings["SkillsetName"];
-            IndexerName = ConfigurationManager.AppSettings["IndexerName"];
+            FileSkillsetName = ConfigurationManager.AppSettings["FileSkillsetName"];
+            TextSkillsetName = ConfigurationManager.AppSettings["TextSkillsetName"];
+            IndexerPrefix = ConfigurationManager.AppSettings["IndexerPrefix"];
             SynonymMapName = ConfigurationManager.AppSettings["SynonymMapName"];
             BlobContainerNameForImageStore = ConfigurationManager.AppSettings["BlobContainerNameForImageStore"];
 
@@ -54,6 +59,12 @@ namespace JfkInitializer
             _searchClient = new SearchServiceClient(searchServiceName, new SearchCredentials(apiKey));
             _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
             _searchServiceEndpoint = String.Format("https://{0}.{1}", searchServiceName, _searchClient.SearchDnsSuffix);
+
+            using (StreamReader r = new StreamReader("sources.json"))
+            {
+                string json = r.ReadToEnd();
+                IndexSources = Newtonsoft.Json.JsonConvert.DeserializeObject<IndexSource[]>(json);
+            }
 
             bool result = RunAsync().GetAwaiter().GetResult();
             if (!result && !DebugMode)
@@ -111,9 +122,13 @@ namespace JfkInitializer
             Console.WriteLine("Deleting Data Source, Index, Indexer and SynonymMap if they exist...");
             try
             {
-                await _searchClient.DataSources.DeleteAsync(DataSourceName);
+                var sources = _searchClient.DataSources.List();
+                foreach (var source in sources.DataSources)
+                    await _searchClient.DataSources.DeleteAsync(source.Name);
                 await _searchClient.Indexes.DeleteAsync(IndexName);
-                await _searchClient.Indexers.DeleteAsync(IndexerName);
+                var indexers = _searchClient.Indexers.List();
+                foreach (var indexer in indexers.Indexers)
+                    await _searchClient.Indexers.DeleteAsync(indexer.Name);
                 await _searchClient.SynonymMaps.DeleteAsync(SynonymMapName);
             }
             catch (Exception ex)
@@ -159,13 +174,19 @@ namespace JfkInitializer
             Console.WriteLine("Creating Data Source...");
             try
             {
-                DataSource dataSource = DataSource.AzureBlobStorage(
-                    name: DataSourceName,
-                    storageConnectionString: ConfigurationManager.AppSettings["JFKFilesBlobStorageAccountConnectionString"],
-                    containerName: ConfigurationManager.AppSettings["JFKFilesBlobContainerName"],
-                    description: "Data source for cognitive search example"
-                );
-                await _searchClient.DataSources.CreateAsync(dataSource);
+                //DataSource dataSource = DataSource.AzureBlobStorage(
+                //    name: DataSourceName,
+                //    storageConnectionString: ConfigurationManager.AppSettings["JFKFilesBlobStorageAccountConnectionString"],
+                //    containerName: ConfigurationManager.AppSettings["JFKFilesBlobContainerName"],
+                //    description: "Data source for cognitive search example"
+                //);
+
+                foreach (var source in IndexSources)
+                {
+                    var azSource = new DataSource { Type = source.Type, Container = new DataContainer(source.Container), Credentials = new DataSourceCredentials(source.Credentials), Name = source.Name };
+                    await _searchClient.DataSources.CreateAsync(azSource);
+                }
+
             }
             catch (Exception ex)
             {
@@ -187,24 +208,28 @@ namespace JfkInitializer
                 {
                     _azureFunctionHostKey = await KeyHelper.GetAzureFunctionHostKey(_httpClient);
                 }
-                using (StreamReader r = new StreamReader("skillset.json"))
+                var skillsets = new[] { new { type = FileSkillsetName, file = "skillset.json" }, new { type = TextSkillsetName, file = "textSkillset.json" } };
+                foreach (var skillset in skillsets)
                 {
-                    string json = r.ReadToEnd();
-                    json = json.Replace("[AzureFunctionEndpointUrl]", String.Format("https://{0}.azurewebsites.net", ConfigurationManager.AppSettings["AzureFunctionSiteName"]));
-                    json = json.Replace("[AzureFunctionDefaultHostKey]", _azureFunctionHostKey);
-                    json = json.Replace("[BlobContainerName]", BlobContainerNameForImageStore);
-                    json = json.Replace("[CognitiveServicesKey]", ConfigurationManager.AppSettings["CognitiveServicesAccountKey"]);
-                    string uri = String.Format("{0}/skillsets/{1}?api-version={2}", _searchServiceEndpoint, SkillsetName, _searchApiVersion);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await _httpClient.PutAsync(uri, content);
-                    if (DebugMode)
+                    using (StreamReader r = new StreamReader(skillset.file))
                     {
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Create Skill Set response: \n{0}", responseText);
-                    }
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return false;
+                        string json = r.ReadToEnd();
+                        json = json.Replace("[AzureFunctionEndpointUrl]", String.Format("https://{0}.azurewebsites.net", ConfigurationManager.AppSettings["AzureFunctionSiteName"]));
+                        json = json.Replace("[AzureFunctionDefaultHostKey]", _azureFunctionHostKey);
+                        json = json.Replace("[BlobContainerName]", BlobContainerNameForImageStore);
+                        json = json.Replace("[CognitiveServicesKey]", ConfigurationManager.AppSettings["CognitiveServicesAccountKey"]);
+                        string uri = String.Format("{0}/skillsets/{1}?api-version={2}", _searchServiceEndpoint, skillset.type, _searchApiVersion);
+                        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                        HttpResponseMessage response = await _httpClient.PutAsync(uri, content);
+                        if (DebugMode)
+                        {
+                            string responseText = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine("Create Skill Set response: \n{0}", responseText);
+                        }
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -224,7 +249,7 @@ namespace JfkInitializer
             Console.WriteLine("Creating Synonym Map...");
             try
             {
-                SynonymMap synonyms = new SynonymMap(SynonymMapName, SynonymMapFormat.Solr,
+                SynonymMap synonyms = new SynonymMap(SynonymMapName,
                     @"GPFLOOR,oswold,ozwald,ozwold,oswald
                       silvia, sylvia
                       sever, SERVE, SERVR, SERVER
@@ -281,26 +306,40 @@ namespace JfkInitializer
             Console.WriteLine("Creating Indexer...");
             try
             {
-                using (StreamReader r = new StreamReader("indexer.json"))
+                foreach (var sourceType in IndexSources)
                 {
-                    string json = r.ReadToEnd();
-                    json = json.Replace("[IndexerName]", IndexerName);
-                    json = json.Replace("[DataSourceName]", DataSourceName);
-                    json = json.Replace("[IndexName]", IndexName);
-                    json = json.Replace("[SkillSetName]", SkillsetName);
-                    string uri = String.Format("{0}/indexers/{1}?api-version={2}", _searchServiceEndpoint, IndexerName, _searchApiVersion);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await _httpClient.PutAsync(uri, content);
-                    if (DebugMode)
+                    var indexer = new Indexer();
+                    indexer.Name = IndexerPrefix + sourceType.Name;
+                    indexer.DataSourceName = sourceType.Name;
+                    indexer.TargetIndexName = IndexName;
+                    indexer.SkillsetName = sourceType.Type == DataSourceType.AzureBlob ? FileSkillsetName : TextSkillsetName;
+
+                    if (sourceType.Type == DataSourceType.AzureBlob)
                     {
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Create Indexer response: \n{0}", responseText);
+                        indexer.Parameters = new IndexingParameters { BatchSize = 1, MaxFailedItems = 0, MaxFailedItemsPerBatch = 0 };
+                        var config = new Dictionary<string, object> {
+                                { "dataToExtract", "contentAndMetadata" },
+                                { "imageAction", "generateNormalizedImages" },
+                                { "normalizedImageMaxWidth", 2000 },
+                                { "normalizedImageMaxHeight", 2000 } };
+                        indexer.Parameters.Configuration = config;
+
+                        //"batchSize": 1,
+                        //"maxFailedItems": 0,
+                        //"maxFailedItemsPerBatch": 0,
+                        //"configuration": {
+                        //    "dataToExtract": "contentAndMetadata",
+                        //    "imageAction": "generateNormalizedImages",
+                        //    "normalizedImageMaxWidth": 2000,
+                        //    "normalizedImageMaxHeight": 2000
+                        //}
+
                     }
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return false;
-                    }
+                    indexer.FieldMappings = sourceType.InputMapping;
+                    indexer.OutputFieldMappings = sourceType.OutputMapping;
+                    var response = await _searchClient.Indexers.CreateAsync(indexer);
                 }
+
             }
             catch (Exception ex)
             {
@@ -402,17 +441,22 @@ namespace JfkInitializer
             IndexerExecutionStatus requestStatus = IndexerExecutionStatus.InProgress;
             try
             {
-                await _searchClient.Indexers.GetAsync(IndexerName);
-                while (requestStatus.Equals(IndexerExecutionStatus.InProgress))
+                //await _searchClient.Indexers.GetAsync(IndexerName);
+                var allIndexers = IndexSources.Select(source => Task.Run(async () =>
                 {
-                    Thread.Sleep(3000);
-                    IndexerExecutionInfo info = await _searchClient.Indexers.GetStatusAsync(IndexerName);
-                    requestStatus = info.LastResult.Status;
-                    if (DebugMode)
+                    while (requestStatus.Equals(IndexerExecutionStatus.InProgress))
                     {
-                        Console.WriteLine("Current indexer status: {0}", requestStatus.ToString());
+                        Thread.Sleep(3000);
+                        IndexerExecutionInfo info = await _searchClient.Indexers.GetStatusAsync(IndexerPrefix + source.Name);
+                        requestStatus = info.LastResult.Status;
+                        if (DebugMode)
+                        {
+                            Console.WriteLine("Current indexer status: {0}", requestStatus.ToString());
+                        }
                     }
-                }
+                }));
+
+                await Task.WhenAll(allIndexers.ToArray());
             }
             catch (Exception ex)
             {
@@ -431,9 +475,9 @@ namespace JfkInitializer
             try
             {
                 ISearchIndexClient indexClient = _searchClient.Indexes.GetClient(IndexName);
-                DocumentSearchResult searchResult = await indexClient.Documents.SearchAsync("*");
+                DocumentSearchResult<Document> searchResult = await indexClient.Documents.SearchAsync("*");
                 Console.WriteLine("Query Results:");
-                foreach (SearchResult result in searchResult.Results)
+                foreach (var result in searchResult.Results)
                 {
                     foreach (string key in result.Document.Keys)
                     {

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "sqlsource",
+    "type": "azuresql",
+    "credentials": "Server=tcp:jfkdemosql.database.windows.net,1433;Initial Catalog=adventureworks;Persist Security Info=False;User ID=jfkadmin;Password=P@ssw0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "container": "SalesLT.vProductAndDescription",
+    "inputMapping": [
+      {
+        "sourceFieldName": "ProductDescriptionID",
+        "targetFieldName": "id"
+      },
+      {
+        "sourceFieldName": "Description",
+        "targetFieldName": "finalText"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      }
+    ]
+  },
+  {
+    "name": "imagesource",
+    "type": "azureblob",
+    "credentials": "SharedAccessSignature=st=2019-05-02T21%3A30%3A00Z&se=9999-12-21T12%3A00%3A00Z&sp=rl&sv=2018-03-28&sr=c&sig=NmOktoltvmd9gLqHidRuQN06xeSXbCVYIVti5prLdmA%3D;BlobEndpoint=https://azsjfkfiles.blob.core.windows.net/",
+    "container": "jfkfiles",
+    "inputMapping": [
+      {
+        "sourceFieldName": "metadata_storage_name",
+        "targetFieldName": "fileName"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoBoost",
+        "targetFieldName": "demoBoost"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoInitialPage",
+        "targetFieldName": "demoInitialPage"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/hocrDocument/metadata",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/cryptonyms",
+        "targetFieldName": "cryptonyms"
+      }
+    ]
+  }
+]

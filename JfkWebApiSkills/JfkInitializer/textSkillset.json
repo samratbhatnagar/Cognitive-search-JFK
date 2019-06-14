@@ -1,0 +1,82 @@
+{
+  "description": "Sql Skillset",
+  "skills": [
+
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SplitSkill",
+      "description": "Split text into pages for subsequent skill processing",
+      "textSplitMode": "pages",
+      "maximumPageLength": 5000,
+      "context": "/document/finalText",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/finalText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "textItems",
+          "targetName": "pages"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/finalText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "languageCode",
+          "targetName": "languageCode"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "categories": [
+        "Person",
+        "Location",
+        "Organization"
+      ],
+      "context": "/document/finalText/pages/*",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/finalText/pages/*"
+        },
+        {
+          "name": "languageCode",
+          "source": "/document/languageCode"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "persons",
+          "targetName": "people"
+        },
+        {
+          "name": "locations",
+          "targetName": "locations"
+        },
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        {
+          "name": "namedEntities",
+          "targetName": "entities"
+        }
+      ]
+    }
+  ],
+  "cognitiveServices": {
+    "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+    "description": "CognitiveServices account for demo",
+    "key": "[CognitiveServicesKey]"
+  }
+}
