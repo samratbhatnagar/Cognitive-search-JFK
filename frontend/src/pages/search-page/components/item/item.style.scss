@@ -105,7 +105,12 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
   &-container {
     display: flex;
     flex-flow: row wrap;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
   }
+}
+
+h4.list-title {
+  margin: 0;
+  padding: 0 16px;
 }

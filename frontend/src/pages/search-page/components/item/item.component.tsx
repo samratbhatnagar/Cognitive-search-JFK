@@ -201,8 +201,26 @@ const ItemExtraFieldList: React.StatelessComponent<ItemProps> = ({ item }) => {
   if (item.extraFields) {
     return (
       <CardContent>
+        <h4 className={`${style.listTitle}`}>Entities</h4>
         <List>
           {item.extraFields.map((field, fieldIndex) =>
+            generateExtraField(field, fieldIndex)
+          )}
+        </List>
+      </CardContent>
+    );
+  } else {
+    return null;
+  }
+};
+
+const ItemHeadingsList: React.StatelessComponent<ItemProps> = ({ item }) => {
+  if (item.headings) {
+    return (
+      <CardContent>
+        <h4 className={`${style.listTitle}`}>Headings</h4>
+        <List>
+          {item.headings.map((field, fieldIndex) =>
             generateExtraField(field, fieldIndex)
           )}
         </List>
@@ -261,6 +279,7 @@ export class ItemComponent extends React.Component<ItemProps, State> {
           unmountOnExit
         >
           <ItemExtraFieldList item={item} />
+          <ItemHeadingsList item={item} />
         </Collapse>
       </Card>
     );
