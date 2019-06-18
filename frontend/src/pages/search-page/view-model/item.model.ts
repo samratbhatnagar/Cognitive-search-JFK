@@ -9,7 +9,7 @@ export interface Item {
   demoInitialPage?: number;
   type?: string;
   highlightWords: string[];
-  headings?: string[];
+  headings?: any;
   text?: string;
 }
 

@@ -9,9 +9,9 @@ import Typography from "material-ui/Typography";
 import Chip from "material-ui/Chip";
 import StarIcon from "material-ui-icons/Star";
 import { cnc } from "../../../../util";
-import DataTableComponent from "../data-table/data-table.component";
 
 const style = require("./item.style.scss");
+const columnStyle = require("../../../../common/components/json-reader/json-reader.style.scss");
 
 interface ItemProps {
   item: Item;
@@ -80,7 +80,6 @@ const ItemMediaHocrPreview: React.StatelessComponent<ItemProps> = ({
   );
 };
 
-/////////////////////
 const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
   item,
   activeSearch,
@@ -88,26 +87,13 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
   onClick
 }) => {
   const myObj = item.metadata;
-  const myObjectStr = JSON.stringify(myObj);
-  // const myObjectParse = JSON.parse(myObjectStr);
-  console.log(Object.keys(myObj));
   const itemData = Object.keys(myObj);
-
-  function checkNested(obj) {
-    for (var i = 1; i < arguments.length; i++) {
-      if (!obj.hasOwnProperty(arguments[i])) {
-        return false;
-      }
-      obj = obj[arguments[i]];
-    }
-    return true;
-  }
 
   if (typeof myObj !== "object") {
     // Returns as text block
     return (
       <div
-        className={`${style.media} ${style.jsonMedia}`}
+        className={cnc(style.media, style.jsonTextBlock)}
         onClick={handleOnClick({ item, onClick })}
       >
         <p>{myObj}</p>
@@ -117,10 +103,32 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
     return (
       // Returns as new UI
       <div
-        className={`${style.media} ${style.jsonMedia}`}
+        className={cnc(style.media, columnStyle.jsonGridSummary)}
         onClick={handleOnClick({ item, onClick })}
       >
-        {myObjectStr}
+        <div className={columnStyle.column}>
+          <ul>
+            <li>
+              {itemData.map((child, index) => {
+                return (
+                  <div
+                    className={cnc(
+                      columnStyle.lineItemDetail,
+                      typeof myObj[child] === "object"
+                        ? columnStyle.hasChildren
+                        : null
+                    )}
+                  >
+                    <label>{child}</label>
+                    <span>
+                      {typeof myObj[child] !== "object" ? myObj[child] : ""}
+                    </span>
+                  </div>
+                );
+              })}
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
@@ -201,7 +209,7 @@ const ItemExtraFieldList: React.StatelessComponent<ItemProps> = ({ item }) => {
   if (item.extraFields) {
     return (
       <CardContent>
-        <h4 className={`${style.listTitle}`}>Entities</h4>
+        <h4 className={style.listTitle}>Entities</h4>
         <List>
           {item.extraFields.map((field, fieldIndex) =>
             generateExtraField(field, fieldIndex)
@@ -218,7 +226,7 @@ const ItemHeadingsList: React.StatelessComponent<ItemProps> = ({ item }) => {
   if (item.headings) {
     return (
       <CardContent>
-        <h4 className={`${style.listTitle}`}>Headings</h4>
+        <h4 className={style.listTitle}>Headings</h4>
         <List>
           {item.headings.map((field, fieldIndex) =>
             generateExtraField(field, fieldIndex)

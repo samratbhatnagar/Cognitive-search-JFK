@@ -12,12 +12,14 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields:["test", "data"]
-,
-    metadata: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt, nisi ut tempor luctus, ligula elit dictum metus.",
+    extraFields: [["test", "data"]],
+    metadata:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt, nisi ut tempor luctus, ligula elit dictum metus.",
     demoInitialPage: 0,
     type: "json",
-    highlightWords: ["Hello", "Sir"]
+    highlightWords: ["Hello", "Sir"],
+    headings: [["Lorem", "ipsum", "dolor", "sit", "amet"]],
+    text: "Lorem ipsum dolor sit amet"
   },
   {
     title: "test title 2",
@@ -25,11 +27,13 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields: ["test2", "data2", "more", "information"],
+    extraFields: [["test2", "data2", "more", "information"]],
     metadata: { Name: "Abc", Age: 15, Location: "Bangalore" },
     demoInitialPage: 0,
     type: "json",
-    highlightWords: ["Hello", "Sir"]
+    highlightWords: ["Hello", "Sir"],
+    headings: [["Lorem", "ipsum"]],
+    text: "Lorem ipsum dolor sit amet"
   },
   {
     title: "test title 3",
@@ -37,7 +41,7 @@ const TEST_DATA = [
     thumbnail: "",
     excerpt: "",
     rating: 0,
-    extraFields: ["test3", "data3", "more", "information", "third"],
+    extraFields: [["test3", "data3", "more", "information", "third"]],
     metadata: {
       id: 1,
       name: "node1",
@@ -45,7 +49,9 @@ const TEST_DATA = [
     },
     demoInitialPage: 0,
     type: "json",
-    highlightWords: ["Hello", "Sir"]
+    highlightWords: ["Hello", "Sir"],
+    headings: [["Lorem", "ipsum", "dolor", "sit"]],
+    text: "Lorem ipsum dolor sit amet"
   }
 ];
 
