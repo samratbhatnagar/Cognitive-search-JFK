@@ -25,62 +25,57 @@
     padding: 1rem;
 
     .viewport {
-      // display: block;
-      // width: 100%;
-      // flex-grow: 1;
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       align-items: stretch;
       margin: 0;
-      overflow: scroll;
+      overflow: auto;
       overflow-y: hidden;
       scroll-behavior: smooth;
       background-color: white;
 
-      ul {
+      .column {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
         flex: 0 0 375px;
-        list-style: none;
-        // min-width: 400px;
         min-height: 100%;
-        margin: 0;
-        padding: 0;
-        font-size: 12px;
-        color: #000000;
         border-right: 1px solid #c8c8c8;
-        // overflow-x: visible;
-        overflow-x: hidden;
-        overflow-y: auto;
 
-        li {
+        .column-header {
+          flex: 0 0 48px;
+          padding: 12px 20px;
+          background-color: #f6f6f6;
           border-bottom: 2px solid #d8d8d8;
 
-          // ul {
-          //   display: none;
+          label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a4a4a;
+            line-height: 24px;
+          }
+        }
 
-          //   li {
-          //   }
-          // }
+        ul {
+          flex: 1;
+          position: relative;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          font-size: 12px;
+          color: #000000;
+          overflow-x: hidden;
+          overflow-y: auto;
+
+          li {
+            border-bottom: 2px solid #d8d8d8;
+          }
         }
       }
     }
   }
-}
-
-.viewport > ul {
-  position: relative;
-  display: block;
-}
-
-// .viewport > ul > li ul {
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   left: 100%;
-// }
-
-.viewport ul > li ul.current-item {
-  display: block !important;
 }
 
 .viewport li .line-item-detail {
@@ -94,33 +89,63 @@
   &.has-children {
     position: relative;
     padding-right: 35px;
+    cursor: pointer;
+    transition: background-color 0.25s ease-out;
 
     &:after {
       @include jfk-icon;
       content: "\e906";
       position: absolute;
-      top: 12px;
+      top: 9px;
       right: 8px;
       font-size: 24px;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
       color: $colorPrimaryDarker;
       -webkit-transform: rotate(-90deg);
       transform: rotate(-90deg);
     }
 
+    &.has-search-item {
+      &:after {
+        border-radius: 12px;
+        background-color: #ff0;
+      }
+    }
+
     label {
       flex: 1;
       color: $colorPrimaryDarker;
+      pointer-events: none;
+    }
+
+    &:hover {
+      background-color: tint($colorPrimary, 75%);
     }
   }
 
   &.selected {
-    background-color: $colorPrimary;
+    background-color: tint($colorPrimary, 40%);
 
     label,
     &:after {
       color: white;
+    }
+
+    &:hover {
+      background-color: tint($colorPrimary, 75%);
+
+      label,
+      &:after {
+        color: $colorPrimaryDarker;
+      }
+    }
+
+    &.has-search-item {
+      &:after {
+        background-color: transparent;
+      }
     }
   }
 
@@ -135,5 +160,15 @@
     flex: 1;
     font-size: 13px;
     font-weight: #000000;
+  }
+}
+
+em {
+  font-style: normal;
+  background: #ff0;
+
+  &:hover {
+    background: tint($colorPrimary, 50%);
+    border: 3px solid $colorPrimary;
   }
 }
