@@ -28,20 +28,25 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
+      height: 100%;
       margin-left: 3rem;
 
       @include respond-to-desktop {
         margin-left: 6rem;
       }
 
-      .logo-svg {
+      .logo-img {
         flex: 1 1 auto;
         margin: 0 0.5rem;
+        height: 100%;
         max-height: 2.5rem;
-        max-width: 100%;
+        max-width: 2.5rem;
+        background-size: contain;
 
         @include respond-to-desktop {
           max-height: 3.5rem;
+          width: 100%;
+          max-width: 5rem;
         }
       }
     }

@@ -2,6 +2,7 @@
 @import "./_breakpoints.scss";
 @import "./_base.scss";
 @import "./_typography.scss";
+@import "./_mixins.scss";
 
 div[class*="MuiDialogTitle-"] {
   h2,

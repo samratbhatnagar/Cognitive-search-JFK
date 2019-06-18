@@ -19,7 +19,11 @@
 
 body {
   margin: 0;
+
+  // Default font style.
   font-family: $baseFontFamily;
+
+  // Default text color.
   color: $defaultBodyTextColor;
   // This will loaded once the react app is ready
   background-position: center;

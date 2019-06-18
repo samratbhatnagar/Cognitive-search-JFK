@@ -13,8 +13,6 @@ $colorPrimaryDarker: shade($colorPrimary, 40%);
 $colorSecondary: $app-secondary-color;
 $colorError: $app-error-color;
 
-$appLogoColor: $app-logo-color;
-
 @function defineBgColor($customBg, $appTheme) {
   @if $customBg == null and $appTheme == light {
     @return #eeeeee;
