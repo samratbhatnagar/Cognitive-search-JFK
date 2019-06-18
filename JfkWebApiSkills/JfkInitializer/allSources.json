@@ -1,0 +1,150 @@
+[
+  {
+    "name": "cosmossource",
+    "type": "cosmosdb",
+    "credentials": "AccountEndpoint=https://jfkdemo.documents.azure.com:443/;AccountKey=d4huUy0pZQ9RbWQ92M6ejuf3F34ANzir3f2j9qUw4afIo9Dkox4V2g4CyyvYyXN6383CUjyB5TQSmzEZjJzssw==;Database=ToDoList",
+    "container": "Items",
+    "inputMapping": [
+      {
+        "sourceFieldName": "id",
+        "targetFieldName": "id"
+      },
+      {
+        "sourceFieldName": "description",
+        "targetFieldName": "finalText"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/jsonDocument",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/type",
+        "targetFieldName": "type"
+      }
+    ]
+  },
+  {
+    "name": "sqlsource",
+    "type": "azuresql",
+    "credentials": "Server=tcp:cogsvcdemodb.database.windows.net,1433;Initial Catalog=demodb;Persist Security Info=False;User ID=cogadmin;Password=P@ssw0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "container": "SalesLT.vProductAndDescription",
+    "inputMapping": [
+      {
+        "sourceFieldName": "ProductDescriptionID",
+        "targetFieldName": "id"
+      },
+      {
+        "sourceFieldName": "Description",
+        "targetFieldName": "finalText"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/jsonDocument",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/type",
+        "targetFieldName": "type"
+      }
+    ]
+  },
+  {
+    "name": "documentsource",
+    "type": "azureblob",
+    "credentials": "SharedAccessSignature=st=2019-06-13T16%3A50%3A00Z&se=2020-06-14T16%3A51%3A00Z&sp=rl&sv=2018-03-28&sr=c&sig=vU95SEYAeTzLv8FLYXZOS9WhyQNgAEgn1G0wXWfj%2FPM%3D;BlobEndpoint=https://jfkstoragezvcdxrimegkdm.blob.core.windows.net",
+    "container": "docs",
+    "inputMapping": [
+      {
+        "sourceFieldName": "metadata_storage_name",
+        "targetFieldName": "fileName"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoBoost",
+        "targetFieldName": "demoBoost"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoInitialPage",
+        "targetFieldName": "demoInitialPage"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/hocrDocument/metadata",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/headings",
+        "targetFieldName": "headings"
+      },
+      {
+        "sourceFieldName": "/document/cryptonyms",
+        "targetFieldName": "cryptonyms"
+      }
+    ]
+  },
+  {
+    "name": "imagesource",
+    "type": "azureblob",
+    "credentials": "SharedAccessSignature=st=2019-05-02T21%3A30%3A00Z&se=9999-12-21T12%3A00%3A00Z&sp=rl&sv=2018-03-28&sr=c&sig=NmOktoltvmd9gLqHidRuQN06xeSXbCVYIVti5prLdmA%3D;BlobEndpoint=https://azsjfkfiles.blob.core.windows.net/",
+    "container": "jfkfiles",
+    "inputMapping": [
+      {
+        "sourceFieldName": "metadata_storage_name",
+        "targetFieldName": "fileName"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoBoost",
+        "targetFieldName": "demoBoost"
+      },
+      {
+        "sourceFieldName": "metadata_custom_demoInitialPage",
+        "targetFieldName": "demoInitialPage"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/hocrDocument/metadata",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/cryptonyms",
+        "targetFieldName": "cryptonyms"
+      }
+    ]
+  }
+]

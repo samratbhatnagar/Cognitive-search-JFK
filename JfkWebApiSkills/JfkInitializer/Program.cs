@@ -319,7 +319,7 @@ namespace JfkInitializer
                         indexer.Parameters = new IndexingParameters { BatchSize = 1, MaxFailedItems = 0, MaxFailedItemsPerBatch = 0 };
                         var config = new Dictionary<string, object> {
                                 { "dataToExtract", "contentAndMetadata" },
-                                { "imageAction", "generateNormalizedImages" },
+                                { "imageAction", "generateNormalizedImagePerPage" },
                                 { "normalizedImageMaxWidth", 2000 },
                                 { "normalizedImageMaxHeight", 2000 } };
                         indexer.Parameters.Configuration = config;

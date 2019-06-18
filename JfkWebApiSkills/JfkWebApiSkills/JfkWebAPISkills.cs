@@ -58,7 +58,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
 
             CryptonymLinker cryptonymLinker = new CryptonymLinker(executionContext.FunctionAppDirectory);
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                (inRecord, outRecord) =>
+                {
                     string word = inRecord.Data["word"] as string;
                     if (word.All(Char.IsUpper) && cryptonymLinker.Cryptonyms.TryGetValue(word, out string description))
                     {
@@ -82,7 +83,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
 
             CryptonymLinker cryptonymLinker = new CryptonymLinker(executionContext.FunctionAppDirectory);
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                (inRecord, outRecord) =>
+                {
                     var words = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(inRecord.Data["words"]));
                     var cryptos = words.Select(jword =>
                     {
@@ -120,7 +122,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
             ImageStore imageStore = new ImageStore(blobStorageConnectionString, blobContainerName);
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
-                async (inRecord, outRecord) => {
+                async (inRecord, outRecord) =>
+                {
                     string imageData = inRecord.Data["imageData"] as string;
                     string imageUri = await imageStore.UploadToBlob(imageData, Guid.NewGuid().ToString());
                     outRecord.Data["imageStoreUri"] = imageUri;
@@ -141,7 +144,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
             }
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                (inRecord, outRecord) =>
+                {
                     List<OcrImageMetadata> imageMetadataList = JsonConvert.DeserializeObject<List<OcrImageMetadata>>(JsonConvert.SerializeObject(inRecord.Data["ocrImageMetadataList"]));
                     Dictionary<string, string> annotations = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(inRecord.Data["wordAnnotations"]))
                                                     .Where(o => o.Type != JTokenType.Null)
@@ -150,7 +154,7 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
                                                     .ToDictionary(o => o["value"].Value<string>(), o => o["description"].Value<string>());
 
                     List<HocrPage> pages = new List<HocrPage>();
-                    for(int i = 0; i < imageMetadataList.Count; i++)
+                    for (int i = 0; i < imageMetadataList.Count; i++)
                     {
                         pages.Add(new HocrPage(imageMetadataList[i], i, annotations));
                     }
@@ -172,7 +176,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
             //}
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                (inRecord, outRecord) =>
+                {
                     var hocrDocument = Newtonsoft.Json.JsonConvert.SerializeObject(inRecord.Data["fullDocument"]);
                     outRecord.Data["jsonDocument"] = hocrDocument;
                     return outRecord;
@@ -187,7 +192,8 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                (inRecord, outRecord) =>
+                {
                     var fileLocation = string.Format("{0}?{1}", inRecord.Data["path"], inRecord.Data["token"]);
                     outRecord.Data["headings"] = HeaderExtractor.GetHeadersForDocument(fileLocation, inRecord.Data["contentType"].ToString());
                     return outRecord;
@@ -196,7 +202,24 @@ namespace Microsoft.CognitiveSearch.WebApiSkills
             return (ActionResult)new OkObjectResult(response);
         }
 
+        [FunctionName("ocr-header-extract")]
+        public static IActionResult OcrHeaderExtraction([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
+        {
+            string skillName = executionContext.FunctionName;
+            IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
 
+            WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
+                (inRecord, outRecord) =>
+                {
+                    var data = inRecord.Data["ocrData"].ToString();
+                    var ocrData = JsonConvert.DeserializeObject<List<OcrLayoutText>>(data);
+
+                    outRecord.Data["headings"] = OcrHeaderExtractor.GetHeaders(ocrData);
+                    return outRecord;
+                });
+
+            return (ActionResult)new OkObjectResult(response);
+        }
         private static string GetAppSetting(string key)
         {
             return Environment.GetEnvironmentVariable(key, EnvironmentVariableTarget.Process);

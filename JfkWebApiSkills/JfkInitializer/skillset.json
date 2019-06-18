@@ -1,5 +1,5 @@
 ﻿{
-    "description": "JFK Files Skillset",
+  "description": "JFK Files Skillset",
   "skills": [
     {
       "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
@@ -24,7 +24,7 @@
       "outputs": [
         {
           "name": "headings",
-          "targetName": "headings"
+          "targetName": "docHeadings"
         }
       ]
     },
@@ -344,6 +344,49 @@
     },
     {
       "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+      "description": "Extract headings from OCR data",
+      "uri": "[AzureFunctionEndpointUrl]/api/ocr-header-extract?code=[AzureFunctionDefaultHostKey]",
+      "batchSize": 1,
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "ocrData",
+          "source": "/document/normalized_images/*/layoutText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "headings",
+          "targetName": "ocrHeadings"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Util.ConditionalSkill",
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "condition",
+          "source": "= $(/document/docHeadings) == null"
+        },
+        {
+          "name": "whenTrue",
+          "source": "= $(/document/ocrHeadings)"
+        },
+        {
+          "name": "whenFalse",
+          "source": "= $(/document/docHeadings)"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "targetName": "headings"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
       "description": "Cryptonym linker",
       "uri": "[AzureFunctionEndpointUrl]/api/link-cryptonyms-list?code=[AzureFunctionDefaultHostKey]",
       "batchSize": 1,
@@ -362,9 +405,9 @@
       ]
     }
   ],
-    "cognitiveServices": {
-        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
-        "description": "CognitiveServices account for JFK demo",
-        "key": "[CognitiveServicesKey]"
-    }
+  "cognitiveServices": {
+    "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+    "description": "CognitiveServices account for JFK demo",
+    "key": "[CognitiveServicesKey]"
+  }
 }

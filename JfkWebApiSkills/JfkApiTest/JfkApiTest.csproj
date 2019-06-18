@@ -12,4 +12,8 @@
     <PackageReference Include="Open-Xml-PowerTools" Version="4.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JfkWebApiSkills\JfkWebApiSkills.csproj" />
+  </ItemGroup>
+
 </Project>
