@@ -48,16 +48,63 @@
   border-right: 1px solid #c8c8c8;
 
   .column-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     flex: 0 0 48px;
-    padding: 12px 20px;
+    padding: 12px 10px 12px 20px;
     background-color: #f6f6f6;
     border-bottom: 2px solid #d8d8d8;
 
     label {
+      flex: 1;
       font-size: 14px;
       font-weight: 600;
       color: #4a4a4a;
       line-height: 24px;
+    }
+
+    .columnHeaderMenu {
+      flex: 0 0 156px;
+      height: 24px;
+      text-align: right;
+
+      span.columnHeaderHintText {
+        display: inline-block;
+        margin-right: 10px;
+        color: #4a4a4a;
+        font-size: 12px;
+        line-height: 24px;
+      }
+
+      .smallChevron {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        color: rgba(0, 0, 0, 0.46);
+        font-size: 24px;
+        line-height: 24px;
+        transition: color 0.25s ease-out;
+
+        &.chevronPrev {
+          -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+        }
+
+        &.chevronNext {
+          -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+        }
+
+        &:hover {
+          color: tint($colorPrimary, 50%);
+        }
+
+        span[class^="MuiTouchRipple"] {
+          display: none;
+        }
+      }
     }
   }
 
@@ -118,20 +165,20 @@
           }
 
           &:hover {
-            background-color: tint($colorPrimary, 75%);
+            background-color: tint($colorPrimary, 86%);
           }
         }
 
         &.selected {
-          background-color: tint($colorPrimary, 40%);
+          background-color: tint($colorPrimary, 75%);
 
           label,
           &:after {
-            color: white;
+            color: $colorPrimaryDarker;
           }
 
           &:hover {
-            background-color: tint($colorPrimary, 75%);
+            background-color: tint($colorPrimary, 86%);
 
             label,
             &:after {
