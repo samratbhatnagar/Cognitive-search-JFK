@@ -16,7 +16,7 @@ interface DetailPageProps {
   zoomMode?: ZoomMode;
   pageIndex: PageIndex;
   showText?: boolean;
-  showToggle: boolean;
+  isHocr: boolean;
   onToggleTextClick: () => void;
   onZoomChange: (zoomMode: ZoomMode) => void;
   onCloseClick: () => void;
@@ -34,24 +34,27 @@ export class DetailPageComponent extends React.Component<DetailPageProps, {}> {
           zoomMode={this.props.zoomMode}
           onToggleTextClick={this.props.onToggleTextClick}
           onZoomChange={this.props.onZoomChange}
-          showToggleMenu={this.props.showToggle}
+          showToggleMenu={this.props.isHocr}
           onCloseClick={this.props.onCloseClick}
         />
         <HorizontalSeparator className={style.separator} />
-        {/* <HocrProofreaderComponent
-          className={style.hocr}
-          hocr={this.props.hocr}
-          targetWords={this.props.targetWords}
-          zoomMode={this.props.zoomMode}
-          pageIndex={this.props.pageIndex}
-          showText={this.props.showText}
-        /> */}
-
-        <JsonReaderComponent
-          className={style.json}
-          hocr={this.props.hocr}
-          targetWords={this.props.targetWords}
-        />
+        {this.props.isHocr ? (
+          <HocrProofreaderComponent
+            className={style.hocr}
+            hocr={this.props.hocr}
+            targetWords={this.props.targetWords}
+            zoomMode={this.props.zoomMode}
+            pageIndex={this.props.pageIndex}
+            showText={this.props.showText}
+          />
+        ) : (
+          <JsonReaderComponent
+            className={style.json}
+            hocr={this.props.hocr}
+            targetWords={this.props.targetWords}
+          />
+        )}
+        ;
       </div>
     );
   }

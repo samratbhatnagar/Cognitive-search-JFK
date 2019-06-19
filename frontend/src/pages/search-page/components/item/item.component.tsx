@@ -112,6 +112,7 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
               {itemData.map((child, index) => {
                 return (
                   <div
+                    key={index}
                     className={cnc(
                       columnStyle.lineItemDetail,
                       typeof myObj[child] === "object"

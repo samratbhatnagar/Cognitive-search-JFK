@@ -41,12 +41,12 @@ class DetailPageInnerContainer extends React.Component<
     this.setState({ ...this.state, zoomMode });
   };
 
-  private setShowToggleState = () => {
+  private isHocr = () => {
     const detailType = getDetailState().type;
-    if (detailType !== "json") {
-      return true;
-    } else {
+    if (detailType === "json") {
       return false;
+    } else {
+      return true;
     }
   };
 
@@ -61,7 +61,7 @@ class DetailPageInnerContainer extends React.Component<
         zoomMode={this.state.zoomMode}
         pageIndex={pageIndex}
         showText={this.state.showText}
-        showToggle={this.setShowToggleState()}
+        isHocr={this.isHocr()}
         onToggleTextClick={this.handleToggleText}
         onZoomChange={this.handleZoomChange}
         onCloseClick={this.handleClose}
