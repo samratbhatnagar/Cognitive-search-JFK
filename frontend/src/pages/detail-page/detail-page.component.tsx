@@ -16,6 +16,7 @@ interface DetailPageProps {
   zoomMode?: ZoomMode;
   pageIndex: PageIndex;
   showText?: boolean;
+  showToggle: boolean;
   onToggleTextClick: () => void;
   onZoomChange: (zoomMode: ZoomMode) => void;
   onCloseClick: () => void;
@@ -33,6 +34,7 @@ export class DetailPageComponent extends React.Component<DetailPageProps, {}> {
           zoomMode={this.props.zoomMode}
           onToggleTextClick={this.props.onToggleTextClick}
           onZoomChange={this.props.onZoomChange}
+          showToggleMenu={this.props.showToggle}
           onCloseClick={this.props.onCloseClick}
         />
         <HorizontalSeparator className={style.separator} />

@@ -1,46 +1,59 @@
 import * as React from "react";
-import { withRouter, RouteComponentProps } from 'react-router';
+import { withRouter, RouteComponentProps } from "react-router";
 import { DetailPageComponent } from "./detail-page.component";
 import { DetailRouteState } from "./detail-page.route";
 import { searchPath } from "../search-page";
 import { ZoomMode } from "../../common/components/hocr";
 import { getDetailState } from "./detail-page.memento";
 
-
 interface DetailPageState {
   showText: boolean;
   zoomMode: ZoomMode;
+  showToggle: boolean;
 }
 
-class DetailPageInnerContainer extends React.Component<RouteComponentProps<any>, DetailPageState> {
+class DetailPageInnerContainer extends React.Component<
+  RouteComponentProps<any>,
+  DetailPageState
+> {
   constructor(props) {
     super(props);
 
     this.state = {
       zoomMode: "page-width",
       showText: true,
+      showToggle: true
     };
   }
-  
+
   private handleClose = () => {
     this.props.history.push(searchPath);
-  }
+  };
 
   private handleToggleText = () => {
     this.setState({
       ...this.state,
-      showText: !this.state.showText,
-    });      
-  }
+      showText: !this.state.showText
+    });
+  };
 
   private handleZoomChange = (zoomMode: ZoomMode) => {
-    this.setState({...this.state, zoomMode,});
-  }
+    this.setState({ ...this.state, zoomMode });
+  };
+
+  private setShowToggleState = () => {
+    const detailType = getDetailState().type;
+    if (detailType !== "json") {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   public render() {
     const detailState = getDetailState();
     const pageIndex = Number(this.props.match.params.pageIndex) || undefined;
-    
+
     return (
       <DetailPageComponent
         hocr={detailState.hocr}
@@ -48,12 +61,13 @@ class DetailPageInnerContainer extends React.Component<RouteComponentProps<any>,
         zoomMode={this.state.zoomMode}
         pageIndex={pageIndex}
         showText={this.state.showText}
+        showToggle={this.setShowToggleState()}
         onToggleTextClick={this.handleToggleText}
         onZoomChange={this.handleZoomChange}
         onCloseClick={this.handleClose}
       />
     );
-  }  
+  }
 }
 
 export const DetailPageContainer = withRouter(DetailPageInnerContainer);

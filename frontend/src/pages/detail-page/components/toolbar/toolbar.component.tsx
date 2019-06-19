@@ -6,15 +6,16 @@ import AppBar from "material-ui/AppBar";
 import Toolbar from "material-ui/Toolbar";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
+import { cnc } from "../../../../util";
 
 const style = require("./toolbar.style.scss");
-
 
 /**
  * Main toolbar for Detail page.
  */
 
 interface ToolbarProps {
+  showToggleMenu: boolean;
   zoomMode: ZoomMode;
   onToggleTextClick: () => void;
   onZoomChange: (zoomMode: ZoomMode) => void;
@@ -28,28 +29,30 @@ export class ToolbarComponent extends React.Component<ToolbarProps, {}> {
 
   private handleZoomClick = (zoomMode: ZoomMode) => () => {
     this.props.onZoomChange(zoomMode);
-  }
+  };
 
   public render() {
     return (
       <Toolbar classes={{ root: style.toolbar }} disableGutters={true}>
-        <div className={style.group}>
-          <ToggleViewButton onClick={this.props.onToggleTextClick} />
-          <VerticalSeparator />
-          <OriginalSizeButton
-            zoomMode={this.props.zoomMode}
-            onClick={this.handleZoomClick("original")}
-          />
-          <PageWidthButton
-            zoomMode={this.props.zoomMode}
-            onClick={this.handleZoomClick("page-width")}
-          />
-          <PageFullButton
-            zoomMode={this.props.zoomMode}
-            onClick={this.handleZoomClick("page-full")}
-          />
-        </div>
-        <div className={style.group}>
+        {this.props.showToggleMenu ? (
+          <div className={style.group}>
+            <ToggleViewButton onClick={this.props.onToggleTextClick} />
+            <VerticalSeparator />
+            <OriginalSizeButton
+              zoomMode={this.props.zoomMode}
+              onClick={this.handleZoomClick("original")}
+            />
+            <PageWidthButton
+              zoomMode={this.props.zoomMode}
+              onClick={this.handleZoomClick("page-width")}
+            />
+            <PageFullButton
+              zoomMode={this.props.zoomMode}
+              onClick={this.handleZoomClick("page-full")}
+            />
+          </div>
+        ) : null}
+        <div className={cnc(style.group, style.pushRight)}>
           <CloseButton onClick={this.props.onCloseClick} />
         </div>
       </Toolbar>
@@ -69,7 +72,7 @@ const ToggleViewButton = ({ onClick }) => (
 
 const toggleColor = (targetMode: ZoomMode, zoomMode: ZoomMode) => {
   return targetMode === zoomMode ? "primary" : "inherit";
-}
+};
 
 const OriginalSizeButton = ({ zoomMode, onClick }) => (
   <IconButton

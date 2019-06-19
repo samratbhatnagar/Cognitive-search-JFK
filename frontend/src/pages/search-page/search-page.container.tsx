@@ -1,9 +1,15 @@
 import * as React from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import * as throttle from 'lodash.throttle';
+import * as throttle from "lodash.throttle";
 import { parse } from "qs";
 import { SearchPageComponent } from "./search-page.component";
-import { State, FilterCollection, Filter, Item, ResultViewMode } from "./view-model";
+import {
+  State,
+  FilterCollection,
+  Filter,
+  Item,
+  ResultViewMode
+} from "./view-model";
 import { Service, StateReducer } from "./service";
 import { jfkService } from "./service";
 import { isArrayEmpty, getUniqueStrings } from "../../util";
@@ -18,14 +24,21 @@ import {
   postSearchErrorReset,
   postSearchErrorKeep,
   resultViewModeUpdate,
-  receivedSearchValueUpdate,
+  receivedSearchValueUpdate
 } from "./search-page.container.state";
 import { detailPath, DetailRouteState } from "../detail-page";
-import { storeState, restoreLastState, isLastStateAvailable } from './view-model/state.memento';
+import {
+  storeState,
+  restoreLastState,
+  isLastStateAvailable
+} from "./view-model/state.memento";
 import { setDetailState } from "../detail-page/detail-page.memento";
 import { buildRoute } from "../../common/helpers/routes";
 
-class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>, State> {
+class SearchPageInnerContainer extends React.Component<
+  RouteComponentProps<any>,
+  State
+> {
   constructor(props) {
     super(props);
 
@@ -36,7 +49,9 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
     if (isLastStateAvailable()) {
       this.setState(restoreLastState());
     } else if (this.props.location.search) {
-      const receivedSearchValue = parse(this.props.location.search.substring(1));
+      const receivedSearchValue = parse(
+        this.props.location.search.substring(1)
+      );
       this.handleReceivedSearchValue(receivedSearchValue.term);
     }
   }
@@ -49,21 +64,21 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
       this.handleSearchSubmit
     );
     this.schedulePulseOff();
-  }
+  };
 
   private onGraphNodeDblClick = (value: string) => {
     const searchValue = `${this.state.searchValue} ${value}`;
     this.handleReceivedSearchValue(searchValue);
-  }
+  };
 
   private schedulePulseOff = () => {
     setTimeout(() => {
       this.setState({
         ...this.state,
-        pulseToggle: null,
-      })
+        pulseToggle: null
+      });
     }, 5100);
-  } 
+  };
 
   // *** DRAWER LOGIC ***
 
@@ -83,8 +98,7 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
 
   private handleResultViewMode = (resultViewMode: ResultViewMode) => {
     this.setState(resultViewModeUpdate(resultViewMode));
-  }
-
+  };
 
   // *** SEARCH LOGIC ***
 
@@ -96,25 +110,30 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
   };
 
   private runSearch = (
-    successCallback: (stateReducer: StateReducer) => (prevState: State) => State,
+    successCallback: (
+      stateReducer: StateReducer
+    ) => (prevState: State) => State,
     errorCallback: (rejectValue) => (prevState: State) => State
   ) => () => {
     jfkService
       .search(this.state)
       .then(stateReducer => this.setState(successCallback(stateReducer)))
       .catch(rejectValue => this.setState(errorCallback(rejectValue)));
-  }
-
+  };
 
   // *** FILTER LOGIC ***
 
   private updateFilterCollection = (newFilter: Filter) => {
-    return (
-      this.state.filterCollection ?
-        [...this.state.filterCollection.filter(f => f.fieldId !== newFilter.fieldId), newFilter]
-        : [newFilter])
-      .filter(f => f.store);
-  }
+    return (this.state.filterCollection
+      ? [
+          ...this.state.filterCollection.filter(
+            f => f.fieldId !== newFilter.fieldId
+          ),
+          newFilter
+        ]
+      : [newFilter]
+    ).filter(f => f.store);
+  };
 
   private handleFilterUpdate = (newFilter: Filter) => {
     const newFilterCollection = this.updateFilterCollection(newFilter);
@@ -124,7 +143,6 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
     );
   };
 
-
   // *** PAGINATION LOGIC ***
 
   private handleLoadMore = (pageIndex: number) => {
@@ -132,8 +150,7 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
       preSearchUpdate(this.state.filterCollection, pageIndex),
       this.runSearch(postSearchMoreSuccessUpdate, postSearchErrorKeep)
     );
-  }
-
+  };
 
   // *** SUGGESTIONS LOGIC ***
 
@@ -141,16 +158,19 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
     this.setState(searchValueUpdate(newValue), this.runSuggestions);
   };
 
-  private runSuggestions = throttle(() => {
-    jfkService
-      .suggest(this.state)
-      .then(stateReducer => this.setState(stateReducer<State>(this.state)))
-      .catch(rejectValue => {
-        console.debug(`Suggestions halted: ${rejectValue}`);
-        this.setState(suggestionsUpdate(null));
-      });
-  }, 500, { leading: true, trailing: true });
-
+  private runSuggestions = throttle(
+    () => {
+      jfkService
+        .suggest(this.state)
+        .then(stateReducer => this.setState(stateReducer<State>(this.state)))
+        .catch(rejectValue => {
+          console.debug(`Suggestions halted: ${rejectValue}`);
+          this.setState(suggestionsUpdate(null));
+        });
+    },
+    500,
+    { leading: true, trailing: true }
+  );
 
   // *** MISC ***
 
@@ -159,17 +179,21 @@ class SearchPageInnerContainer extends React.Component<RouteComponentProps<any>,
 
     setDetailState({
       hocr: item.metadata,
-      targetWords: getUniqueStrings([...this.state.targetWords, ...item.highlightWords]),
+      targetWords: getUniqueStrings([
+        ...this.state.targetWords,
+        ...item.highlightWords
+      ]),
+      type: item.type
     } as DetailRouteState);
 
     const route = buildRoute(detailPath, { pageIndex: item.demoInitialPage });
     this.props.history.push(route);
-  }
+  };
 
   // TODO: Snackbar implementation.
   private informMessage = (message: string) => {
     console.log(message);
-  }
+  };
 
   // *** REACT LIFECYCLE ***
 
