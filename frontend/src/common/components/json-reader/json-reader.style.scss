@@ -43,7 +43,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  flex: 0 0 375px;
+  flex: 0 0 385px;
   min-height: 100%;
   border-right: 1px solid #c8c8c8;
 
@@ -194,7 +194,8 @@
         }
 
         label {
-          flex: 0 0 100px;
+          flex: 0 0 115px;
+          padding-right: 5px;
           font-size: inherit;
           font-weight: 600;
           color: #4a4a4a;
