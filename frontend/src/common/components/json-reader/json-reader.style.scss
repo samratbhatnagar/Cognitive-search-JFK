@@ -123,6 +123,7 @@
       border-bottom: 2px solid #d8d8d8;
 
       .line-item-detail {
+        position: relative;
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
@@ -199,12 +200,36 @@
           font-size: inherit;
           font-weight: 600;
           color: #4a4a4a;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        span[role="tooltip"] {
+          display: none;
+          flex: 0 0 auto;
+          padding: 4px 8px;
+          margin: 0;
+          color: #4a4a4a;
+          font-size: inherit;
+          font-weight: 600;
+          background-color: tint($colorPrimary, 86%);
+          width: auto;
+          z-index: 2;
+        }
+
+        label:focus + span[role="tooltip"],
+        label:hover + span[role="tooltip"] {
+          display: block;
+          position: absolute;
+          top: 80%;
+          left: 12px;
         }
 
         span {
           flex: 1;
           font-size: 13px;
-          font-weight: #000000;
+          color: #000000;
         }
       }
     }

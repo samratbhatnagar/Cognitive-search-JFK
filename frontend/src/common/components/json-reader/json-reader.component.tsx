@@ -27,6 +27,14 @@ export class JsonReaderComponent extends React.PureComponent<JsonReaderProps> {
     console.log("loadChildren() clicked.");
   }
 
+  tooltipNeeded(value: string): boolean {
+    if (value.length > 17) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public render() {
     return (
       <div className={style.jsonReaderComponent}>
@@ -54,7 +62,12 @@ export class JsonReaderComponent extends React.PureComponent<JsonReaderProps> {
               <ul>
                 <li>
                   <div className={style.lineItemDetail}>
-                    <label>Address</label>
+                    <label>ReallyLongLabelExample</label>
+                    {this.tooltipNeeded("ReallyLongLabelExample") ? (
+                      <span className={style.simpleTooltip} role="tooltip">
+                        ReallyLongLabelExample
+                      </span>
+                    ) : null}
                     <span>1234 Main St., City, ST 12345</span>
                   </div>
                   <div className={style.lineItemDetail}>
