@@ -1,5 +1,39 @@
 [
   {
+    "name": "cosmossource",
+    "type": "cosmosdb",
+    "credentials": "AccountEndpoint=https://jfkdemo.documents.azure.com:443/;AccountKey=d4huUy0pZQ9RbWQ92M6ejuf3F34ANzir3f2j9qUw4afIo9Dkox4V2g4CyyvYyXN6383CUjyB5TQSmzEZjJzssw==;Database=ToDoList",
+    "container": "Items",
+    "inputMapping": [
+      {
+        "sourceFieldName": "id",
+        "targetFieldName": "id"
+      },
+      {
+        "sourceFieldName": "description",
+        "targetFieldName": "finalText"
+      }
+    ],
+    "outputMapping": [
+      {
+        "sourceFieldName": "/document/finalText",
+        "targetFieldName": "text"
+      },
+      {
+        "sourceFieldName": "/document/finalText/pages/*/entities/*/value",
+        "targetFieldName": "entities"
+      },
+      {
+        "sourceFieldName": "/document/jsonDocument",
+        "targetFieldName": "metadata"
+      },
+      {
+        "sourceFieldName": "/document/type",
+        "targetFieldName": "type"
+      }
+    ]
+  },
+  {
     "name": "documentsource",
     "type": "azureblob",
     "credentials": "SharedAccessSignature=st=2019-06-13T16%3A50%3A00Z&se=2020-06-14T16%3A51%3A00Z&sp=rl&sv=2018-03-28&sr=c&sig=vU95SEYAeTzLv8FLYXZOS9WhyQNgAEgn1G0wXWfj%2FPM%3D;BlobEndpoint=https://jfkstoragezvcdxrimegkdm.blob.core.windows.net",
