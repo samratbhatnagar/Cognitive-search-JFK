@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JfkInitializer", "JfkInitia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JfkApiTest", "JfkApiTest\JfkApiTest.csproj", "{06FA020E-4864-446F-8E3B-7028E684FE17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JfkProject.Test", "JfkProject.Test\JfkProject.Test.csproj", "{E2A7A1B0-F21E-4787-B9CE-34D9EA164ECB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{06FA020E-4864-446F-8E3B-7028E684FE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06FA020E-4864-446F-8E3B-7028E684FE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06FA020E-4864-446F-8E3B-7028E684FE17}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2A7A1B0-F21E-4787-B9CE-34D9EA164ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2A7A1B0-F21E-4787-B9CE-34D9EA164ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2A7A1B0-F21E-4787-B9CE-34D9EA164ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2A7A1B0-F21E-4787-B9CE-34D9EA164ECB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
