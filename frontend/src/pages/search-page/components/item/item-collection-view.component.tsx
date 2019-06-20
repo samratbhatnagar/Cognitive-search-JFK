@@ -45,6 +45,7 @@ const TEST_DATA = [
     metadata: {
       id: 1,
       name: "node1",
+      other: "thing",
       children: [{ name: "child1", id: 2 }, { name: "child2", id: 3 }]
     },
     demoInitialPage: 0,

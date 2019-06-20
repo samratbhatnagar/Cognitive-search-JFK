@@ -86,7 +86,15 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
   targetWords,
   onClick
 }) => {
-  const myObj = item.metadata;
+  let parsedItem: any = null;
+
+  if (typeof item.metadata === "string") {
+    try {
+      parsedItem = JSON.parse(item.metadata);
+    } catch {}
+  }
+
+  const myObj = parsedItem || item.metadata;
   const itemData = Object.keys(myObj);
 
   if (typeof myObj !== "object") {
