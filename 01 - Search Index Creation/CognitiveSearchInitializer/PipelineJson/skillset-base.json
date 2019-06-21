@@ -141,7 +141,9 @@
       "batchSize": 1,
       "context": "/document/normalized_images/*",
       "httpHeaders": {
-        "BlobContainerName": "[BlobContainerName]"
+        "Headers": {
+          "BlobContainerName": "[BlobContainerName]"
+        }
       },
       "inputs": [
         {

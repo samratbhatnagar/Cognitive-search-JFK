@@ -226,7 +226,7 @@ namespace CognitiveSearchInitializer
                     var payload = await Task.Run(() => JsonConvert.SerializeObject(skillset, serializerSettings));
                     // Remove problematic values
                     var cleanPayload = payload.Replace(",\"@odata.etag\":null", "").Replace("\"httpHeaders\":null,", "");
-
+                    cleanPayload = System.Text.RegularExpressions.Regex.Replace(cleanPayload, "(?s)\"headers\":\\s?\\{(?<content>[^}]*)\\}", "${content}");
                     var content = new StringContent(cleanPayload, Encoding.UTF8, "application/json");
 
                     var response = await (httpClient.PutAsync(uri, content));
