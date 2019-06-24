@@ -6,8 +6,7 @@ import { GraphConfig } from "./config.model";
  */
 
 export const parseConfig = (config: GraphConfig): string => {
-  const root = `${config.protocol}://${config.serviceName}.${config.serviceDomain}/`;
-  const path = `${config.servicePath}?`;
-  const authCode = `${config.authCodeParam}&`;
-  return (root + path + authCode);
-}
+  const root = `${config.protocol}://${config.serviceUrl}`;
+  const authCode = `?opt=0&`;
+  return root + authCode;
+};

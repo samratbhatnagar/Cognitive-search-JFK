@@ -1,9 +1,8 @@
 /**
- * Object that represents the RESPONSE and RESPONSE configuration parameters. 
+ * Object that represents the RESPONSE and RESPONSE configuration parameters.
  * These config parameters will help in parsing the raw API response (JSON)
  * to a RESPONSE object.
  */
-
 
 export interface GraphEdge {
   source: number;
@@ -28,9 +27,9 @@ export interface GraphResponseConfig {
 }
 
 export const defaultGraphResponseConfig: GraphResponseConfig = {
-  edgesAccessor: "edges",
+  edgesAccessor: "links",
   edgeSourceAccessor: "source",
   edgeTargetAccessor: "target",
   nodesAccessor: "nodes",
-  nodeNameAccessor: "name",
-}
+  nodeNameAccessor: "name"
+};

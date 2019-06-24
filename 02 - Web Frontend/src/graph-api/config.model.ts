@@ -2,13 +2,10 @@
  * Object that represents API conection parameters.
  */
 
-export type GraphMethodType = "GET";
+export type GraphMethodType = "POST";
 
 export interface GraphConfig {
   protocol: string;
-  serviceName: string;
-  serviceDomain: string;
-  servicePath: string;
+  serviceUrl: string;
   method: GraphMethodType;
-  authCodeParam: string;
 }

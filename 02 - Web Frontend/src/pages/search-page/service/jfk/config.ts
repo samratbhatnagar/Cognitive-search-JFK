@@ -45,11 +45,8 @@ export const jfkServiceConfig: ServiceConfig = {
 
   graphConfig: {
     protocol: process.env.FUNCTION_CONFIG_PROTOCOL,
-    serviceName: process.env.FUNCTION_CONFIG_SERVICE_NAME,
-    serviceDomain: process.env.FUNCTION_CONFIG_SERVICE_DOMAIN,
-    servicePath: process.env.FUNCTION_CONFIG_SERVICE_PATH,
-    method: "GET",
-    authCodeParam: process.env.FUNCTION_CONFIG_SERVICE_AUTH_CODE_PARAM
+    serviceUrl: process.env.FUNCTION_CONFIG_SERVICE_URL,
+    method: "POST"
   },
 
   initialState: {
