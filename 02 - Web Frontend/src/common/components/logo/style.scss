@@ -1,0 +1,8 @@
+@import "../../../theme/_palette.scss";
+@import "../../../theme/theme-setup.scss";
+
+.logo {
+  background-image: url("../../../assets/img/#{$app-custom-logo-name}");
+  background-repeat: no-repeat;
+  background-position: center;
+}

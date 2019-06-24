@@ -83,5 +83,12 @@
       "filterable": false,
       "facetable": false
     }
+  ],
+  "suggesters": [
+    {
+      "name": "sg",
+      "searchMode": "analyzingInfixMatching",
+      "sourceFields": [ "persons", "locations", "organizations" ]
+    }
   ]
 }

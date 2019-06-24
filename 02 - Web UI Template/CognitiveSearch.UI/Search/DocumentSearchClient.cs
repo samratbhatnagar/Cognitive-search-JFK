@@ -62,13 +62,12 @@ namespace CognitiveSearch.UI
             try
             {
                 SearchParameters sp = GenerateSearchParameters(searchFacets, selectFilter, currentPage);
-
+                sp.HighlightFields = new List<string> { "content" };
                 if (!string.IsNullOrEmpty(telemetryClient.InstrumentationKey))
                 {
                     var s = GenerateSearchId(searchText, sp);
                     _searchId = s.Result;
                 }
-
                 return _indexClient.Documents.Search(searchText, sp);
             }
             catch (Exception ex)

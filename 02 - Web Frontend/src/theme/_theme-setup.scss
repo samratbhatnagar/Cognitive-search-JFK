@@ -1,0 +1,44 @@
+@import "./_material-colors.scss";
+@import "./_mixins.scss";
+
+// Define the App's Primary, Secondary and Error colors
+// These can be defined using HEX values (ie: #000000) or using Sass variables imported from '_material-colors.scss' (ie: $red-500)
+// For a visual guide of the Material Colors, visit https://material-ui.com/customization/color/#color-palette
+$app-primary-color: $blue-grey-300;
+$app-secondary-color: $yellow-700;
+$app-error-color: $red-A400;
+
+// Definitions for default gray, black and white
+$default-gray: #ececec;
+$black: #121212;
+$white: #ffffff;
+
+// Define if the App's theme is Light or Dark
+$app-theme-type: dark; // light, dark
+
+// Define the default text color for the App (be sure this text color is legible)
+$default-text-color: $white;
+
+// Set the Logo for the App.
+// For best results, image should be saved as a .png with a transparent background.
+// Image file should be placed in assets/img folder and path should be set in quotes (ie: "logo.png";)
+$app-custom-logo-name: "logo_alt.png";
+
+// (Optional) Set a custom background color for the App.
+// If set to null, App's background color will automatically be defined based on the $app-theme-type
+$app-custom-background-color: shade($app-primary-color, 65%);
+
+// (Optional) Set a custom background image for the App.
+// Image file should be placed in assets/img folder and path should be set in quotes (ie: "../assets/img/bg.jpg";)
+// If set to none, App will fallback to the default background color
+$app-custom-background-image-path: "../assets/img/bg_alt.jpg";
+
+// Define the App's Typography
+$app-font-family-path: "https://fonts.googleapis.com/css?family=Open+Sans:300,600,700";
+$app-font-family: "Open Sans", "serif"; // font names should be in quotes, comma separated
+$default-font-weight: 300;
+
+:export {
+  appCustomBackgroundColor: $app-custom-background-color;
+  appCustomBackgroundImagePath: $app-custom-background-image-path;
+}

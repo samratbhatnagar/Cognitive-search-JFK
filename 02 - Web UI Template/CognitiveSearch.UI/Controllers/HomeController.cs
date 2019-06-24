@@ -54,18 +54,35 @@ namespace CognitiveSearch.UI.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetDocuments(string q = "", SearchFacet[] searchFacets = null, int currentPage = 1)
+        [HttpGet]
+        public IActionResult GetSuggestions(string search = "")
         {
             var token = GetContainerSasUri();
             var selectFilter = _docSearch.Model.SelectFilter;
 
-            if (!string.IsNullOrEmpty(q))
+            if (!string.IsNullOrEmpty(search))
             {
-                q = q.Replace("-", "").Replace("?", "");
+                search = search.Replace("-", "").Replace("?", "");
             }
 
-            var response = _docSearch.Search(q, searchFacets, selectFilter, currentPage);
+            var response = _docSearch.Suggest(search, false);
+
+
+            return new JsonResult(new { Results=response.Results.Select(a=>new { text = a.Text }) });
+        }
+
+        [HttpPost]
+        public IActionResult GetDocuments([FromBody] Newtonsoft.Json.Linq.JObject data, SearchFacet[] searchFacets = null, int currentPage = 1)
+        {
+            var token = GetContainerSasUri();
+            var selectFilter = _docSearch.Model.SelectFilter;
+            var search = data["search"].ToString();
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.Replace("-", "").Replace("?", "");
+            }
+
+            var response = _docSearch.Search(search, searchFacets, selectFilter, currentPage);
             var searchId = _docSearch.GetSearchId().ToString();
             var facetResults = new List<object>();
             var tagsResults = new List<object>();
