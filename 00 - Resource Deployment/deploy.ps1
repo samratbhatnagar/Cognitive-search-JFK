@@ -2,19 +2,19 @@
 # Licensed under the MIT License.
 
 ###### PARAMETERS SECTION #####
-$resourceGroupName = "";
-$subscriptionId = "";
-$location = "SouthCentralUS";
+$resourceGroupName = "jfk-files";
+$subscriptionId = "8c924580-ce70-48d0-a031-1b21726acc1a";
+$location = "WestUS2";
 $searchSku = "basic"; # "free", "basic", or "standard"
 
 # Resource names should be lower case
-$searchServiceName = "";
-$webappname = "";
-$cogServicesName = "";
+$searchServiceName = "kminingsearch";
+$webappname = "kminingweb";
+$cogServicesName = "kminingcogsvc";
 $appInsightsName = $webappname + "insights";
 
 # Storage account names can only include numbers and letters
-$storageAccountName = "";
+$storageAccountName = "kminingstore";
 
 ###### END PARAMETERS SECTION #####
 
