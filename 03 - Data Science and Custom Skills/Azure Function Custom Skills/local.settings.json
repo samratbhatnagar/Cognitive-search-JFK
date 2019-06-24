@@ -1,6 +1,19 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "BlobStorageAccountConnectionString": ""
+    "BlobStorageAccountConnectionString": "",
+    "BingEndpoint": "https://api.cognitive.microsoft.com/bing/v7.0/entities/",
+    "BingKey": "",
+    "CognitiveServicesVisionUrl": "https://westus.api.cognitive.microsoft.com/vision/v2.0/detect",
+    "CognitiveServicesKey": "",
+    "AzureMapsUrl": "https://atlas.microsoft.com/search/fuzzy/json",
+    "AzureMapsKey": "",
+    "CognitiveTranslateUrl": "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0",
+    "CognitiveTranslateKey": "",
+    "CognitiveTranslateRegion": "westus",
+    "FormsRecognizerEndpoint": "https://westus2.api.cognitive.microsoft.com",
+    "FormsRecognizerKey": "",
+    "FormsModelId": ""
+
   }
 }

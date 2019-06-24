@@ -80,8 +80,8 @@ namespace SampleSkills
     public static class GetGeoPointFromName
     {
         #region Credentials
-        static string azureMapstUri = "https://atlas.microsoft.com/search/fuzzy/json";        
-        static string azureMapsKey = "";   // NOTE: Enter a valid subscription key.
+        static string azureMapstUri = Environment.GetEnvironmentVariable("AzureMapsUrl", EnvironmentVariableTarget.Process);         
+        static string azureMapsKey = Environment.GetEnvironmentVariable("", EnvironmentVariableTarget.Process);
         #endregion
 
         #region Class used to deserialize the request

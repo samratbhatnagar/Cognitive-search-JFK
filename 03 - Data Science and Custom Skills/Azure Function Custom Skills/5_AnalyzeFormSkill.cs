@@ -122,9 +122,9 @@ namespace SampleSkills
     public static class FormsRecognizerSkill
     {
         #region Credentials
-        static readonly string FormsRecognizerEndpoint = @"https://westus2.api.cognitive.microsoft.com";
-        static readonly string FormsRecognizerKey = @"ENTER KEY HERE";
-        static readonly string ModelId = "ENTER MODEL ID HERE";
+        static readonly string FormsRecognizerEndpoint = Environment.GetEnvironmentVariable("FormsRecognizerEndpoint", EnvironmentVariableTarget.Process);
+        static readonly string FormsRecognizerKey = Environment.GetEnvironmentVariable("FormsRecognizerKey", EnvironmentVariableTarget.Process);
+        static readonly string ModelId = Environment.GetEnvironmentVariable("FormsModelId", EnvironmentVariableTarget.Process);
         #endregion
 
         #region Class used to deserialize the request

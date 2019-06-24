@@ -72,8 +72,8 @@ namespace SampleSkills
     {
         #region Credentials
         // IMPORTANT: Make sure to enter your credential and to verify the API endpoint matches yours.
-        static readonly string bingApiEndpoint = "https://api.cognitive.microsoft.com/bing/v7.0/entities/";
-        static readonly string key = "";  
+        static readonly string bingApiEndpoint = Environment.GetEnvironmentVariable("BingEndpoint", EnvironmentVariableTarget.Process);
+        static readonly string key = Environment.GetEnvironmentVariable("BingKey", EnvironmentVariableTarget.Process);  
         #endregion
 
         #region Class used to deserialize the request

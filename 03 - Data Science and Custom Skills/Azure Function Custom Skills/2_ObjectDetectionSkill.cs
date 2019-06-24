@@ -62,8 +62,8 @@ namespace SampleSkills
 
         #region Credentials
         // IMPORTANT: Enter your Cognitive Services key below and make sure the URL matches the URL for your region.
-        static string path = "https://westus.api.cognitive.microsoft.com/vision/v2.0/detect";        
-        static string cognitiveServicesKey = "";
+        static string path = Environment.GetEnvironmentVariable("CognitiveServicesVisionUrl", EnvironmentVariableTarget.Process);        
+        static string cognitiveServicesKey = Environment.GetEnvironmentVariable("CognitiveServicesKey", EnvironmentVariableTarget.Process); 
         #endregion
 
         #region Class used to deserialize the request
