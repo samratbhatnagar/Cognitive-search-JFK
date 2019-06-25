@@ -76,6 +76,15 @@
       "facetable": false
     },
     {
+      "name": "headings",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "retrievable": true,
+      "sortable": false,
+      "facetable": false
+    },
+    {
       "name": "metadata_storage_name",
       "type": "Edm.String",
       "searchable": true,

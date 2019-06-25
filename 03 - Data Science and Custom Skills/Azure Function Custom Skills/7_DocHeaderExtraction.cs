@@ -56,7 +56,7 @@ namespace SampleSkills
         #endregion
 
         [FunctionName("doc-headers")]
-        public static IActionResult RunHocrGenerator([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
+        public static IActionResult RunHeaderExtraction([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
             log.LogInformation($"{skillName}: C# HTTP trigger function processed a request.");
@@ -80,7 +80,7 @@ namespace SampleSkills
 
                 try
                 {
-                    var fileLocation = string.Format("{0}?{1}", record.Data["path"], record.Data["token"]);
+                    var fileLocation = string.Format("{0}?{1}", record.Data["path"], record.Data["token"].ToString().StartsWith("?") ? record.Data["token"].ToString().Substring(1) : record.Data["token"]);
                     using (WebClient webConnection = new WebClient())
                     {
 
@@ -100,7 +100,7 @@ namespace SampleSkills
                                     responseRecord.Data["headings"] = paragraphs.Select(a => a.InnerText).ToList();
                                 }
                             }
-                             responseRecord.Data["headings"] = null;
+                            responseRecord.Data["headings"] = null;
                         }
                     }
                 }

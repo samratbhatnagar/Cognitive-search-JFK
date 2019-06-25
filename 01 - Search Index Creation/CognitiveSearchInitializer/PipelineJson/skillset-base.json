@@ -205,6 +205,33 @@
           "targetName": "hocrDocument"
         }
       ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+      "description": "Extract headings from documents",
+      "uri": "[AzureFunctionEndpointUrl]/api/doc-headers?code=[AzureFunctionDefaultHostKey]",
+      "batchSize": 1,
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "path",
+          "source": "/document/metadata_storage_path"
+        },
+        {
+          "name": "token",
+          "source": "/document/metadata_storage_sas_token"
+        },
+        {
+          "name": "contentType",
+          "source": "/document/metadata_content_type"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "headings",
+          "targetName": "headings"
+        }
+      ]
     }
   ]
 }

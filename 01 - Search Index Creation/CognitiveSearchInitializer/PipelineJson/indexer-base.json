@@ -49,6 +49,10 @@
     {
       "sourceFieldName": "/document/hocrDocument/metadata",
       "targetFieldName": "metadata"
+    },
+    {
+      "sourceFieldName": "/document/headings",
+      "targetFieldName": "headings"
     }
   ]
 }
