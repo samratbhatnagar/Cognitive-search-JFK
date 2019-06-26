@@ -11,7 +11,7 @@ import { GraphPayload } from "./payload.model";
 
 export const parsePayload = (p: GraphPayload): string => {
   return [
-    p.search ? `q=${p.search}&f=entities` : "",
+    p.search ? `query=${p.search}&facet=${p.facet}` : "",
   ]
     .filter(i => i)
     .join("&");

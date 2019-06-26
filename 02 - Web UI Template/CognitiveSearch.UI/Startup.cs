@@ -44,6 +44,7 @@ namespace CognitiveSearch.UI
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseCors("AllowAllCors");
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

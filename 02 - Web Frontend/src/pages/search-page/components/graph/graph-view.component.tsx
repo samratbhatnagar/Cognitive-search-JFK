@@ -40,7 +40,7 @@ class GraphView extends React.Component<GraphViewProps, GraphViewState> {
     if (!this.state.graphApi || !searchValue) return Promise.resolve(null);
 
     try {
-      const payload = { search: searchValue };
+      const payload = { search: searchValue, facet: "keyPhrases" };
       return await this.state.graphApi.runQuery(payload);
     } catch (e) {
       throw e;

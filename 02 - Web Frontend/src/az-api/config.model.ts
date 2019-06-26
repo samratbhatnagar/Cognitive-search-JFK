@@ -10,7 +10,7 @@ export interface AzConfig {
 }
 
 export const defaultAzConfig: AzConfig = {
-  protocol: "https",
+  protocol: "http",
   serviceUrl: "",
   method: "GET"
 };

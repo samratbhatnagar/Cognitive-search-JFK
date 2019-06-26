@@ -5,8 +5,10 @@
 
 export interface GraphPayload {
   search: string;
+  facet: string;
 }
 
 export const defaultGraphPayload: GraphPayload = {
   search: "",
+  facet: "keyPhrases"
 }

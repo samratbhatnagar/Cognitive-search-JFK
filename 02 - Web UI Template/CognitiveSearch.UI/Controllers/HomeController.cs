@@ -143,15 +143,20 @@ namespace CognitiveSearch.UI.Controllers
             return sasContainerToken;
         }
 
-        [HttpPost]
-        public JObject GetGraphData(string query)
+        [HttpGet]
+        public JObject GetGraphData(string query, string facet)
         {
-            if (query == null)
+            if (string.IsNullOrWhiteSpace(query))
             {
                 query = "*";
             }
+
+            if (string.IsNullOrWhiteSpace(facet))
+            {
+                facet = "keyPhrases";
+            }
             FacetGraphGenerator graphGenerator = new FacetGraphGenerator(_docSearch);
-            var graphJson = graphGenerator.GetFacetGraphNodes(query, "keyPhrases");
+            var graphJson = graphGenerator.GetFacetGraphNodes(query, facet);
 
             return graphJson;
         }

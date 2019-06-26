@@ -46,7 +46,7 @@ export const azServiceConfig: ServiceConfig = {
   graphConfig: {
     protocol: process.env.FUNCTION_CONFIG_PROTOCOL,
     serviceUrl: process.env.FUNCTION_CONFIG_SERVICE_URL,
-    method: "POST"
+    method: "GET"
   },
   uploadConfig: {
     protocol: process.env.UPLOAD_CONFIG_PROTOCOL,

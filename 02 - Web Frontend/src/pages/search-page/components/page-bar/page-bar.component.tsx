@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ResultViewMode } from "../../view-model";
 import { MenuButton } from "../../../../common/components/menu-button";
-import { LogoJFKComponent } from "./../../../../common/components/logo-jfk";
 import { LogoComponent } from "./../../../../common/components/logo";
 import { ResultViewModeToggler } from "./view-mode-toggler.component";
 import AppBar from "material-ui/AppBar";
