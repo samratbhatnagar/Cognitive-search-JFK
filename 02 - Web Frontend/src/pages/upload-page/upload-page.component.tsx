@@ -1,6 +1,8 @@
 import * as React from "react";
 const superagent = require("superagent");
 import Dropzone from "react-dropzone";
+import { LogoComponent } from "../../common/components/logo";
+import { Button } from "material-ui";
 
 const style = require("./upload-page.style.scss");
 
@@ -10,6 +12,7 @@ interface UploadPageProps {
 }
 interface UploadPageState {
   acceptedFiles: Array<any>;
+  isHovered: boolean;
 }
 
 export class UploadPageComponent extends React.Component<
@@ -19,7 +22,8 @@ export class UploadPageComponent extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      acceptedFiles: []
+      acceptedFiles: [],
+      isHovered: false
     };
     this.handleUpload = this.handleUpload.bind(this);
   }
@@ -38,27 +42,43 @@ export class UploadPageComponent extends React.Component<
         {file.name} - {file.size} bytes
       </li>
     ));
+
+    let className = style.upload;
+
+    if (this.state.isHovered) {
+      className += " " + style.hover;
+    }
+
     return (
       <div className={style.container}>
-        <span>Upload files</span>
+        <h2>Upload files</h2>
         <Dropzone
           multiple={false}
+          onDragEnter={() => this.setState({ isHovered: true })}
+          onDragLeave={() => this.setState({ isHovered: false })}
           onDrop={acceptedFiles => this.setState({ acceptedFiles })}
         >
           {({ getRootProps, getInputProps }) => (
-            <section>
-              <div {...getRootProps()}>
+            <section className={className}>
+              <div className={style.box} {...getRootProps()}>
                 <input name="files" {...getInputProps()} />
                 <p>Drag 'n' drop some files here, or click to select files</p>
               </div>
-              <aside>
-                <h4>Files</h4>
-                <ul>{files}</ul>
-              </aside>
             </section>
           )}
         </Dropzone>
-        <input type="submit" value="Upload" onClick={this.handleUpload} />
+        <section className={style.files}>
+          <h4>Files</h4>
+          <ul>{files}</ul>
+        </section>
+        <Button
+          variant="raised"
+          size="small"
+          color="secondary"
+          onClick={this.handleUpload}
+        >
+          Upload
+        </Button>
       </div>
     );
   }
