@@ -21,7 +21,9 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
     @include respond-to-desktop {
       height: 26rem;
     }
-
+    &.officePreview {
+      width: 100%;
+    }
     &.jsonTextBlock {
       height: auto !important;
       background-color: #ffffff;

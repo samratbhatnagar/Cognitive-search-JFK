@@ -55,7 +55,19 @@ const ItemMediaThumbnail: React.StatelessComponent<ItemProps> = ({
     />
   ) : null;
 };
-
+const ItemMediaOffice: React.StatelessComponent<ItemProps> = ({
+  item,
+  onClick
+}) => {
+  return (
+    <div>
+      <iframe
+        src={getOfficePreviewPath(item.filePath)}
+        className={cnc(style.media, style.officePreview)}
+      />
+    </div>
+  );
+};
 const ItemMediaHocrPreview: React.StatelessComponent<ItemProps> = ({
   item,
   activeSearch,
@@ -162,6 +174,8 @@ const ItemMedia: React.StatelessComponent<ItemProps> = ({
   } else {
     return simplePreview ? (
       <ItemMediaThumbnail item={item} onClick={onClick} />
+    ) : isOfficeType(item.filePath) ? (
+      <ItemMediaOffice item={item} onClick={onClick} />
     ) : (
       <ItemMediaHocrPreview
         item={item}
@@ -193,6 +207,21 @@ const ItemCaption: React.StatelessComponent<ItemProps> = ({
   );
 };
 
+const isOfficeType = (path: string) => {
+  if (!path) return false;
+  const pathLower = path.toLocaleLowerCase();
+  return (
+    pathLower.includes(".doc") ||
+    pathLower.includes(".ppt") ||
+    pathLower.includes(".xls")
+  );
+};
+const getOfficePreviewPath = (path: string) => {
+  return (
+    "https://view.officeapps.live.com/op/view.aspx?src=" +
+    encodeURIComponent(path)
+  );
+};
 const generateExtraFieldContent = (field: any) => {
   if (typeof field == "string") {
     return <ListItemText primary={field} />;

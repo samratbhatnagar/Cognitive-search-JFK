@@ -93,7 +93,7 @@ const mapResultToItem = (
 ): Item => {
   return result
     ? {
-        title: result.document.fileName,
+        title: result.document.metadata_storage_name,
         subtitle: "",
         thumbnail: mapImgUrlInMetadata(result.document.metadata),
         excerpt: "",
@@ -108,7 +108,8 @@ const mapResultToItem = (
         type: result.type,
         highlightWords: getHighlightWords(result, responseConfig),
         headings: result.document.headings,
-        text: result.document.content
+        text: result.document.content,
+        filePath: result.document.metadata_storage_path
       }
     : null;
 };

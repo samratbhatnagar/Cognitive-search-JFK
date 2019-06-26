@@ -11,6 +11,7 @@ export interface Item {
   highlightWords: string[];
   headings?: any;
   text?: string;
+  filePath: string;
 }
 
 export type ItemCollection = Item[];
