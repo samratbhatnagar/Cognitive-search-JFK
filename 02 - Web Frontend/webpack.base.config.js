@@ -162,6 +162,12 @@ module.exports = {
         ),
         FUNCTION_CONFIG_SERVICE_URL: JSON.stringify(
           process.env.FUNCTION_CONFIG_SERVICE_URL
+        ),
+        UPLOAD_CONFIG_PROTOCOL: JSON.stringify(
+          process.env.UPLOAD_CONFIG_PROTOCOL
+        ),
+        UPLOAD_CONFIG_SERVICE_URL: JSON.stringify(
+          process.env.UPLOAD_CONFIG_SERVICE_URL
         )
       }
     }),

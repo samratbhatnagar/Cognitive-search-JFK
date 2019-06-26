@@ -11,7 +11,7 @@ import {
   ResultViewMode
 } from "./view-model";
 import { Service, StateReducer } from "./service";
-import { jfkService } from "./service";
+import { azService } from "./service";
 import { isArrayEmpty, getUniqueStrings } from "../../util";
 import {
   CreateInitialState,
@@ -115,7 +115,7 @@ class SearchPageInnerContainer extends React.Component<
     ) => (prevState: State) => State,
     errorCallback: (rejectValue) => (prevState: State) => State
   ) => () => {
-    jfkService
+    azService
       .search(this.state)
       .then(stateReducer => this.setState(successCallback(stateReducer)))
       .catch(rejectValue => this.setState(errorCallback(rejectValue)));
@@ -160,7 +160,7 @@ class SearchPageInnerContainer extends React.Component<
 
   private runSuggestions = throttle(
     () => {
-      jfkService
+      azService
         .suggest(this.state)
         .then(stateReducer => this.setState(stateReducer<State>(this.state)))
         .catch(rejectValue => {
@@ -201,7 +201,7 @@ class SearchPageInnerContainer extends React.Component<
     return (
       <div>
         <SearchPageComponent
-          activeService={jfkService}
+          activeService={azService}
           searchValue={this.state.searchValue}
           suggestionCollection={this.state.suggestionCollection}
           onSearchUpdate={this.handleSearchUpdate}

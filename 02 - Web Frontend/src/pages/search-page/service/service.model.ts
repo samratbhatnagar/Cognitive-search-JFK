@@ -1,9 +1,19 @@
 import { FacetCollection } from "../view-model";
-import { AzConfig, AzPayload, AzResponse, AzResponseConfig } from "../../../az-api";
+import {
+  AzConfig,
+  AzPayload,
+  AzResponse,
+  AzResponseConfig
+} from "../../../az-api";
 import { GraphConfig } from "../../../graph-api";
+import { UploadConfig } from "../../upload-page";
 
 export type MapperToPayload = (state: any, config: ServiceConfig) => AzPayload;
-export type MapperToState = (state: any, response: AzResponse, config: ServiceConfig) => any;
+export type MapperToState = (
+  state: any,
+  response: AzResponse,
+  config: ServiceConfig
+) => any;
 
 export interface ActionConfig {
   apiConfig: AzConfig;
@@ -21,6 +31,7 @@ export interface ServiceConfig {
   suggestionConfig: ActionConfig;
   initialState?: any;
   graphConfig: GraphConfig;
+  uploadConfig: UploadConfig;
 }
 
 export type StateReducer = <S>(state: S) => S;

@@ -1,4 +1,4 @@
 import { Service, CreateService } from "../service";
-import { jfkServiceConfig } from "./jfk";
+import { azServiceConfig } from "./az";
 
-export const jfkService = CreateService(jfkServiceConfig);
+export const azService = CreateService(azServiceConfig);

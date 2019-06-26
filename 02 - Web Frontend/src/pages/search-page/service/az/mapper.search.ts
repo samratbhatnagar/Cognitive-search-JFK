@@ -3,7 +3,7 @@ import {
   isValueInArray,
   getUniqueStrings
 } from "../../../../util";
-import { ServiceConfig } from "../../service";
+import { ServiceConfig } from "..";
 import {
   AzResponse,
   AzResponseFacet,

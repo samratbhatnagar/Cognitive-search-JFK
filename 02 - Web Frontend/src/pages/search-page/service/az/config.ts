@@ -1,5 +1,5 @@
 import { defaultAzPayload, defaultAzResponseConfig } from "../../../../az-api";
-import { ServiceConfig } from "../../service";
+import { ServiceConfig } from "..";
 import {
   mapStateToSuggestionPayload,
   mapSuggestionResponseToState
@@ -9,7 +9,7 @@ import {
   mapSearchResponseToState
 } from "./mapper.search";
 
-export const jfkServiceConfig: ServiceConfig = {
+export const azServiceConfig: ServiceConfig = {
   serviceId: "jfk-docs",
   serviceName: "JFK Documents",
   serviceIcon: "fingerprint",
@@ -48,7 +48,10 @@ export const jfkServiceConfig: ServiceConfig = {
     serviceUrl: process.env.FUNCTION_CONFIG_SERVICE_URL,
     method: "POST"
   },
-
+  uploadConfig: {
+    protocol: process.env.UPLOAD_CONFIG_PROTOCOL,
+    serviceUrl: process.env.UPLOAD_CONFIG_SERVICE_URL
+  },
   initialState: {
     facetCollection: [
       {

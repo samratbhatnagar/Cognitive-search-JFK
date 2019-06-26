@@ -3,6 +3,7 @@ import { HashRouter, Switch, Route } from "react-router-dom";
 import { HomeRoute } from "./pages/home-page";
 import { SearchRoute } from "./pages/search-page";
 import { DetailRoute } from "./pages/detail-page";
+import { UploadRoute } from "./pages/upload-page";
 
 const defs = require("./theme/_theme-setup.scss");
 
@@ -28,6 +29,7 @@ export class AppRouter extends React.Component {
           {HomeRoute}
           {SearchRoute}
           {DetailRoute}
+          {UploadRoute}
         </Switch>
       </HashRouter>
     );

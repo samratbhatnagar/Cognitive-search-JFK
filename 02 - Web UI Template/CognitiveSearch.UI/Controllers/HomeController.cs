@@ -11,6 +11,8 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Auth;
 using CognitiveSearch.UI.Models;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace CognitiveSearch.UI.Controllers
 {
@@ -152,6 +154,23 @@ namespace CognitiveSearch.UI.Controllers
             var graphJson = graphGenerator.GetFacetGraphNodes(query, "keyPhrases");
 
             return graphJson;
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadFiles()
+        {
+            foreach (var formFile in Request.Form.Files)
+            {
+                if (formFile.Length > 0)
+                {
+                    string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+                    string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+                    string containerAddress = _configuration.GetSection("StorageContainerAddress")?.Value;
+                    CloudBlobContainer container = new CloudBlobContainer(new Uri(containerAddress), new StorageCredentials(accountName, accountKey));
+                    var blob = container.GetBlockBlobReference(formFile.FileName);
+                    await blob.UploadFromStreamAsync(formFile.OpenReadStream());
+                }
+            }
+            return new JsonResult("ok");
         }
     }
 }

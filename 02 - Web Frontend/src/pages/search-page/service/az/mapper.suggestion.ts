@@ -1,5 +1,5 @@
 import { isArrayEmpty } from "../../../../util";
-import { ServiceConfig, MapperToPayload } from "../../service";
+import { ServiceConfig, MapperToPayload } from "..";
 import { AzResponse, AzPayload } from "../../../../az-api";
 import { Suggestion, State } from "../../view-model";
 
