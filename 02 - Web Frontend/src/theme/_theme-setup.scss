@@ -22,7 +22,7 @@ $default-text-color: $white;
 // Set the Logo for the App.
 // For best results, image should be saved as a .png with a transparent background.
 // Image file should be placed in assets/img folder and path should be set in quotes (ie: "logo.png";)
-$app-custom-logo-name: "logo_alt.png";
+$app-custom-logo-name: "search-files.svg";
 
 // (Optional) Set a custom background color for the App.
 // If set to null, App's background color will automatically be defined based on the $app-theme-type
@@ -31,7 +31,7 @@ $app-custom-background-color: shade($app-primary-color, 65%);
 // (Optional) Set a custom background image for the App.
 // Image file should be placed in assets/img folder and path should be set in quotes (ie: "../assets/img/bg.jpg";)
 // If set to none, App will fallback to the default background color
-$app-custom-background-image-path: "../assets/img/bg_alt.jpg";
+$app-custom-background-image-path: ""; //"../assets/img/bg_alt.jpg";
 
 // Define the App's Typography
 $app-font-family-path: "https://fonts.googleapis.com/css?family=Open+Sans:300,600,700";
