@@ -1,7 +1,7 @@
 import * as React from "react";
 const superagent = require("superagent");
 import Dropzone from "react-dropzone";
-import { LogoComponent } from "../../common/components/logo";
+import { LogoComponent } from "../../../common/components/logo";
 import { Button } from "material-ui";
 
 const style = require("./upload-page.style.scss");
