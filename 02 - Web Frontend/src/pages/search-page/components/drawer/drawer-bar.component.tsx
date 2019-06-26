@@ -6,9 +6,9 @@ import Typography from "material-ui/Typography";
 import { cnc } from "../../../../util";
 import { Service } from "../../service";
 import { MenuButton } from "../../../../common/components/menu-button";
+import { LogoComponent } from "../../../../common/components/logo";
 
 const style = require("./drawer-bar.style.scss");
-
 
 interface DrawerBarProps {
   viewMode: "open" | "closed";
@@ -20,20 +20,26 @@ interface DrawerBarProps {
 
 const DrawerBarCaption = () => (
   <div className={style.caption}>
-    <p className={style.title} color="inherit">
-      Documents revealed.
-    </p>
-    <p className={style.subtitle} color="inherit">
-      Let's find out what happened that day.
-    </p>
+    <LogoComponent
+      classes={{ container: style.logoContainer, img: style.logoImg }}
+    />
   </div>
+
+  // <div className={style.caption}>
+  //   <p className={style.title} color="inherit">
+  //     Documents revealed.
+  //   </p>
+  //   <p className={style.subtitle} color="inherit">
+  //     Let's find out what happened that day.
+  //   </p>
+  // </div>
 );
 
-const DrawerBarOpenContent = ({activeService, onClose}) => (
+const DrawerBarOpenContent = ({ activeService, onClose }) => (
   <>
     <DrawerBarCaption />
     <IconButton
-      classes={{label: style.closeIcon}}
+      classes={{ label: style.closeIcon }}
       color="inherit"
       aria-label="Close"
       onClick={onClose}
@@ -43,25 +49,28 @@ const DrawerBarOpenContent = ({activeService, onClose}) => (
   </>
 );
 
-const DrawerBarClosedContent = ({onMenuClick}) => (
-  <MenuButton onClick={onMenuClick}/>
+const DrawerBarClosedContent = ({ onMenuClick }) => (
+  <MenuButton onClick={onMenuClick} />
 );
 
-export const DrawerBarComponent: React.StatelessComponent<DrawerBarProps> = (props) => {
-  const containerStyle = props.viewMode === "open" ? style.container : style.containerClosed;
+export const DrawerBarComponent: React.StatelessComponent<
+  DrawerBarProps
+> = props => {
+  const containerStyle =
+    props.viewMode === "open" ? style.container : style.containerClosed;
   return (
-    <Toolbar 
-      classes={{root: cnc(props.className, containerStyle)}}
+    <Toolbar
+      classes={{ root: cnc(props.className, containerStyle) }}
       disableGutters
     >
-      {
-        props.viewMode === "open" ?
+      {props.viewMode === "open" ? (
         <DrawerBarOpenContent
           activeService={props.activeService}
           onClose={props.onClose}
         />
-        : <DrawerBarClosedContent onMenuClick={props.onMenuClick}/>
-      }
+      ) : (
+        <DrawerBarClosedContent onMenuClick={props.onMenuClick} />
+      )}
     </Toolbar>
   );
 };

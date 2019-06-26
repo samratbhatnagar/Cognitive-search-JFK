@@ -1,11 +1,10 @@
-import * as React from "react"
+import * as React from "react";
+import { LogoComponent } from "../../../../common/components/logo";
 
 const style = require("./caption.style.scss");
 
-
 export const CaptionComponent = () => (
-  <div className={style.caption}>
-    <p className={style.title}>Documents revealed.</p>
-    <p className={style.subtitle}>Let's find out what happened that day.</p>
-  </div>
+  <LogoComponent
+    classes={{ container: style.logoContainer, img: style.logoImg }}
+  />
 );

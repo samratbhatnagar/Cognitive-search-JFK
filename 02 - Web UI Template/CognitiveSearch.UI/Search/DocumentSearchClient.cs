@@ -22,8 +22,9 @@ namespace CognitiveSearch.UI
         private SearchServiceClient _searchClient;
         private ISearchIndexClient _indexClient;
         private string searchServiceName { get; set; }
-        private string apiKey { get; set; } 
-        private string IndexName { get; set; } 
+        private string apiKey { get; set; }
+        private string IndexName { get; set; }
+        private string IndexerName { get; set; }
 
         // Client logs all searches in Application Insights
         private static TelemetryClient telemetryClient = new TelemetryClient();
@@ -41,6 +42,7 @@ namespace CognitiveSearch.UI
                 searchServiceName = configuration.GetSection("SearchServiceName")?.Value;
                 apiKey = configuration.GetSection("SearchApiKey")?.Value;
                 IndexName = configuration.GetSection("SearchIndexName")?.Value;
+                IndexerName = configuration.GetSection("SearchIndexerName")?.Value;
                 telemetryClient.InstrumentationKey = configuration.GetSection("InstrumentationKey")?.Value;
 
                 // Create an HTTP reference to the catalog index
@@ -56,7 +58,12 @@ namespace CognitiveSearch.UI
                 errorMessage = e.Message.ToString();
             }
         }
-
+        public void RunIndexer()
+        {
+            var indexStatus = _searchClient.Indexers.GetStatus(IndexerName);
+            if (indexStatus.LastResult.Status != IndexerExecutionStatus.InProgress)
+                _searchClient.Indexers.Run(IndexerName);
+        }
         public DocumentSearchResult<Document> Search(string searchText, SearchFacet[] searchFacets = null, string[] selectFilter = null, int currentPage = 1)
         {
             try
@@ -79,8 +86,8 @@ namespace CognitiveSearch.UI
 
         public SearchParameters GenerateSearchParameters(SearchFacet[] searchFacets = null, string[] selectFilter = null, int currentPage = 1)
         {
-        // For more information on search parameters visit: 
-        // https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.search.models.searchparameters?view=azure-dotnet
+            // For more information on search parameters visit: 
+            // https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.search.models.searchparameters?view=azure-dotnet
             SearchParameters sp = new SearchParameters()
             {
                 SearchMode = SearchMode.All,

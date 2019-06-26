@@ -170,6 +170,7 @@ namespace CognitiveSearch.UI.Controllers
                     await blob.UploadFromStreamAsync(formFile.OpenReadStream());
                 }
             }
+            _docSearch.RunIndexer();
             return new JsonResult("ok");
         }
     }

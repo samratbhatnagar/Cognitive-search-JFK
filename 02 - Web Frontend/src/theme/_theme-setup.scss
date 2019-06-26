@@ -4,8 +4,8 @@
 // Define the App's Primary, Secondary and Error colors
 // These can be defined using HEX values (ie: #000000) or using Sass variables imported from '_material-colors.scss' (ie: $red-500)
 // For a visual guide of the Material Colors, visit https://material-ui.com/customization/color/#color-palette
-$app-primary-color: $blue-grey-300;
-$app-secondary-color: $yellow-700;
+$app-primary-color: #378b2e;
+$app-secondary-color: #a7383d;
 $app-error-color: $red-A400;
 
 // Definitions for default gray, black and white
@@ -14,7 +14,7 @@ $black: #121212;
 $white: #ffffff;
 
 // Define if the App's theme is Light or Dark
-$app-theme-type: dark; // light, dark
+$app-theme-type: light; // light, dark
 
 // Define the default text color for the App (be sure this text color is legible)
 $default-text-color: $white;
