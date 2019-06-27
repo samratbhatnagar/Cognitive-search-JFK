@@ -12,6 +12,7 @@ export interface Item {
   headings?: any;
   text?: string;
   filePath: string;
+  highlightPreview: string[];
 }
 
 export type ItemCollection = Item[];

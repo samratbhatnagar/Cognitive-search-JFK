@@ -184,7 +184,8 @@ class SearchPageInnerContainer extends React.Component<
         ...this.state.targetWords,
         ...item.highlightWords
       ]),
-      type: item.type
+      type: item.type,
+      targetPath: item.filePath
     } as DetailRouteState);
 
     const route = buildRoute(detailPath, { pageIndex: item.demoInitialPage });

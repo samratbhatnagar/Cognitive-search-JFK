@@ -108,7 +108,6 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
 
   const myObj = parsedItem || item.metadata;
   const itemData = Object.keys(myObj);
-
   if (typeof myObj !== "object") {
     // Returns as text block
     return (
@@ -116,7 +115,15 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
         className={cnc(style.media, style.jsonTextBlock)}
         onClick={handleOnClick({ item, onClick })}
       >
-        <p>{myObj}</p>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: item.highlightPreview
+              ? item.highlightPreview.reduce(
+                  (acc, cur) => acc + cur + "...&nbsp;"
+                )
+              : ""
+          }}
+        />
       </div>
     );
   } else {
@@ -162,7 +169,7 @@ const ItemMedia: React.StatelessComponent<ItemProps> = ({
   onClick,
   simplePreview
 }) => {
-  if (item.type === "json") {
+  if (true) {
     return (
       <ItemMediaJsonPreview
         item={item}

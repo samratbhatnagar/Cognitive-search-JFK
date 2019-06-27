@@ -61,10 +61,11 @@ class DetailPageInnerContainer extends React.Component<
         zoomMode={this.state.zoomMode}
         pageIndex={pageIndex}
         showText={this.state.showText}
-        isHocr={this.isHocr()}
+        mediaType={detailState.type}
         onToggleTextClick={this.handleToggleText}
         onZoomChange={this.handleZoomChange}
         onCloseClick={this.handleClose}
+        targetPath={detailState.targetPath}
       />
     );
   }

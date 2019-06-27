@@ -6,6 +6,7 @@ export interface DetailRouteState {
   hocr: string;
   targetWords: string[];
   type: string;
+  targetPath: string;
 }
 
 export const detailPath = "/detail/:pageIndex";
