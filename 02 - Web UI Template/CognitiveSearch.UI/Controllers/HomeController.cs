@@ -69,8 +69,10 @@ namespace CognitiveSearch.UI.Controllers
 
             var response = _docSearch.Suggest(search, false);
 
+            if (response != null)
+                return new JsonResult(new { Results=response.Results.Select(a=>new { text = a.Text }) });
 
-            return new JsonResult(new { Results=response.Results.Select(a=>new { text = a.Text }) });
+            return new JsonResult("None");
         }
 
         [HttpPost]

@@ -1,0 +1,52 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "resources": [
+    {
+      "apiVersion": "2015-05-01",
+      "name": "{appInsightsName}",
+      "type": "Microsoft.Insights/components",
+      "location": "West US 2",
+      "tags": {
+        "displayName": "AppInsightsComponent"
+      },
+      "properties": {
+        "applicationId": "{appInsightsName}"
+      }
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "name": "{webSiteName}",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "properties": {
+
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', '{webSiteName}')]"
+          ],
+          "properties": {
+            {existingProperties}
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', '{appInsightsName}')).InstrumentationKey]"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "Microsoft.ApplicationInsights.AzureWebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', '{webSiteName}')]"
+          ],
+          "properties": {
+          }
+        }
+      ]
+    }
+  ]
+}

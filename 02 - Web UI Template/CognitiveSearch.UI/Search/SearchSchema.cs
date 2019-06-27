@@ -71,7 +71,8 @@ namespace CognitiveSearch.UI
         {
             foreach (var field in fields)
             {
-                schema.Fields[field.Name] = field.ToSearchField();
+                if (field.Type != "Edm.ComplexType")
+                    schema.Fields[field.Name] = field.ToSearchField();
             }
             return schema;
         }

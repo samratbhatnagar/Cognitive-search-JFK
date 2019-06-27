@@ -1,0 +1,225 @@
+﻿{
+  "ResourceGroupName": "jfk-cjg",
+  "ResourcePrefix": "jfk",
+  "SubscriptionId": "e433f371-e5e9-4238-abc2-7c38aa596a18",
+  "AdminAzureClientId": "8ac3e3c9-d29c-4d15-b87e-9b6ec8cd9171",
+  "AdminAzureClientSecret": "",
+  "TenantId": "d280491c-b27a-41bf-9623-21b60cf430b3",
+  "Region": "westus2",
+  "SearchServiceApiVersion": "2019-05-06",
+  "DeployMain": false,
+  "DoDeployments": false,
+  "BlobStorageConnectionString": "",
+  "StorageContainer": "documents",
+  "ConfigFilePath": "https://raw.githubusercontent.com/givenscj/CogsDeployment/master/configuration.development.json",
+  "CustomDataZip": "https://github.com/givenscj/CogsDeployment/blob/master/StarterDocuments.zip?raw=true",
+  "Username": "s2admin",
+  "Password": "Password.1!!",
+  "BingEndpoint": "",
+  "BingKey": "",
+  "UseSampleData": "true",
+  "SkillSets": [
+    {
+      "name": "base",
+      "description": "All Cognitive Skills",
+      "cognitiveServices": {
+      },
+      "knowledgeStore": {
+        "storageConnectionString": "",
+        "projections": [
+          {
+            "tables": [
+              {
+                "tableName": "Document",
+                "generatedKeyName": "SomeId",
+                "source": "/document/content"
+              },
+              {
+                "tableName": "KeyPhrases",
+                "generatedKeyName": "KeyPhraseId",
+                "source": "/document/keyphrases"
+              },
+              {
+                "tableName": "Entities",
+                "generatedKeyName": "EntityId",
+                "source": "/document/entities"
+              }
+            ]
+          }
+        ]
+      },
+      "skills": [
+        {
+          "description": "Extract text (plain and structured) from image.",
+          "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+          "context": "/document/normalized_images/*",
+          "defaultLanguageCode": "en",
+          "detectOrientation": true,
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "text"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+          "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+          "context": "/document",
+          "insertPreTag": " ",
+          "insertPostTag": " ",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content"
+            },
+            {
+              "name": "itemsToInsert",
+              "source": "/document/normalized_images/*/text"
+            },
+            {
+              "name": "offsets",
+              "source": "/document/normalized_images/*/contentOffset"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "mergedText",
+              "targetName": "merged_text"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "persons",
+              "targetName": "people"
+            },
+            {
+              "name": "organizations",
+              "targetName": "organizations"
+            },
+            {
+              "name": "locations",
+              "targetName": "locations"
+            },
+            {
+              "name": "entities",
+              "targetName": "entities"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+          "description": null,
+          "context": "/document/content",
+          "defaultLanguageCode": "en",
+          "maxKeyPhraseCount": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "keyPhrases",
+              "targetName": "keyphrases"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+          "description": null,
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "languageCode",
+              "targetName": "language"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "datasources": [
+    {
+      "indexer": "base-indexer-cosmos",
+      "targetIndex": "base",
+      "type": "cosmosdb",
+      "name": "jfk-cosmosdb",
+      "connectionString": "https://jfk-cosmosdb.documents.azure.com:443/",
+      "containerId": "documents",
+      "databaseId": "documents"
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "sqlserver",
+      "name": "jfk-sql",
+      "database": "jfk-db",
+      "tables": [ "documents", "tables" ]
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "blob",
+      "name": "blob",
+      "AccountName": "jfkstorage",
+      "ConnectionString": "",
+      "ContainerName": "documents",
+      "SasToken": ""
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "table",
+      "name": "table",
+      "ConnectionString": "",
+      "containers": [ "documents" ]
+    }
+  ]
+
+}

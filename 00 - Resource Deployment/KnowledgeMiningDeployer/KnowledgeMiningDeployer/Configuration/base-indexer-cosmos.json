@@ -1,0 +1,73 @@
+﻿{
+  "description": null,
+  "skilsetName":  "base",
+  "disabled": null,
+  "schedule": null,
+  "parameters": {
+    "batchSize": null,
+    "maxFailedItems": 1000,
+    "maxFailedItemsPerBatch": null,
+    "base64EncodeKeys": false
+  },
+  "fieldMappings": [
+    {
+      "sourceFieldName": "metadata_storage_path",
+      "targetFieldName": "id",
+      "mappingFunction": {
+        "name": "base64Encode",
+        "parameters": null
+      }
+    },
+    {
+      "sourceFieldName": "metadata_storage_path",
+      "targetFieldName": "storageUri"
+    },
+    {
+      "sourceFieldName": "metadata_storage_sas_token",
+      "targetFieldName": "sasToken"
+    },
+    {
+      "sourceFieldName": "metadata_storage_name",
+      "targetFieldName": "fileName"
+    },
+    {
+      "sourceFieldName": "metadata_storage_size",
+      "targetFieldName": "fileSize"
+    },
+    {
+      "sourceFieldName": "metadata_content_type",
+      "targetFieldName": "fileContentType"
+    },
+    {
+      "sourceFieldName": "metadata_storage_last_modified",
+      "targetFieldName": "fileLastModified"
+    }
+  ],
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/content/people",
+      "targetFieldName": "people",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/content/organizations",
+      "targetFieldName": "organizations",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/content/locations",
+      "targetFieldName": "locations",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/content/keyphrases",
+      "targetFieldName": "keyphrases",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/language",
+      "targetFieldName": "language",
+      "mappingFunction": null
+    }
+  ]
+}

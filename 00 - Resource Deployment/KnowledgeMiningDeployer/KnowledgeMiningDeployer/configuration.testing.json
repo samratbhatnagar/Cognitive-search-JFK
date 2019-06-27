@@ -1,0 +1,502 @@
+﻿{
+  "ResourceGroupName": "",
+  "ResourcePrefix": "",
+  "SubscriptionId": "",
+  "AdminAzureClientId": "",
+  "AdminAzureClientSecret": "",
+  "TenantId": "",
+  "Region": "",
+  "SearchServiceApiVersion": "2019-05-06",
+  "DeployMain": false,
+  "DoDeployments": false,
+  "BlobStorageConnectionString": "",
+  "StorageContainer": "documents",
+  "ConfigFilePath": "",
+  "CustomDataZip": "",
+  "Username": "s2admin",
+  "Password": "Password.1!!",
+  "BingEndpoint": "",
+  "BingKey": "",
+  "UseSampleData": "true",
+  "SkillSets": [
+    {
+      "name": "base",
+      "description": "All Cognitive Skills",
+      "cognitiveServices": {
+      },
+      "knowledgeStore": {
+        "storageConnectionString": "",
+        "projections": [
+          {
+            "tables": [
+              {
+                "tableName": "Document",
+                "generatedKeyName": "SomeId",
+                "source": "/document/content"
+              },
+              {
+                "tableName": "KeyPhrases",
+                "generatedKeyName": "KeyPhraseId",
+                "source": "/document/keyphrases"
+              },
+              {
+                "tableName": "Entities",
+                "generatedKeyName": "EntityId",
+                "source": "/document/entities"
+              }
+            ]
+          }
+        ]
+      },
+      "skills": [
+        {
+          "description": "Extract text (plain and structured) from image.",
+          "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+          "context": "/document/normalized_images/*",
+          "defaultLanguageCode": "en",
+          "detectOrientation": true,
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "text"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+          "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+          "context": "/document",
+          "insertPreTag": " ",
+          "insertPostTag": " ",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content"
+            },
+            {
+              "name": "itemsToInsert",
+              "source": "/document/normalized_images/*/text"
+            },
+            {
+              "name": "offsets",
+              "source": "/document/normalized_images/*/contentOffset"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "mergedText",
+              "targetName": "merged_text"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "persons",
+              "targetName": "people"
+            },
+            {
+              "name": "organizations",
+              "targetName": "organizations"
+            },
+            {
+              "name": "locations",
+              "targetName": "locations"
+            },
+            {
+              "name": "entities",
+              "targetName": "entities"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+          "description": null,
+          "context": "/document/content",
+          "defaultLanguageCode": "en",
+          "maxKeyPhraseCount": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "keyPhrases",
+              "targetName": "keyphrases"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+          "description": null,
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "languageCode",
+              "targetName": "language"
+            }
+          ]
+        }
+        /*
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/CustomSkillTemplate",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/myinputfield",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "myoutputfield",
+              "targetName": "myoutputfield"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/EntitySearch",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "name",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "name",
+              "targetName": "name"
+            },
+            {
+              "name": "description",
+              "targetName": "description"
+            },
+            {
+              "name": "imageUrl",
+              "targetName": "imageUrl"
+            },
+            {
+              "name": "licenseAttribution",
+              "targetName": "licenseAttribution"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/ObjectDetectionSkill",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "objects",
+              "targetName": "objects"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/GetGeoPointFromName",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "maingeopoint",
+              "targetName": "maingeopoint"
+            },
+            {
+              "name": "results",
+              "targetName": "results"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/TranslateSkill",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "translatedtext",
+              "targetName": "translatedtext"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/AnalyzeForm",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "formUrl",
+              "source": "/document/storageUri",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "formSasToken",
+              "source": "/document/sasToken",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "address",
+              "targetName": "address"
+            },
+            {
+              "name": "recipient",
+              "targetName": "recipient"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/image-store",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "imageData",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "imagestoreuri",
+              "targetName": "imagestoreuri"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/hocr-generator",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "ocrImageMetadataList",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "hocrDocument",
+              "targetName": "hocrdocument"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/doc-headers",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "headings",
+              "targetName": "headings"
+            }
+          ]
+        }
+      */
+      ]
+    }
+  ],
+  "datasources": [
+    {
+      "indexer": "base-indexer-cosmos",
+      "targetIndex": "base",
+      "type": "cosmosdb",
+      "name": "jfk-cosmosdb",
+      "connectionString": "https://jfk-cosmosdb.documents.azure.com:443/",
+      "containerId": "documents",
+      "databaseId": "documents"
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "sqlserver",
+      "name": "jfk-sql",
+      "database": "jfk-db",
+      "tables": [ "documents", "tables" ]
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "blob",
+      "name": "blob",
+      "AccountName": "jfkstorage",
+      "ConnectionString": "",
+      "ContainerName": "documents",
+      "SasToken": ""
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "base",
+      "type": "table",
+      "name": "table",
+      "ConnectionString": "",
+      "containers": [ "documents" ]
+    }
+  ]
+
+}
