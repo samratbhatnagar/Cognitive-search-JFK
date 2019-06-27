@@ -5,6 +5,7 @@ import { searchPath } from "../search-page";
 import { parseConfig } from "./settings/config.parser";
 import { azServiceConfig } from "../search-page/service/az";
 import { UploadPageContainer } from "./upload-page";
+import { GlobalToolbarComponent } from "../../common/components/global-toolbar";
 
 interface AdminInnerPageState {
   openTab: string;
@@ -17,7 +18,7 @@ class AdminPageInnerContainer extends React.Component<
     super(props);
 
     this.state = {
-      openTab: "theme"
+      openTab: "upload"
     };
   }
 
@@ -25,9 +26,25 @@ class AdminPageInnerContainer extends React.Component<
     this.props.history.push(searchPath);
   };
 
+  private goToSearchPage = () => {
+    this.props.history.push({
+      pathname: "../search"
+    });
+  };
+
+  private goToAdminPage = () => {
+    this.props.history.push({
+      pathname: "../admin"
+    });
+  };
+
   public render() {
     return (
       <div>
+        <GlobalToolbarComponent
+          onSearchClick={this.goToSearchPage}
+          onAdminClick={this.goToAdminPage}
+        />
         <div>
           <button
             onClick={() => {
@@ -44,6 +61,7 @@ class AdminPageInnerContainer extends React.Component<
             Content Upload
           </button>
         </div>
+
         {this.state.openTab == "theme" && (
           <AdminPageComponent
             onCloseClick={this.handleClose}

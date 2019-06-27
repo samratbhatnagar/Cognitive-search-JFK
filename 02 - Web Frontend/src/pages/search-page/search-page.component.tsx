@@ -16,7 +16,7 @@ import {
   Filter,
   SuggestionCollection,
   Item,
-  ResultViewMode,
+  ResultViewMode
 } from "./view-model";
 import { Service } from "./service";
 import { Pagination } from "../../common/components/pagination/pagination";
@@ -24,7 +24,6 @@ import { PlaceholderComponent } from "./components/placeholder";
 import { FooterComponent } from "../../common/components/footer";
 
 const style = require("./search-page.style.scss");
-
 
 interface SearchPageProps {
   activeService: Service;
@@ -102,36 +101,36 @@ const Paginator = (props: Partial<SearchPageProps>) => (
   </>
 );
 
-class ResultAreaComponent extends React.PureComponent<Partial<SearchPageProps>> {
-
-
+class ResultAreaComponent extends React.PureComponent<
+  Partial<SearchPageProps>
+> {
   render() {
     return (
       <>
         <PlaceholderComponent />
         <SpacerComponent>
-          {
-            this.props.resultViewMode === "graph" ?
-              <GraphViewComponent
-                searchValue={this.props.activeSearch}
-                onGraphNodeDblClick={this.props.onGraphNodeDblClick}
-              /> :
-              <div>
-                <ItemCollectionViewComponent
-                  items={this.props.itemCollection}
-                  listMode={this.props.resultViewMode === "list"}
-                  activeSearch={this.props.activeSearch}
-                  targetWords={this.props.targetWords}
-                  onClick={this.props.onItemClick}
-                />
-                <Paginator
-                  pageIndex={this.props.pageIndex}
-                  resultsPerPage={this.props.resultsPerPage}
-                  resultCount={this.props.resultCount}
-                  onLoadMore={this.props.onLoadMore}
-                />
-              </div>
-          }
+          {this.props.resultViewMode === "graph" ? (
+            <GraphViewComponent
+              searchValue={this.props.activeSearch}
+              onGraphNodeDblClick={this.props.onGraphNodeDblClick}
+            />
+          ) : (
+            <div>
+              <ItemCollectionViewComponent
+                items={this.props.itemCollection}
+                listMode={this.props.resultViewMode === "list"}
+                activeSearch={this.props.activeSearch}
+                targetWords={this.props.targetWords}
+                onClick={this.props.onItemClick}
+              />
+              <Paginator
+                pageIndex={this.props.pageIndex}
+                resultsPerPage={this.props.resultsPerPage}
+                resultCount={this.props.resultCount}
+                onLoadMore={this.props.onLoadMore}
+              />
+            </div>
+          )}
         </SpacerComponent>
       </>
     );
@@ -165,7 +164,6 @@ const SearchPageComponent = (props: SearchPageProps) => (
       <FooterComponent />
     </main>
   </div>
-)
-
+);
 
 export { SearchPageComponent };
