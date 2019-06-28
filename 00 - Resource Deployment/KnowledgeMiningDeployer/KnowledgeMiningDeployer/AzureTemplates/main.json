@@ -158,6 +158,17 @@
       }
     },
     {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2016-02-01-preview",
+      "name": "[concat(parameters('prefix'),'-bingsearch')]",
+      "location": "global",
+      "sku": {
+        "name": "F0"
+      },
+      "kind": "Bing.Search.v7",
+      "properties": {}
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-04-01",
       "name": "[concat(parameters('prefix'),'storage')]",

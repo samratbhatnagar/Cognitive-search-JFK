@@ -6,18 +6,38 @@
   "AdminAzureClientSecret": "",
   "TenantId": "d280491c-b27a-41bf-9623-21b60cf430b3",
   "Region": "westus2",
-  "SearchServiceApiVersion": "2019-05-06",
+  "SearchServiceApiVersion": "2019-05-06-preview",
   "DeployMain": false,
   "DoDeployments": false,
   "BlobStorageConnectionString": "",
   "StorageContainer": "documents",
-  "ConfigFilePath": "https://raw.githubusercontent.com/givenscj/CogsDeployment/master/configuration.development.json",
-  "CustomDataZip": "https://github.com/givenscj/CogsDeployment/blob/master/StarterDocuments.zip?raw=true",
+  "ConfigFilePath": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/configuration.development.json",
+  "CustomDataZip": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/CustomDocuments.zip",
   "Username": "s2admin",
   "Password": "Password.1!!",
   "BingEndpoint": "",
   "BingKey": "",
   "UseSampleData": "true",
+  "Indexes": [
+    {
+      "name": "base",
+      "configuration": "base-index"
+    },
+    {
+      "name": "extended",
+      "configuration": "base-index"
+    }
+  ],
+  "Indexers": [
+    {
+      "name": "base-indexer",
+      "configuration": "base-indexer"
+    },
+    {
+      "name": "extended-indexer",
+      "configuration": "base-indexer"
+    }
+  ],
   "SkillSets": [
     {
       "name": "base",

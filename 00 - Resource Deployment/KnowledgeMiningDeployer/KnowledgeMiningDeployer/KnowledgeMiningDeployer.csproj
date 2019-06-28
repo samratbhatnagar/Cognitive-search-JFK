@@ -330,6 +330,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\AzureStorage.cs" />
     <Compile Include="Helpers\FormRecognition.cs" />
+    <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="InstallUtil.cs" />
     <Compile Include="Models\AnomalyModel.cs" />
     <Compile Include="Models\BlobContext.cs" />

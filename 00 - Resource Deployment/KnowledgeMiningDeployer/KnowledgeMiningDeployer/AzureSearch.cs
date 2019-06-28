@@ -1,4 +1,5 @@
 ﻿using KnowledgeMiningDeployer.Classes;
+using KnowledgeMiningDeployer.Helpers;
 using KnowledgeMiningDeployer.Models;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Search;
@@ -253,7 +254,20 @@ namespace KnowledgeMiningDeployer
             {
                 WebApiSkill api = s as WebApiSkill;
 
-                //do a simple get...
+                if (api != null)
+                {
+                    //do a simple get...even if it errors...
+                    HttpHelper hh = new HttpHelper(api.Uri);
+
+                    try
+                    {
+                        hh.GetResponse();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error getting [{api.Uri}] : [{ex.Message}]");
+                    }
+                }
             }
         }
 

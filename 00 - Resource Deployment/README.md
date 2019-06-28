@@ -39,15 +39,13 @@ Everything the tool needs to do the deployment is inside the configuration file.
 "SearchServiceApiVersion": "2019-05-06-Preview",  //the search service application version
 "DeployMain": false,  //whether to deploy the main ARM template
 "DoDeployments": false,  //whether to deploy the Web, API and function zip files
+"UseSampleData": "true", //whether to import the sample data
 "BlobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=blah;AccountKey=blah;EndpointSuffix=core.windows.net",  //the storage account you want to point to for indexing
 "StorageContainer": "documents",  //the container in the storage account to index
-"ConfigFilePath": "https://raw.githubusercontent.com/givenscj/CogsDeployment/master/configuration.development.json",  //an external config file you might want to reference when running from ARM deployment
-"CustomDataZip": "https://github.com/givenscj/CogsDeployment/blob/master/StarterDocuments.zip?raw=true", //your custom data set your want to pre-populate in your storage account and search index
+"ConfigFilePath": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/configuration.development.json",//an external config file you might want to reference when running from ARM deployment
+"CustomDataZip": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/CustomDocuments.zip", //your custom data set your want to pre-populate in your storage account and search index
 "Username": "s2admin", //the username of the deployment VM and SQL server
 "Password": "Password.1!!",  //the password of the deployment VM and SQL server
-"BingEndpoint": "", //the Bing endpoint for the bing skill
-"BingKey": "", //the Bing API key for the bing skill
-"UseSampleData": "true", //whether to import the sample data
 ```
 
 Follow these steps to create an Azure Client Id and Secret with the proper permissions:
@@ -63,6 +61,33 @@ Follow these steps to create an Azure Client Id and Secret with the proper permi
 9.  Click **+Add**, then select **Add role assignment**
 10.  Select the **owner** role
 11.  Search for your new Azure Ad Application, select it, then click **Save**
+
+### Azure Indexes and Indexers
+
+These indexes will be built using the json configuration files for each of the respective nodes defined:
+
+```json
+"Indexes": [
+    {
+      "name": "base",
+      "configuration": "base-index"
+    },
+    {
+      "name": "extended",
+      "configuration": "base-index"
+    }
+  ],
+  "Indexers": [
+    {
+      "name": "base-indexer",
+      "configuration": "base-indexer"
+    },
+    {
+      "name": "extended-indexer",
+      "configuration": "base-indexer"
+    }
+  ],
+```
 
 ###  Azure Search Skillsets
 

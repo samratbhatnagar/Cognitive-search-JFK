@@ -406,12 +406,20 @@ namespace KnowledgeMiningDeployer
             //load the conginitive services
             var cogs = CognitiveServicesManager.Configure().Authenticate(AzureHelper.AzureCredentials, Configuration.SubscriptionId);
 
+            //the core cogs instance
             CognitiveServicesAccountInner props = cogs.Inner.CognitiveServicesAccounts.GetPropertiesAsync(Configuration.ResourceGroupName, Configuration.ResourcePrefix + "-cogs").Result;
             CognitiveServicesAccountKeysInner cogkeys = cogs.Inner.CognitiveServicesAccounts.ListKeysAsync(Configuration.ResourceGroupName, Configuration.ResourcePrefix + "-cogs").Result;
             
             Configuration.CognitiveServicesResourceId = props.Id;
             Configuration.CognitiveServicesUrl = props.Endpoint;
             Configuration.CognitiveServicesKey = cogkeys.Key1;
+
+            //the bing search cogs instance
+            props = cogs.Inner.CognitiveServicesAccounts.GetPropertiesAsync(Configuration.ResourceGroupName, Configuration.ResourcePrefix + "-bingsearch").Result;
+            cogkeys = cogs.Inner.CognitiveServicesAccounts.ListKeysAsync(Configuration.ResourceGroupName, Configuration.ResourcePrefix + "-bingsearch").Result;
+
+            Configuration.BingEndpoint = props.Endpoint + "/search";
+            Configuration.BingKey = cogkeys.Key1;
 
             //maps
             AzureHelper.GetMaps();
