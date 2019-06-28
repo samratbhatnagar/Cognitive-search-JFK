@@ -277,7 +277,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -291,7 +291,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -305,7 +305,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -319,7 +319,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -333,7 +333,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -347,7 +347,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -361,7 +361,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -375,7 +375,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -403,7 +403,7 @@
       "key": false,
       "indexAnalyzer": null,
       "searchAnalyzer": null,
-      "analyzer": null,
+      "analyzer": "standard.lucene",
       "synonymMaps": []
     },
     {
@@ -421,7 +421,7 @@
           "key": false,
           "indexAnalyzer": null,
           "searchAnalyzer": null,
-          "analyzer": null,
+          "analyzer": "standard.lucene",
           "synonymMaps": []
         },
         {
@@ -439,7 +439,7 @@
               "key": false,
               "indexAnalyzer": null,
               "searchAnalyzer": null,
-              "analyzer": null,
+              "analyzer": "standard.lucene",
               "synonymMaps": []
             },
             {
@@ -453,7 +453,7 @@
               "key": false,
               "indexAnalyzer": null,
               "searchAnalyzer": null,
-              "analyzer": null,
+              "analyzer": "standard.lucene",
               "synonymMaps": []
             },
             {
@@ -467,7 +467,7 @@
               "key": false,
               "indexAnalyzer": null,
               "searchAnalyzer": null,
-              "analyzer": null,
+              "analyzer": "standard.lucene",
               "synonymMaps": []
             }
           ]
@@ -475,11 +475,12 @@
       ]
     }
   ],
-    "scoringProfiles": [],
-    "corsOptions": null,
-    "suggesters": [],
-    "analyzers": [],
-    "tokenizers": [],
-    "tokenFilters": [],
-    "charFilters": []
+  "scoringProfiles": [],
+  "corsOptions": null,
+  "suggesters": [],
+  "analyzers": [],
+  "tokenizers": [],
+  "tokenFilters": [],
+  "charFilters": [],
+  "encryptionKey": null
 }

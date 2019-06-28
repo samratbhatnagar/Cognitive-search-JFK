@@ -1,10 +1,12 @@
 ﻿using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.Eventhub.Fluent;
 using Microsoft.Azure.Management.Fluent;
+using Microsoft.Azure.Management.Maps.Models;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Models;
+using Microsoft.Rest.Azure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,9 +58,28 @@ namespace KnowledgeMiningDeployer
             var environment = AzureEnvironment.AzureGlobalCloud;
 
             var credentials = new AzureCredentialsFactory()
-                                    .FromServicePrincipal(appId, appSecret, tenantId, environment);
+                .FromServicePrincipal(appId, appSecret, tenantId, environment);
 
-            return credentials;
+            return credentials.WithDefaultSubscription(Configuration.SubscriptionId.ToString());            
+        }
+
+        async public static void GetMaps()
+        {
+            Microsoft.Azure.Management.Maps.MapsManagementClient client = new Microsoft.Azure.Management.Maps.MapsManagementClient(AzureCredentials);
+            client.SubscriptionId = Configuration.SubscriptionId;
+
+            AzureOperationResponse<IEnumerable<MapsAccount>> res = await client.Accounts.ListByResourceGroupWithHttpMessagesAsync(Configuration.ResourceGroupName);
+
+            foreach(MapsAccount map in res.Body)
+            {
+                if (map.Name == Configuration.ResourcePrefix + "-map")
+                {
+                    AzureOperationResponse<MapsAccountKeys> keys = await client.Accounts.ListKeysWithHttpMessagesAsync(Configuration.ResourceGroupName, map.Name);
+
+                    Configuration.AzureMapsUrl = "https://atlas.microsoft.com";
+                    Configuration.AzureMapsKey = keys.Body.PrimaryKey;
+                }
+            }
         }
 
         public static IResourceGroup CreateResourceGroup(string name)
@@ -250,10 +271,10 @@ namespace KnowledgeMiningDeployer
                         .WithExistingResourceGroup(AzureResourceGroup.Name)
                         .WithTemplate(templateJson)
                         .WithParameters(parameters)
-                        .WithMode(DeploymentMode.Incremental)
+                        .WithMode(DeploymentMode.Incremental) //do not change this!!!
                         .Create();
 
-                Console.WriteLine(deploy.ProvisioningState);
+                //Console.WriteLine(deploy.ProvisioningState);
             }
             catch (Exception ex)
             {

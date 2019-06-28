@@ -107,6 +107,9 @@
     <Reference Include="Microsoft.Azure.Management.Locks.Fluent, Version=1.0.0.60, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Management.Locks.Fluent.1.22.2\lib\net452\Microsoft.Azure.Management.Locks.Fluent.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.Management.Maps, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Management.Maps.1.0.2\lib\net452\Microsoft.Azure.Management.Maps.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Management.Monitor.Fluent, Version=1.0.0.60, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Management.Monitor.Fluent.1.22.2\lib\net452\Microsoft.Azure.Management.Monitor.Fluent.dll</HintPath>
     </Reference>
@@ -294,7 +297,7 @@
     <None Include="AzureTemplates\ApplicationInsightsKey_assign.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="AzureTemplates\parameters.json">
+    <None Include="AzureTemplates\outputtest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="CogsDeployment.psd1">
@@ -355,7 +358,8 @@
     </None>
     <None Include="Deployment\01_Train_AML_Model.ipynb" />
     <None Include="Deployment\02_Deploy_AML_Custom_Skill.ipynb" />
-    <None Include="Deployment\Cognitive Search.pbit" />
+    <None Include="Deployment\Azure Search %28KnowledgeStore%29.pbix" />
+    <None Include="Deployment\Azure Search %28Metrics%29.pbit" />
     <None Include="Deployment\CognitiveSearch.Skills.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -363,6 +367,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Deployment\CognitiveSearch.UI.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Deployment\CustomDocuments.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Deployment\documents.bacpac">
