@@ -369,6 +369,9 @@
     <None Include="Deployment\CognitiveSearch.UI.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Deployment\CustomDocuments.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Deployment\documents.bacpac">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

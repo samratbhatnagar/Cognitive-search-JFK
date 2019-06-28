@@ -319,6 +319,9 @@ namespace KnowledgeMiningDeployer
                 CloudBlobClient c = storageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = c.GetContainerReference(Configuration.StorageContainer);
                 bool exists = container.Exists();
+
+                if (!exists)
+                    container.Create();
             }
             catch (Exception ex)
             {
