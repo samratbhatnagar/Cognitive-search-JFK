@@ -264,8 +264,10 @@ namespace SampleSkills
                     result = data;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                log.LogInformation($"{skillName}: Error {e.Message}");
+
                 result = new OutputRecord.OutputRecordData();
             }
 

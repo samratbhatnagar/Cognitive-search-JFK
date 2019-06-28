@@ -239,6 +239,7 @@ namespace SampleSkills
             string skillName = executionContext.FunctionName;
 
             log.LogInformation($"{skillName}: C# HTTP trigger function processed a request.");
+
             // Read input, deserialize it and validate it.
             var data = GetStructuredInput(req.Body);
             if (data == null)
@@ -256,11 +257,14 @@ namespace SampleSkills
             {
                 return new BadRequestObjectResult($"{skillName} - Information for the blob storage account is missing");
             }
+
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(blobStorageConnectionString);
             var blobClient = storageAccount.CreateCloudBlobClient();
             var libraryContainer = blobClient.GetContainerReference(blobContainerName);
+
             // Calculate the response for each value.
             var response = new WebApiResponse();
+
             foreach (var record in data.Values)
             {
                 if (record == null || record.RecordId == null) continue;
@@ -282,11 +286,15 @@ namespace SampleSkills
                         }
                     }
 
+                    log.LogInformation($"{skillName}: Saving image to {blockBlob.Uri.ToString()}.");
+
                     responseRecord.Data["imageStoreUri"] = blockBlob.Uri.ToString();
 
                 }
                 catch (Exception e)
                 {
+                    log.LogInformation($"{skillName}: Error {e.Message}.");
+
                     // Something bad happened, log the issue.
                     var error = new OutputRecord.OutputRecordMessage
                     {
@@ -332,18 +340,24 @@ namespace SampleSkills
 
                 try
                 {
+                    log.LogInformation($"{skillName}: List was received {record.Data["ocrImageMetadataList"]}.");
+
                     List<OcrImageMetadata> imageMetadataList = JsonConvert.DeserializeObject<List<OcrImageMetadata>>(JsonConvert.SerializeObject(record.Data["ocrImageMetadataList"]));
 
                     List<HocrPage> pages = new List<HocrPage>();
+
                     for (int i = 0; i < imageMetadataList.Count; i++)
                     {
                         pages.Add(new HocrPage(imageMetadataList[i], i));
                     }
+
                     HocrDocument hocrDocument = new HocrDocument(pages);
                     responseRecord.Data["hocrDocument"] = hocrDocument;
                 }
                 catch (Exception e)
                 {
+                    log.LogInformation($"{skillName}: Error {e.Message}.");
+
                     // Something bad happened, log the issue.
                     var error = new OutputRecord.OutputRecordMessage
                     {

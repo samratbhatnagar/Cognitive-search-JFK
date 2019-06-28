@@ -106,6 +106,8 @@ namespace SampleSkills
                 }
                 catch (Exception e)
                 {
+                    log.LogInformation($"{skillName}: Error {e.Message}");
+
                     // Something bad happened, log the issue.
                     var error = new OutputRecord.OutputRecordMessage
                     {
