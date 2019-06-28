@@ -276,18 +276,20 @@ namespace KnowledgeMiningDeployer
 
             SearchConfig sc = new SearchConfig();
 
-            //creates the base index from configuration files
-            search.CreateBase(sc);
-
             //create based on the data sources in configuration file
             dynamic config = Configuration.Export(ConfigurationManager.AppSettings["Mode"]);
+
+            //indexes are independent of anything and can be created first
+            foreach(dynamic index in config.Indexes)
+            {
+                //creates the indexes from configuration files
+                search.CreateIndex(index.name.ToString(), index.configuration.ToString());
+            }
 
             //skillsets must be created before data sources and indexers...
             //list of skill types - https://docs.microsoft.com/en-us/azure/search/cognitive-search-predefined-skills
             foreach (dynamic skillSet in config.SkillSets)
-            {
                 search.CreateKnowledgeSkillSet(skillSet);
-            }
 
             //create based on existing data sources in resource group
             //search.CreateDataSources();
@@ -485,6 +487,7 @@ namespace KnowledgeMiningDeployer
             settings.Add("AzureWebJobsSecretStorageType", "files");
 
             settings.Add("BlobStorageAccountConnectionString", Configuration.BlobStorageConnectionString);
+            settings.Add("BlobContainerName", Configuration.StorageContainer);
             settings.Add("BingEndpoint", Configuration.BingEndpoint);
             settings.Add("BingKey", Configuration.BingKey);
             settings.Add("CognitiveServicesVisionUrl", Configuration.CognitiveServicesUrl + "/vision/v2.0/detect");

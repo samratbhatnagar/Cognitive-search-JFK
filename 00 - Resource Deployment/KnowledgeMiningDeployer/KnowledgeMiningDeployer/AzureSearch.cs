@@ -104,14 +104,14 @@ namespace KnowledgeMiningDeployer
 
                 GetOrCreateBlobDataSource(searchClient, config.name.ToString(), DataSourceType.AzureBlob, c);
 
-                //enumrate properties in blob storage...
+                //TODO: enumrate properties in blob storage...dyanmically add to index...
 
                 //create an indexer for the data source
                 var indexer = GetIndexerFromFile(config.indexer.ToString());
                 indexer.Name = config.name.ToString();
                 indexer.DataSourceName = config.name.ToString();
                 indexer.TargetIndexName = config.targetIndex.ToString();
-                indexer.SkillsetName = "base";
+                indexer.SkillsetName = config.skillset.ToString();
 
                 DeleteIndexerIfExists(searchClient, indexer.Name);
 
@@ -219,6 +219,8 @@ namespace KnowledgeMiningDeployer
 
             TokenReplace(skillset);
 
+            WarmUpSkills(skillset);
+
             //supported knowledge store...
             this.ApiVersion = "2019-05-06-Preview";
 
@@ -245,9 +247,23 @@ namespace KnowledgeMiningDeployer
             }
         }
 
+        private void WarmUpSkills(Skillset skillset)
+        {
+            foreach (Skill s in skillset.Skills)
+            {
+                WebApiSkill api = s as WebApiSkill;
+
+                //do a simple get...
+            }
+        }
+
         private KnowledgeStoreSkillset GetKnowledgeSkillsetFromConfig(dynamic config)
         {
             string json = JsonConvert.SerializeObject(config);
+
+            //quick token replace...
+            json = json.Replace("{blobContainerName}", Configuration.StorageContainer);
+
             var serializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
             serializerSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Skill>("@odata.type"));
 
@@ -415,12 +431,17 @@ namespace KnowledgeMiningDeployer
 
         internal void CreateBase(SearchConfig sc)
         {
-            Console.WriteLine($"Creating base index");
+            CreateIndex("base", "base-index");
+        }
+
+        public void CreateIndex(string name, string fileName)
+        {
+            Console.WriteLine($"Creating index {name} from {fileName}");
 
             try
             {
-                var index = GetIndexFromFile("base-index");
-                index.Name = "base";
+                var index = GetIndexFromFile(fileName);
+                index.Name = name;
 
                 CreateCognitiveSearchPipeline(searchClient, index, null);
             }
@@ -428,7 +449,6 @@ namespace KnowledgeMiningDeployer
             {
                 Console.WriteLine(ex.Message);
             }
-
         }
 
         List<Field> GetFields(object obj, string keyField, Hashtable sortableFields, Hashtable refinerFields)

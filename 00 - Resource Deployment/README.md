@@ -57,9 +57,12 @@ Follow these steps to create an Azure Client Id and Secret with the proper permi
 3.  Click **App registrations**
 4.  Click **+New registration**
 5.  Type a name, then click **Register**
-6.  On the application blade, click **API Permissions**
-7.  Click **Add a permission**
-8.  Select the **Azure Service Management** permission
+6.  In the azure portal, select **Subscriptions**
+7.  Select your target subscription
+8.  In the subscription blade, select **Access control (IAM)**
+9.  Click **+Add**, then select **Add role assignment**
+10.  Select the **owner** role
+11.  Search for your new Azure Ad Application, select it, then click **Save**
 
 ###  Azure Search Skillsets
 

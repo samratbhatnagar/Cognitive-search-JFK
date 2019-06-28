@@ -251,7 +251,7 @@ namespace SampleSkills
             }
 
             string blobStorageConnectionString = Environment.GetEnvironmentVariable("BlobStorageAccountConnectionString", EnvironmentVariableTarget.Process);
-            string blobContainerName = req.Headers["BlobContainerName"];
+            string blobContainerName = Environment.GetEnvironmentVariable("BlobContainerName", EnvironmentVariableTarget.Process);
             if (String.IsNullOrEmpty(blobStorageConnectionString) || String.IsNullOrEmpty(blobContainerName))
             {
                 return new BadRequestObjectResult($"{skillName} - Information for the blob storage account is missing");
