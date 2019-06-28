@@ -317,7 +317,7 @@ namespace KnowledgeMiningDeployer
 
         internal void CreateDataSourcesFromConfiguration(dynamic config)
         {
-            Console.WriteLine($"Enuemrating and createing data sources from Configuration File");
+            Console.WriteLine($"Enumerating and creating data sources from Configuration File");
 
             //create the data sources from configuration
             foreach (dynamic ds in config.datasources)
@@ -342,7 +342,7 @@ namespace KnowledgeMiningDeployer
 
         internal void CreateDataSources()
         {
-            Console.WriteLine($"Enuemrating and creating data sources from Azure");
+            Console.WriteLine($"Enumerating and creating data sources from Azure Resource Group");
 
             //add each storage account...
             foreach (var sa in AzureHelper.AzureInstance.StorageAccounts.List())

@@ -5,7 +5,7 @@
   "skillSetName" :  "base",
   "parameters": {
     "batchSize": null,
-    "maxFailedItems": 1000,
+    "maxFailedItems": null,
     "maxFailedItemsPerBatch": null,
     "base64EncodeKeys": false,
     "configuration": {
@@ -51,28 +51,58 @@
   ],
   "outputFieldMappings": [
     {
-      "sourceFieldName": "/document/content/people",
+      "sourceFieldName": "/document/merged_content/people",
       "targetFieldName": "people",
       "mappingFunction": null
     },
     {
-      "sourceFieldName": "/document/content/organizations",
+      "sourceFieldName": "/document/merged_content/organizations",
       "targetFieldName": "organizations",
       "mappingFunction": null
     },
     {
-      "sourceFieldName": "/document/content/locations",
+      "sourceFieldName": "/document/merged_content/locations",
       "targetFieldName": "locations",
       "mappingFunction": null
     },
     {
-      "sourceFieldName": "/document/content/keyphrases",
+      "sourceFieldName": "/document/merged_content/keyphrases",
       "targetFieldName": "keyphrases",
       "mappingFunction": null
     },
     {
       "sourceFieldName": "/document/language",
       "targetFieldName": "language",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/merged_content",
+      "targetFieldName": "merged_content",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/normalized_images/*/text",
+      "targetFieldName": "text",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/normalized_images/*/layoutText",
+      "targetFieldName": "layoutText",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/normalized_images/*/imageTags/*/name",
+      "targetFieldName": "imageTags",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/normalized_images/*/imageCaption",
+      "targetFieldName": "imageCaption",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "/document/normalized_images/*/imageCelebrities/*/detail/celebrities/*/name",
+      "targetFieldName": "imageCelebrities",
       "mappingFunction": null
     }
   ]

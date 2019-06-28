@@ -1,0 +1,24 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azureAdminClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "ClientId for Azure Application with management access"
+      }
+    }
+  },
+  "variables": {
+
+  },
+  "resources": [
+
+  ],
+  "outputs": {
+    "adminUsername": {
+      "type": "string",
+      "value": "Hello World"
+    }
+  }
+}

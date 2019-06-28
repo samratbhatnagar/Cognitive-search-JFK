@@ -11,6 +11,8 @@ using Microsoft.Azure.Management.Search.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Microsoft.Azure.Management.Storage.Fluent;
 using Microsoft.SqlServer.Dac;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -116,9 +118,29 @@ namespace KnowledgeMiningDeployer
             AzureHelper.CreateDeployment(fi, data, ht, Configuration.ResourceGroupName);
         }
 
+        private static void TestOutputs()
+        {
+            DirectoryInfo di = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            FileInfo fi = new FileInfo(di.Parent.FullName + @"/AzureTemplates/outputtest.json");
+
+            Hashtable ht = new Hashtable();
+            ht.Add("prefix", Configuration.ResourcePrefix);
+            ht.Add("tenantId", Configuration.TenantId);
+
+            dynamic parameters = new System.Dynamic.ExpandoObject();
+            
+            dynamic p = new System.Dynamic.ExpandoObject();
+            p.Value = Configuration.AdminAzureClientId;
+            parameters.azureAdminClientId = p;
+
+            string data = JsonConvert.SerializeObject(parameters);
+
+            AzureHelper.CreateDeployment(fi, data, ht, Configuration.ResourceGroupName);
+        }
+
         private static string GetSqlServerConnectionString(ISqlServer azureSQLServer, string database)
         {
-            return $"Server=tcp:{azureSQLServer.FullyQualifiedDomainName},1433;Initial Catalog={database};Persist Security Info=False;User ID={azureSQLServer.AdministratorLogin};Password={Configuration.SqlPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            return $"Server=tcp:{azureSQLServer.FullyQualifiedDomainName},1433;Initial Catalog={database};Persist Security Info=False;User ID={azureSQLServer.AdministratorLogin};Password={Configuration.Password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         }
 
         async public static Task Start()
@@ -127,8 +149,12 @@ namespace KnowledgeMiningDeployer
 
             AzureHelper.Initialize(Configuration.ResourceGroupName);
 
+            //do quick check...try to connect to each data source...
+            if (!CheckConfiguration())
+                return;
+
             //deploy the main template - Not needed, done in the arm template itself which then calls this exe via DSC.
-            if (Configuration.DeployMain)
+            if (Configuration.DeployMain && false)
                 DeployMain(Configuration.ResourceGroupName);
 
             //set all the configuration values...
@@ -159,6 +185,8 @@ namespace KnowledgeMiningDeployer
 
                 if (!string.IsNullOrEmpty(Configuration.CustomDataZip))
                 {
+                    Console.WriteLine($"Deploying custom content");
+
                     UploadZipToStorageAccount(Configuration.StorageAccountName, Configuration.StorageAccountKey, Configuration.StorageContainer, "Deployment/CustomDocuments.zip");
                 }
 
@@ -167,6 +195,8 @@ namespace KnowledgeMiningDeployer
                 //add to azure sql - this database already has the data in it...
                 try
                 {
+                    Console.WriteLine($"Deploying sql server content");
+
                     ISqlServer sqlServer = GetSqlServer();
                     string databaseName = Configuration.ResourcePrefix + "-db";
                     string connString = GetSqlServerConnectionString(sqlServer, databaseName);
@@ -187,7 +217,7 @@ namespace KnowledgeMiningDeployer
 
                 //this has to be done before we deploy the zip...funcation app changes will blow away storage connection
                 //wire up the config options
-                SetupFunctionApp(funcApp, "CognitiveSearch.Skills");
+                //SetupFunctionApp(funcApp, "CognitiveSearch.Skills");
 
                 //deploy the zip
                 var profile = funcApp.GetPublishingProfile();
@@ -198,13 +228,20 @@ namespace KnowledgeMiningDeployer
             SetProperty("functionUrl", funcApp.DefaultHostName);
 
             //get the master key...
-            string key = funcApp.GetMasterKey();
-            SetProperty("functionUrlKey", key);
+            try
+            {
+                string key = funcApp.GetMasterKey();
+                SetProperty("functionUrlKey", key);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             //deploy web apps
             IWebApp webApp = GetWebApp(Configuration.ResourcePrefix + "-web02");
 
-            if (Configuration.DoDeployments)
+            if (webApp == null || Configuration.DoDeployments)
                 DeployWebApp("web02", "CognitiveSearch.API");
 
             if (webApp != null)
@@ -218,7 +255,7 @@ namespace KnowledgeMiningDeployer
             webApp = GetWebApp(Configuration.ResourcePrefix + "-web01");
 
             //deploy web apps
-            if (Configuration.DoDeployments)
+            if (webApp == null || Configuration.DoDeployments)
                 webApp = DeployWebApp("web01", "CognitiveSearch.UI");
 
             if (webApp != null)
@@ -270,6 +307,27 @@ namespace KnowledgeMiningDeployer
 
             //TODO BONUS - deploy the powerBI - PowerShell
             DeployPowerBI("", "");
+        }
+
+        private static bool CheckConfiguration()
+        {
+            try
+            {
+                //Check the Blob storage connection string...
+                CloudStorageAccount storageAccount;
+                CloudStorageAccount.TryParse(Configuration.BlobStorageConnectionString, out storageAccount);
+                CloudBlobClient c = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = c.GetContainerReference(Configuration.StorageContainer);
+                bool exists = container.Exists();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Check your blob connection string.");
+                return false;
+            }
+            
+
+            return true;
         }
 
         private static ISqlServer GetSqlServer()
@@ -350,6 +408,9 @@ namespace KnowledgeMiningDeployer
             Configuration.CognitiveServicesUrl = props.Endpoint;
             Configuration.CognitiveServicesKey = cogkeys.Key1;
 
+            //maps
+            AzureHelper.GetMaps();
+
             return;
         }
 
@@ -409,17 +470,15 @@ namespace KnowledgeMiningDeployer
 
             webApp.Update().WithAppSettings(settings).Apply();
         }
-
-        private static void SetupFunctionApp(IFunctionApp webApp, string type)
+        private static Dictionary<string, string> GetFunctionAppSettings()
         {
-            Console.WriteLine($"Setting function properties [{webApp.Name}]");
-
             Dictionary<string, string> settings = new Dictionary<string, string>();
 
             settings.Add("FUNCTIONS_EXTENSION_VERSION", "~2");
-            //settings.Add("AzureWebJobsDashboard", Configuration.BlobStorageConnectionString);
-            //settings.Add("AzureWebJobsStorage", Configuration.BlobStorageConnectionString);
-            //settings.Add("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING", Configuration.BlobStorageConnectionString);
+            settings.Add("AzureWebJobsDashboard", Configuration.BlobStorageConnectionString);
+            settings.Add("AzureWebJobsStorage", Configuration.BlobStorageConnectionString);
+            settings.Add("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING", Configuration.BlobStorageConnectionString);
+            settings.Add("WEBSITE_CONTENTSHARE", Configuration.ResourcePrefix + "-funcshare");
             settings.Add("AzureWebJobsSecretStorageType", "files");
 
             settings.Add("BlobStorageAccountConnectionString", Configuration.BlobStorageConnectionString);
@@ -429,12 +488,21 @@ namespace KnowledgeMiningDeployer
             settings.Add("CognitiveServicesKey", Configuration.CognitiveServicesKey);
             settings.Add("AzureMapsUrl", Configuration.AzureMapsUrl);
             settings.Add("AzureMapsKey", Configuration.AzureMapsKey);
-            settings.Add("CognitiveTranslateUrl", "");
+            settings.Add("CognitiveTranslateUrl", "https://api.cognitive.microsofttranslator.com");
             settings.Add("CognitiveTranslateKey", Configuration.CognitiveServicesKey);
-            settings.Add("CognitiveTranslateRegion", "");
+            settings.Add("CognitiveTranslateRegion", Configuration.Region);
             settings.Add("FormsRecognizerEndpoint", Configuration.CognitiveServicesUrl);
             settings.Add("FormsRecognizerKey", Configuration.CognitiveServicesKey);
             settings.Add("FormsModelId", "");
+
+            return settings;
+        }
+
+        private static void SetupFunctionApp(IFunctionApp webApp, string type)
+        {
+            Console.WriteLine($"Setting function properties [{webApp.Name}]");
+
+            var settings = GetFunctionAppSettings();
 
             webApp.Update().WithAppSettings(settings).Apply();
         }
@@ -468,7 +536,10 @@ namespace KnowledgeMiningDeployer
                 IStorageAccount store = GetStorageAccount(Configuration.ResourcePrefix + "storage");
 
                 if (webApp == null)
-                    AzureHelper.AzureInstance.AppServices.FunctionApps.Define(webName.ToLower()).WithRegion(AzureHelper.AzureRegion).WithExistingResourceGroup(Configuration.ResourceGroupName).WithExistingStorageAccount(store).WithNewAppServicePlan(obj).WithSystemAssignedManagedServiceIdentity().Create();
+                {
+                    var settings = GetFunctionAppSettings();
+                    AzureHelper.AzureInstance.AppServices.FunctionApps.Define(webName.ToLower()).WithRegion(AzureHelper.AzureRegion).WithExistingResourceGroup(Configuration.ResourceGroupName).WithExistingStorageAccount(store).WithNewAppServicePlan(obj).WithSystemAssignedManagedServiceIdentity().WithAppSettings(settings).Create();
+                }
 
                 webApp = GetFunctionApp(webName);
 
@@ -559,19 +630,26 @@ namespace KnowledgeMiningDeployer
 
         public static void DeployWebZip(string appName, string webAppName, string username, string password)
         {
-            Console.WriteLine($"Deploying Web Zip {appName}");
-
-            var base64Auth = Convert.ToBase64String(Encoding.Default.GetBytes($"{username}:{password}"));
-            var file = File.ReadAllBytes(RunPath + @"\Deployment\" + appName + ".zip");
-            MemoryStream stream = new MemoryStream(file);
-
-            using (var client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64Auth);
-                var baseUrl = new Uri($"https://" + webAppName + ".scm.azurewebsites.net/");
-                var requestURl = baseUrl + "api/zipdeploy";
-                var httpContent = new StreamContent(stream);
-                var response = client.PostAsync(requestURl, httpContent).Result;
+                Console.WriteLine($"Deploying Web Zip {appName}");
+
+                var base64Auth = Convert.ToBase64String(Encoding.Default.GetBytes($"{username}:{password}"));
+                var file = File.ReadAllBytes(RunPath + @"\Deployment\" + appName + ".zip");
+                MemoryStream stream = new MemoryStream(file);
+
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64Auth);
+                    var baseUrl = new Uri($"https://" + webAppName + ".scm.azurewebsites.net/");
+                    var requestURl = baseUrl + "api/zipdeploy";
+                    var httpContent = new StreamContent(stream);
+                    var response = client.PostAsync(requestURl, httpContent).Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
