@@ -274,8 +274,8 @@
 }
 
 em {
-  font-style: normal;
-  background: #ff0;
+  font-weight: bold;
+  //background: #ff0;
 
   &:hover {
     background: tint($colorPrimary, 50%);

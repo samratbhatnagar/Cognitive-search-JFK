@@ -21,7 +21,10 @@ interface ItemProps {
   onClick?: (item: Item) => void;
   simplePreview?: boolean;
 }
-
+interface ListProps {
+  title: string;
+  fields: string[];
+}
 interface State {
   expanded: boolean;
 }
@@ -108,7 +111,6 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
 
   const myObj = parsedItem || item.metadata;
   const itemData = Object.keys(myObj);
-
   if (typeof myObj !== "object") {
     // Returns as text block
     return (
@@ -116,7 +118,15 @@ const ItemMediaJsonPreview: React.StatelessComponent<ItemProps> = ({
         className={cnc(style.media, style.jsonTextBlock)}
         onClick={handleOnClick({ item, onClick })}
       >
-        <p>{myObj}</p>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: item.highlightPreview
+              ? item.highlightPreview.reduce(
+                  (acc, cur) => acc + cur + "...&nbsp;"
+                )
+              : ""
+          }}
+        />
       </div>
     );
   } else {
@@ -162,7 +172,7 @@ const ItemMedia: React.StatelessComponent<ItemProps> = ({
   onClick,
   simplePreview
 }) => {
-  if (item.type === "json") {
+  if (true) {
     return (
       <ItemMediaJsonPreview
         item={item}
@@ -191,13 +201,18 @@ const ItemCaption: React.StatelessComponent<ItemProps> = ({
   item,
   onClick
 }) => {
+  let { title } = item;
+  if (title.length > 150) {
+    title = title.slice(0, 150);
+    title += "...";
+  }
   return (
     <CardContent
       classes={{ root: style.caption }}
       onClick={handleOnClick({ item, onClick })}
     >
       <Typography variant="headline" component="h2" color="inherit">
-        {item.title}
+        {title}
         <span className={style.subtitle}>{item.subtitle}</span>
       </Typography>
       <Typography component="p" color="inherit">
@@ -222,60 +237,75 @@ const getOfficePreviewPath = (path: string) => {
     encodeURIComponent(path)
   );
 };
-const generateExtraFieldContent = (field: any) => {
-  if (typeof field == "string") {
-    return <ListItemText primary={field} />;
-  } else if (field instanceof Array) {
-    return (
-      <div className={style.tagContainer}>
-        {field.map((tag, tagIndex) => (
-          <Chip label={tag} key={tagIndex} classes={{ root: style.tag }} />
-        ))}
-      </div>
-    );
-  } else {
-    return null;
-  }
+const getConsolidatedFields = field => {
+  const consolidatedFields = field.reduce((acc, cur) => {
+    if (acc[cur]) acc[cur] += 1;
+    else acc[cur] = 1;
+    return acc;
+  }, {});
+  return consolidatedFields;
+};
+const getOrderedTags = consolidatedFields => {
+  const orderedKeys = Object.keys(consolidatedFields).sort((a, b) => {
+    return consolidatedFields[b] - consolidatedFields[a];
+  });
+  return orderedKeys;
+};
+const generateExtraFieldContent = (consolidatedFields, orderedKeys) => {
+  return (
+    <div className={style.tagContainer}>
+      {orderedKeys.map((tag, tagIndex) => (
+        <Chip
+          label={`${tag}${
+            consolidatedFields[tag] > 1
+              ? "(" + consolidatedFields[tag] + ")"
+              : ""
+          }`}
+          key={tagIndex}
+          classes={{ root: style.tag }}
+        />
+      ))}
+    </div>
+  );
 };
 
-const generateExtraField = (field: any, index: number) =>
-  field ? (
-    <ListItem key={index}>{generateExtraFieldContent(field)}</ListItem>
+const generateExtraField = (field: any, index: number) => {
+  const consolidatedFields = getConsolidatedFields(field);
+  const orderedKeys = getOrderedTags(consolidatedFields);
+  return field ? (
+    <ListItem key={index}>
+      {generateExtraFieldContent(consolidatedFields, orderedKeys)}
+    </ListItem>
   ) : null;
-
-const ItemExtraFieldList: React.StatelessComponent<ItemProps> = ({ item }) => {
-  if (item.extraFields) {
-    return (
-      <CardContent>
-        <h4 className={style.listTitle}>Entities</h4>
-        <List>
-          {item.extraFields.map((field, fieldIndex) =>
-            generateExtraField(field, fieldIndex)
-          )}
-        </List>
-      </CardContent>
-    );
-  } else {
-    return null;
-  }
+};
+const ItemExtraFieldList: React.StatelessComponent<ListProps> = ({
+  title,
+  fields
+}) => {
+  return (
+    <CardContent>
+      <h4 className={style.listTitle}>{title}</h4>
+      <List>{generateExtraField(fields, 0)}</List>
+    </CardContent>
+  );
 };
 
-const ItemHeadingsList: React.StatelessComponent<ItemProps> = ({ item }) => {
-  if (item.headings) {
-    return (
-      <CardContent>
-        <h4 className={style.listTitle}>Headings</h4>
-        <List>
-          {item.headings.map((field, fieldIndex) =>
-            generateExtraField(field, fieldIndex)
-          )}
-        </List>
-      </CardContent>
-    );
-  } else {
-    return null;
-  }
-};
+// const ItemHeadingsList: React.StatelessComponent<ItemProps> = ({ item }) => {
+//   if (item.headings) {
+//     return (
+//       <CardContent>
+//         <h4 className={style.listTitle}>Headings</h4>
+//         <List>
+//           {item.headings.map((field, fieldIndex) =>
+//             generateExtraField(field, fieldIndex)
+//           )}
+//         </List>
+//       </CardContent>
+//     );
+//   } else {
+//     return null;
+//   }
+// };
 
 export class ItemComponent extends React.Component<ItemProps, State> {
   constructor(props) {
@@ -295,7 +325,19 @@ export class ItemComponent extends React.Component<ItemProps, State> {
 
   public render() {
     const { item, activeSearch, targetWords, onClick } = this.props;
-
+    const combined = item.extraFields.reduce((acc, cur) => {
+      if (cur instanceof Array) return acc.concat(cur);
+      acc.push(cur);
+      return acc;
+    }, []);
+    const consolidatedFields = getConsolidatedFields(combined);
+    const orderedKeys = getOrderedTags(consolidatedFields);
+    const topFields = [];
+    if (orderedKeys.length > 3) {
+      topFields[0] = consolidatedFields[orderedKeys[0]];
+      topFields[1] = consolidatedFields[orderedKeys[1]];
+      topFields[2] = consolidatedFields[orderedKeys[2]];
+    }
     return (
       <Card
         classes={{
@@ -303,13 +345,15 @@ export class ItemComponent extends React.Component<ItemProps, State> {
         }}
         elevation={8}
       >
+        <ItemCaption item={item} onClick={onClick} />
         <ItemMedia
           item={item}
           activeSearch={activeSearch}
           targetWords={targetWords}
           onClick={onClick}
         />
-        <ItemCaption item={item} onClick={onClick} />
+        {generateExtraFieldContent(topFields, orderedKeys.slice(0, 3))}
+
         <CardActions classes={{ root: style.actions }}>
           <div className={style.rating}>{ratingStars(item)}</div>
           <Chevron
@@ -324,8 +368,8 @@ export class ItemComponent extends React.Component<ItemProps, State> {
           timeout="auto"
           unmountOnExit
         >
-          <ItemExtraFieldList item={item} />
-          <ItemHeadingsList item={item} />
+          <ItemExtraFieldList title={"Entities"} fields={combined} />
+          <ItemExtraFieldList title={"Headings"} fields={item.headings} />
         </Collapse>
       </Card>
     );

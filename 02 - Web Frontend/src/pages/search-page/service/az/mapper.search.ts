@@ -86,7 +86,15 @@ const getHighlightWords = (
     return [];
   }
 };
-
+const isOfficeType = (path: string) => {
+  if (!path) return false;
+  const pathLower = path.toLocaleLowerCase();
+  return (
+    pathLower.includes(".doc") ||
+    pathLower.includes(".ppt") ||
+    pathLower.includes(".xls")
+  );
+};
 const mapResultToItem = (
   result: any,
   responseConfig: AzResponseConfig
@@ -105,11 +113,14 @@ const mapResultToItem = (
           result.document.persons
         ],
         metadata: result.document.metadata,
-        type: result.type,
+        type: isOfficeType(result.document.metadata_storage_path)
+          ? "office"
+          : "hocr",
         highlightWords: getHighlightWords(result, responseConfig),
         headings: result.document.headings,
         text: result.document.content,
-        filePath: result.document.metadata_storage_path
+        filePath: result.document.metadata_storage_path,
+        highlightPreview: result[responseConfig.highlightAccessor].content
       }
     : null;
 };
