@@ -6,7 +6,7 @@ import {
   AzResponseConfig
 } from "../../../az-api";
 import { GraphConfig } from "../../../graph-api";
-import { UploadConfig } from "../../upload-page";
+import { UploadConfig } from "../../admin-page/upload-page";
 
 export type MapperToPayload = (state: any, config: ServiceConfig) => AzPayload;
 export type MapperToState = (

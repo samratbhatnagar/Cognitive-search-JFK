@@ -1,9 +1,9 @@
 import * as React from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import { UploadPageComponent } from "./upload-page.component";
-import { searchPath } from "../search-page";
-import { parseConfig } from "./config.parser";
-import { azServiceConfig } from "../search-page/service/az";
+import { searchPath } from "../../search-page";
+import { parseConfig } from "../settings/config.parser";
+import { azServiceConfig } from "../../search-page/service/az";
 
 class UploadPageInnerContainer extends React.Component<
   RouteComponentProps<any>

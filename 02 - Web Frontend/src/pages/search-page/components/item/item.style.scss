@@ -46,7 +46,8 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
 
   .caption {
     cursor: pointer;
-    background-color: $colorTranslucent;
+    // background-color: $colorTranslucent;
+    background-color: rgba(196, 196, 196, 0.15);
   }
 
   .subtitle {
@@ -60,7 +61,8 @@ $colorTranslucent: transparentize($colorGrey, 0.85);
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: $colorTranslucent;
+    // background-color: $colorTranslucent;
+    background-color: rgba(196, 196, 196, 0.15);
   }
 
   .rating {

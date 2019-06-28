@@ -34,6 +34,7 @@ import {
 } from "./view-model/state.memento";
 import { setDetailState } from "../detail-page/detail-page.memento";
 import { buildRoute } from "../../common/helpers/routes";
+import { GlobalToolbarComponent } from "../../common/components/global-toolbar";
 
 class SearchPageInnerContainer extends React.Component<
   RouteComponentProps<any>,
@@ -195,11 +196,27 @@ class SearchPageInnerContainer extends React.Component<
     console.log(message);
   };
 
+  private goToSearchPage = () => {
+    this.props.history.push({
+      pathname: "../search"
+    });
+  };
+
+  private goToAdminPage = () => {
+    this.props.history.push({
+      pathname: "../admin"
+    });
+  };
+
   // *** REACT LIFECYCLE ***
 
   public render() {
     return (
       <div>
+        <GlobalToolbarComponent
+          onSearchClick={this.goToSearchPage}
+          onAdminClick={this.goToAdminPage}
+        />
         <SearchPageComponent
           activeService={azService}
           searchValue={this.state.searchValue}
