@@ -6,6 +6,7 @@ using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Rest.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -244,6 +245,9 @@ namespace KnowledgeMiningDeployer
                 {
                     if ( Properties.ContainsKey("functionUrl"))
                         api.Uri = api.Uri.Replace("{functionurl}", Properties["functionUrl"].ToString() + "/api") + "?code=" + Properties["functionUrlKey"];
+
+                    //set to 90 sec timeout
+                    api.Timeout = new TimeSpan(0,0,90);
                 }
             }
         }
@@ -279,7 +283,9 @@ namespace KnowledgeMiningDeployer
             json = json.Replace("{blobContainerName}", Configuration.StorageContainer);
 
             var serializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            serializerSettings.Converters.Add(new IsoDateTimeConverter());
             serializerSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Skill>("@odata.type"));
+            serializerSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<WebApiSkill>("@odata.type"));
 
             var skillset = JsonConvert.DeserializeObject<KnowledgeStoreSkillset>(json, serializerSettings);
             skillset.Name = config.name.ToString().ToLower();
@@ -304,6 +310,8 @@ namespace KnowledgeMiningDeployer
             Skillset skillset = GetSkillsetFromConfig(config);
 
             TokenReplace(skillset);
+
+            WarmUpSkills(skillset);
 
             // Currently, the SDK is broken in how it handles Http Headers, so if using a custom WebApiSkill, send to the REST API, and don't use the SDK service.
             if (skillset.Skills != null && skillset.Skills.Any(s => s.GetType().Name == "WebApiSkill"))
@@ -1114,8 +1122,12 @@ namespace KnowledgeMiningDeployer
                         serializerSettings.Converters.Add(new PolymorphicSerializeJsonConverter<Skill>("@odata.type"));
                         serializerSettings.Converters.Add(new PolymorphicSerializeJsonConverter<CognitiveServices>("@odata.type"));
                         var payload = JsonConvert.SerializeObject(skillset, serializerSettings);
+                        
                         // Remove problematic values
                         var cleanPayload = payload.Replace(",\"@odata.etag\":null", "").Replace("\"httpHeaders\":null,", "");
+
+                        //timespans...
+                        cleanPayload = cleanPayload.Replace("\"timeout\":\"00:01:30\"", "\"timeout\":\"PT90S\"");
 
                         var content = new StringContent(cleanPayload, Encoding.UTF8, "application/json");
 

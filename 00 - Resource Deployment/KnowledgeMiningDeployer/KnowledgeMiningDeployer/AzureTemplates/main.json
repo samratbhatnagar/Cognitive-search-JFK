@@ -70,18 +70,11 @@
         "description": "A path to a zip file that will be extracted and then imported into the storage account for indexing."
       }
     },
-    "bingEndPoint": {
+    "searchSku": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "basic",
       "metadata": {
-        "description": "The Bing endpoint for the search skill."
-      }
-    },
-    "bingKey": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Your Bing API Key for the search skill."
+        "description": "Size of the Azure Search instance."
       }
     }
   },
@@ -149,7 +142,7 @@
       "name": "[concat(parameters('prefix'),'-search')]",
       "location": "westus2",
       "sku": {
-        "name": "basic"
+        "name": "[parameters('searchSku')]"
       },
       "properties": {
         "replicaCount": 1,
@@ -555,9 +548,7 @@
             "ConfigFilePath": "[parameters('configFilePath')]",
             "CustomDataZip": "[parameters('customDataZip')]",
             "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]",
-            "BingEndPoint": "[parameters('bingEndPoint')]",
-            "BingKey": "[parameters('bingKey')]"
+            "Password": "[parameters('adminPassword')]"
           }
         },
         "protectedSettings": null

@@ -47,6 +47,7 @@ namespace KnowledgeMiningDeployer
         public static string AzureMapsUrl { get; internal set; }
         public static string AzureMapsKey { get; internal set; }
         public static bool DoDeployments { get; internal set; }
+        public static string SearchSku { get; internal set; }
 
         public static Hashtable LoadConfiguration(string filename)
         {

@@ -120,8 +120,10 @@ namespace SampleSkills
         [FunctionName("ObjectDetectionSkill")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+            ILogger log, ExecutionContext executionContext)
         {
+            string skillName = executionContext.FunctionName;
+
             log.LogInformation("Object detection function: C# HTTP trigger function processed a request.");
 
             var response = new WebApiResponse();
@@ -154,6 +156,8 @@ namespace SampleSkills
                 }
                 catch (Exception e)
                 {
+                    
+
                     // Something bad happened, log the issue.
                     var error = new OutputRecord.OutputRecordMessage
                     {

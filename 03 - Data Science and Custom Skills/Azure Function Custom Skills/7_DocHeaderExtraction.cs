@@ -59,7 +59,9 @@ namespace SampleSkills
         public static IActionResult RunHeaderExtraction([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log, ExecutionContext executionContext)
         {
             string skillName = executionContext.FunctionName;
+
             log.LogInformation($"{skillName}: C# HTTP trigger function processed a request.");
+
             // Read input, deserialize it and validate it.
             var data = GetStructuredInput(req.Body);
             if (data == null)

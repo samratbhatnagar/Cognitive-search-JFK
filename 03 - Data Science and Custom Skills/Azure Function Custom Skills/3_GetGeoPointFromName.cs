@@ -163,8 +163,10 @@ namespace SampleSkills
         [FunctionName("GetGeoPointFromName")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+            ILogger log, ExecutionContext executionContext)
         {
+            string skillName = executionContext.FunctionName;
+
             log.LogInformation("Custom skill: C# HTTP trigger function processed a request.");
 
             // Read input, deserialize it and validate it.
@@ -204,6 +206,8 @@ namespace SampleSkills
                 }
                 catch (Exception e)
                 {
+                    log.LogInformation($"{skillName}: Error {e.Message}.");
+
                     // Something bad happened, log the issue.
                     var error = new OutputRecord.OutputRecordMessage
                     {
@@ -266,8 +270,6 @@ namespace SampleSkills
             }
             catch (Exception ex)
             {
-                log.LogInformation($"{skillName}: Error {e.Message}");
-
                 result = new OutputRecord.OutputRecordData();
             }
 

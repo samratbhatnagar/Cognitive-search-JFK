@@ -98,6 +98,10 @@ namespace KnowledgeMiningDeployer
             p.Value = Configuration.ConfigFilePath;
             parameters.configFilePath = p;
 
+            p = new System.Dynamic.ExpandoObject();
+            p.Value = Configuration.SearchSku;
+            parameters.searchSku = p;
+
 
             /*
             parameters.azureAdminClientId = Configuration.AdminAzureClientId;
@@ -502,7 +506,7 @@ namespace KnowledgeMiningDeployer
             settings.Add("CognitiveServicesKey", Configuration.CognitiveServicesKey);
             settings.Add("AzureMapsUrl", Configuration.AzureMapsUrl);
             settings.Add("AzureMapsKey", Configuration.AzureMapsKey);
-            settings.Add("CognitiveTranslateUrl", "https://api.cognitive.microsofttranslator.com");
+            settings.Add("CognitiveTranslateUrl", "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0");
             settings.Add("CognitiveTranslateKey", Configuration.CognitiveServicesKey);
             settings.Add("CognitiveTranslateRegion", Configuration.Region);
             settings.Add("FormsRecognizerEndpoint", Configuration.CognitiveServicesUrl);
