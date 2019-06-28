@@ -24,18 +24,17 @@ export class AdminPageComponent extends React.Component<
   }
 
   public render() {
-    const files = this.state.acceptedFiles.map(file => (
-      <li key={file.name}>
-        {file.name} - {file.size} bytes
-      </li>
-    ));
-
-    let className = style.upload;
-
-    if (this.state.isHovered) {
-      className += " " + style.hover;
-    }
-
-    return <div className={style.container} />;
+    return (
+      <div>
+        <span>Select Theme</span>
+        <select>
+          <option>Theme1</option>
+          <option>Theme2</option>
+          <option>Theme3</option>
+        </select>
+        <label>Logo Image</label>
+        <input name="file" type="file" />
+      </div>
+    );
   }
 }
