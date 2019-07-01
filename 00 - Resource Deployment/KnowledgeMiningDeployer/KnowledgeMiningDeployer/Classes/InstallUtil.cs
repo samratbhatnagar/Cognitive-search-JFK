@@ -489,7 +489,7 @@ namespace KnowledgeMiningDeployer
                     settings.Add("SearchServiceName", Configuration.SearchServiceName);
                     settings.Add("SearchApiKey", Configuration.SearchKey);
                     settings.Add("SearchIndexName", "base");
-                    settings.Add("SearchIndexerName", "base-indexer-" + Configuration.ResourcePrefix + "blob");
+                    settings.Add("SearchIndexerName", "base-indexer-" + Configuration.ResourcePrefix + "storageblob");
                     settings.Add("InstrumentationKey", "");
                     settings.Add("StorageAccountName", Configuration.StorageAccountName);
                     settings.Add("StorageAccountKey", Configuration.StorageAccountKey);
