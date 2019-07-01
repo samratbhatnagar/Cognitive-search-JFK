@@ -1,0 +1,53 @@
+﻿@model CognitiveSearch.Web.Models.SearchViewModel
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<!-- Pass controller data to view -->
+<script>
+    q = @Html.Raw(Json.Serialize(Model.Query));
+    searchId = @Html.Raw(Json.Serialize(Model.SearchId));
+    applicationInstrumentationKey = @Html.Raw(Json.Serialize(Model.AppConfig.AppInsights.InstrumentationKey));
+</script>
+
+@await Html.PartialAsync("_SideBar", Model)
+
+<main role="main">
+    <div id="search-results">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Cognitive Search Results</h1>
+            <div id="view-switcher" class="btn-group pr-5" role="radiogroup" aria-label="Select results view">
+                <button type="button" data-view="list" class="btn btn-outline-primary btn-results-view" title="View results as list">
+                    <i class="ms-Icon ms-Icon--GroupedList"></i>
+                </button>
+                <button type="button" data-view="entitymap" class="btn btn-outline-primary btn-results-view" title="View results as entity map">
+                    <i class="ms-Icon ms-Icon--EngineeringGroup"></i>
+                </button>
+            </div>
+        </div>
+        <div id="search-results-container">
+            @if (string.IsNullOrWhiteSpace(Model.Query))
+            {
+                @await Html.PartialAsync("_SearchEmpty")
+            }
+            else
+            {
+                @await Html.PartialAsync("_SearchResults")
+                @await Html.PartialAsync("_EntityMap")
+            }
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#btn-search').click(function (e) {
+            Search();
+        });
+
+        $('#view-switcher').find('button').click(function () {
+            var view = $(this).data('view');
+            EntityMapClick(view);
+        });
+    });
+</script>

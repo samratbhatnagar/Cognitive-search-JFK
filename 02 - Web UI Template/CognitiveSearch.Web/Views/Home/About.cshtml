@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewData["Title"] = "About";
+}
+
+<main role="main" class="m-5">
+    <div class="content row m-3">
+        <div class="col-md-12">
+            <p>
+                This project builds upon the work started with the JFK Files demo, and allows you to quickly leverage the power of cognitive search using Azure Search against data stored in an Azure Storage account.
+            </p>
+            <span class="block">
+                Using this starter project, you can explore how to use both built-in and custom Cognitive Skills inside of Azure Search to explore your documents, stored in an Azure Storage account.
+                The Cognitive Search capabilities of Azure Search ingests your data from almost multiple datasources and enriches it using a set of cognitive skills that extracts knowledge and then lets you explore the data using Search.
+            </span>
+            <span class="block">
+                To get started, select the Upload menu item, and upload a few documents into the Azure Storage account created for you during the deployment process.
+            </span>
+        </div>
+    </div>
+    
+    <div class="content row m-3">
+        <div class="col-md-12">
+            <partial name="_Architecture" />
+        </div>
+    </div>
+
+    <div class="content row m-3">
+        <div class="col-md-12">
+            <h5>LEARN MORE</h5>
+            <div style="font-size:16px;">
+                <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a>
+            </div>
+            <div style="font-size:16px;">
+                <a href="https://docs.microsoft.com/en-us/azure/search/cognitive-search-resources-documentation">Cognitive Search</a>
+            </div>
+            <div style="font-size:16px;">
+                <a href="https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/">Text Analytics</a>
+            </div>
+            <div style="font-size:16px;">
+                <a href="https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision/">Computer Vision</a>
+            </div>
+        </div>
+    </div>
+</main>

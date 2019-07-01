@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<main role="main">
+    @if (!string.IsNullOrWhiteSpace(ViewBag.Message))
+    {
+        <div class="alert alert-success m-5">@ViewBag.Message</div>
+    }
+
+    <div class="card m-5">
+        <h4 class="card-header">Upload a custom site logo</h4>
+        <div class="card-body">
+            <p>
+                The default image type for the site is an SVG image, named <b>org-logo.svg</b>. You should use an image with the same name and type for the upload.
+                <i>If you want to use a different image type or name, you will need to update the "OrganizationLogo" Application Setting with the new image name, including the extension.</i>
+            </p>
+            <form asp-controller="Admin" asp-action="UploadCustomImage" asp-antiforgery="false"
+                  id="UploadCustomImage" enctype="multipart/form-data" method="post">
+                <div class="fallback">
+                    <input name="file" type="file" />
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card m-5">
+        <h4 class="card-header">Update site CSS</h4>
+        <div class="card-body">
+            <p>You can customize the header color, along with the text linked within it by download the site's <b>custom.css</b> file, and modifying the colors within it.</p>
+
+            <p>To download the custom.css file, select: <a asp-action="DownloadCustomCss" asp-controller="Admin" asp-area="">Download CSS file</a></p>
+
+            <p>In the downloaded CSS file, update the navbar-custom and navbar-text color properties.</p>
+
+            <p>Now, upload the edited file back to the web server.</p>
+            <form asp-controller="Admin" asp-action="UploadCustomCss" asp-antiforgery="false"
+                  id="UploadCustomCss" enctype="multipart/form-data" method="post">
+                <div class="fallback">
+                    <input name="file" type="file" />
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
