@@ -148,14 +148,21 @@
       "apiVersion": "2015-08-19",
       "name": "[concat(parameters('prefix'),'-search')]",
       "location": "westus2",
-      "sku": {
-        "name": "[parameters('searchSku')]"
-      },
-      "properties": {
-        "replicaCount": 1,
-        "partitionCount": 1,
-        "hostingMode": "default"
-      }
+      "identity": {
+        "type": "SystemAssigned"
+      },    
+    "sku",
+    :,
+    {
+      "name": "[parameters('searchSku')]"
+    },
+    "properties",
+    :,
+    {
+      "replicaCount": 1,
+      "partitionCount": 1,
+      "hostingMode": "default"
+    }
     },
     {
       "type": "Microsoft.CognitiveServices/accounts",
@@ -246,6 +253,9 @@
       "apiVersion": "2016-08-01",
       "name": "[concat(parameters('prefix'),'-func01')]",
       "location": "westus2",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', concat(parameters('prefix'),'-appsvc-func'))]"
       ],
@@ -281,6 +291,9 @@
       "apiVersion": "2016-08-01",
       "name": "[concat(parameters('prefix'),'-web01')]",
       "location": "westus2",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', concat(parameters('prefix'),'-appsvc-web'))]"
       ],
@@ -316,6 +329,9 @@
       "apiVersion": "2016-08-01",
       "name": "[concat(parameters('prefix'),'-web02')]",
       "location": "westus2",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', concat(parameters('prefix'),'-appsvc-web'))]"
       ],
