@@ -173,7 +173,7 @@ namespace KnowledgeMiningDeployer
                 Utility.ExtractZipFile("Configuration.zip", null, zip.DirectoryName + "\\" + zip.Name.Replace(zip.Extension, ""));
             }
             
-            if (Configuration.UseSampleData)
+            if (Configuration.UseSampleData && false)
             {
                 Console.WriteLine($"Deploying sample content");
 
@@ -214,6 +214,10 @@ namespace KnowledgeMiningDeployer
                 //this has to be done before we deploy the zip...function app changes will blow away storage connection
                 //wire up the config options
                 SetupFunctionApp(funcApp, "CognitiveSearch.Skills");
+
+                //need to pause for a bit as the backend is catching up from the configuration changes...
+                Console.WriteLine("Pausing for 30 seconds...");
+                Thread.Sleep(30000);
 
                 //deploy the zip
                 var profile = funcApp.GetPublishingProfile();
@@ -690,11 +694,16 @@ namespace KnowledgeMiningDeployer
                     var requestURl = baseUrl + "api/zipdeploy";
                     var httpContent = new StreamContent(stream);
                     var response = client.PostAsync(requestURl, httpContent).Result;
+
+                    Console.WriteLine(response);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
+                if (ex.InnerException != null)
+                    Console.WriteLine(ex.InnerException.Message);
             }
         }
 
