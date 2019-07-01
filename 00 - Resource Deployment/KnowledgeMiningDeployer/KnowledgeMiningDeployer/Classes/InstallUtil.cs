@@ -390,7 +390,7 @@ namespace KnowledgeMiningDeployer
             //load the storage account info...
             foreach (IStorageAccount sa in AzureHelper.AzureInstance.StorageAccounts.List())
             {
-                if (sa.ResourceGroupName == Configuration.ResourceGroupName)
+                if (sa.ResourceGroupName == Configuration.ResourceGroupName && sa.Name == Configuration.ResourcePrefix + "storage")
                 {
                     Configuration.StorageAccountName = sa.Name;
                     var keys = sa.GetKeys();
@@ -506,9 +506,9 @@ namespace KnowledgeMiningDeployer
 
                     settings.Add("ApiProtocol", $"https");
                     settings.Add("ApiUrl", $"{apiUrl}/api");
-                    settings.Add("OrganizationName", $"https");
-                    settings.Add("OrganizationWebSiteUrl", $"https");
-                    settings.Add("OrganizationLogo", $"https");
+                    settings.Add("OrganizationName", $"Microsoft");
+                    settings.Add("OrganizationWebSiteUrl", $"https://www.microsoft.com");
+                    settings.Add("OrganizationLogo", $"https://1gew6o3qn6vx9kp3s42ge0y1-wpengine.netdna-ssl.com/wp-content/uploads/prod/2012/08/8867.Microsoft_5F00_Logo_2D00_for_2D00_screen.jpg");
                     break;
             }
 
