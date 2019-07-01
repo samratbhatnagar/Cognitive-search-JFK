@@ -494,6 +494,7 @@ namespace KnowledgeMiningDeployer
                     settings.Add("StorageAccountName", Configuration.StorageAccountName);
                     settings.Add("StorageAccountKey", Configuration.StorageAccountKey);
                     settings.Add("StorageContainerAddress", $"https://{Configuration.ResourcePrefix}storage.blob.core.windows.net/{Configuration.StorageContainer}");
+
                     break;
                 case "CognitiveSearch.UI":
                     string functionUrl = properties["functionUrl"].ToString();
@@ -502,6 +503,12 @@ namespace KnowledgeMiningDeployer
                     settings.Add("SEARCH_CONFIG_SERVICE_URL", $"https://{apiUrl}/home/getdocuments");
                     settings.Add("SUGGESTION_CONFIG_SERVICE_URL", $"https://{apiUrl}/home/getsuggestions");
                     settings.Add("FUNCTION_CONFIG_SERVICE_URL", $"https://{apiUrl}/home/getgraphdata");
+
+                    settings.Add("ApiProtocol", $"https");
+                    settings.Add("ApiUrl", $"{apiUrl}/api");
+                    settings.Add("OrganizationName", $"https");
+                    settings.Add("OrganizationWebSiteUrl", $"https");
+                    settings.Add("OrganizationLogo", $"https");
                     break;
             }
 
