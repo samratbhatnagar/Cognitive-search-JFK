@@ -219,6 +219,18 @@ namespace KnowledgeMiningDeployer
 
             KnowledgeStoreSkillset skillset = GetKnowledgeSkillsetFromConfig(config);
 
+            //test the connection to the knowledgestore...fallback to the one created in the deployment if it fails...
+            dynamic test = new System.Dynamic.ExpandoObject();
+            test.ConnectionString = skillset.knowledgeStore.storageConnectionString;
+            test.ContainerName = Configuration.StorageContainer;
+
+            if (!Utility.CheckAzureDataSource_StorageAccount_Blob(test))
+            {
+                //set it to one that should be ok...
+                string connString = AzureHelper.GetStorageConnectionString(Configuration.ResourcePrefix + "storage");
+                skillset.knowledgeStore.storageConnectionString = connString;
+            }
+
             TokenReplace(skillset);
 
             WarmUpSkills(skillset);
@@ -388,37 +400,54 @@ namespace KnowledgeMiningDeployer
                 if (sa.ResourceGroupName == Configuration.ResourceGroupName)
                 {
                     BlobStorageConfig c = new BlobStorageConfig();
-                    c.AccountName = sa.Name + "blob";
-                    string key = sa.GetKeys()[0].Value;
-                    string connString = $"DefaultEndpointsProtocol=https;AccountName={sa.Name};AccountKey={key};EndpointSuffix=core.windows.net";
-                    c.ConnectionString = connString;
-                    c.ContainerName = "documents";
-                    c.SasToken = "";
+                    string key = "";
+                    string connString = "";
 
-                    //add each storage account - blob
-                    GetOrCreateBlobDataSource(searchClient, c.AccountName, DataSourceType.AzureBlob, c);
+                    try
+                    {
+                        c.AccountName = sa.Name + "blob";
+                        key = sa.GetKeys()[0].Value;
+                        connString = $"DefaultEndpointsProtocol=https;AccountName={sa.Name};AccountKey={key};EndpointSuffix=core.windows.net";
+                        c.ConnectionString = connString;
+                        c.ContainerName = "documents";
+                        c.SasToken = "";
 
-                    //create an indexer for the data source
-                    var indexer = GetIndexerFromFile("base-indexer");
-                    indexer.Name = "base-indexer";
-                    indexer.DataSourceName = c.AccountName;
-                    indexer.TargetIndexName = "base";
-                    indexer.SkillsetName = "base";
+                        //add each storage account - blob
+                        GetOrCreateBlobDataSource(searchClient, c.AccountName, DataSourceType.AzureBlob, c);
 
-                    DeleteIndexerIfExists(searchClient, indexer.Name);
+                        //create an indexer for the data source
+                        var indexer = GetIndexerFromFile("base-indexer");
+                        indexer.Name = "base-indexer-" + c.AccountName;
+                        indexer.DataSourceName = c.AccountName;
+                        indexer.TargetIndexName = "base";
+                        indexer.SkillsetName = "base";
 
-                    CreateIndexer(searchClient, indexer);
+                        DeleteIndexerIfExists(searchClient, indexer.Name);
 
-                    //add each storage account - table
-                    c.AccountName = sa.Name + "table";
-                    key = sa.GetKeys()[0].Value;
-                    connString = $"DefaultEndpointsProtocol=https;AccountName={sa.Name};AccountKey={key};EndpointSuffix=core.windows.net";
-                    c.ConnectionString = connString;
-                    c.ContainerName = "documents";
-                    c.SasToken = "";
+                        CreateIndexer(searchClient, indexer);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
 
-                    //add each storage account - blob
-                    GetOrCreateBlobDataSource(searchClient, c.AccountName, DataSourceType.AzureTable, c);
+                    try
+                    {
+                        //add each storage account - table
+                        c.AccountName = sa.Name + "table";
+                        key = sa.GetKeys()[0].Value;
+                        connString = $"DefaultEndpointsProtocol=https;AccountName={sa.Name};AccountKey={key};EndpointSuffix=core.windows.net";
+                        c.ConnectionString = connString;
+                        c.ContainerName = "documents";
+                        c.SasToken = "";
+
+                        //add each storage account - blob
+                        GetOrCreateBlobDataSource(searchClient, c.AccountName, DataSourceType.AzureTable, c);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
 
                 }
             }
@@ -879,7 +908,6 @@ namespace KnowledgeMiningDeployer
         //https://docs.microsoft.com/en-us/azure/search/search-howto-indexing-azure-blob-storage
         public static DataSource GetOrCreateBlobDataSource(ISearchServiceClient serviceClient, string name, DataSourceType dataSourceType, BlobStorageConfig blobStorageConfig, string query = "")
         {
-            
             if (serviceClient.DataSources.Exists(name))
             {
                 //delete it

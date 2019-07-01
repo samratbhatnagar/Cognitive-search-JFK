@@ -288,12 +288,15 @@ namespace KnowledgeMiningDeployer
             if (Configuration.UseSampleData)
                 search.CreateDataSources();
 
+            //this isn't needed as you'd pass in via the data sources configuration
+            /*
             //if they passed in a blob storage connection, then use that
             if (!string.IsNullOrEmpty(Configuration.BlobStorageConnectionString))
             {
                 string name = Utility.ParseValue(Configuration.BlobStorageConnectionString, "AccountName=", ";");
                 search.AddAzureDataSource_StorageAccount_Blob(name, Configuration.BlobStorageConnectionString, Configuration.StorageContainer);
             }
+            */
 
             search.CreateDataSourcesFromConfiguration(config);
 
@@ -313,16 +316,16 @@ namespace KnowledgeMiningDeployer
                 switch (ds.type.ToString().ToLower())
                 {
                     case "sqlserver":
-                        CheckAzureDataSource_AzureSql(ds);
+                        Utility.CheckAzureDataSource_AzureSql(ds);
                         break;
                     case "table":
-                        CheckAzureDataSource_StorageAccount_Table(ds);
+                        Utility.CheckAzureDataSource_StorageAccount_Table(ds);
                         break;
                     case "blob":
-                        CheckAzureDataSource_StorageAccount_Blob(ds);
+                        Utility.CheckAzureDataSource_StorageAccount_Blob(ds);
                         break;
                     case "cosmosdb":
-                        CheckAzureDataSource_CosmosDb(ds);
+                        Utility.CheckAzureDataSource_CosmosDb(ds);
                         break;
                 }
             }
@@ -347,44 +350,6 @@ namespace KnowledgeMiningDeployer
             
 
             return true;
-        }
-
-        private static void CheckAzureDataSource_CosmosDb(dynamic ds)
-        {
-            //TODO
-        }
-
-        private static bool CheckAzureDataSource_StorageAccount_Blob(dynamic ds)
-        {
-            try
-            {
-                //Check the Blob storage connection string...
-                CloudStorageAccount storageAccount;
-                CloudStorageAccount.TryParse(ds.ConnectionString, out storageAccount);
-                CloudBlobClient c = storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer container = c.GetContainerReference(ds.ContainerName);
-                bool exists = container.Exists();
-
-                if (!exists)
-                    container.Create();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Auth Error: Check your blob connection string {Configuration.BlobStorageConnectionString}.");
-                return false;
-            }
-        }
-
-        private static void CheckAzureDataSource_StorageAccount_Table(dynamic ds)
-        {
-            //TODO
-        }
-
-        private static void CheckAzureDataSource_AzureSql(dynamic ds)
-        {
-            //TODO
         }
 
         private static ISqlServer GetSqlServer()
@@ -524,7 +489,7 @@ namespace KnowledgeMiningDeployer
                     settings.Add("SearchServiceName", Configuration.SearchServiceName);
                     settings.Add("SearchApiKey", Configuration.SearchKey);
                     settings.Add("SearchIndexName", "base");
-                    settings.Add("SearchIndexerName", "base-indexer");
+                    settings.Add("SearchIndexerName", "base-indexer-" + Configuration.ResourcePrefix + "blob");
                     settings.Add("InstrumentationKey", "");
                     settings.Add("StorageAccountName", Configuration.StorageAccountName);
                     settings.Add("StorageAccountKey", Configuration.StorageAccountKey);

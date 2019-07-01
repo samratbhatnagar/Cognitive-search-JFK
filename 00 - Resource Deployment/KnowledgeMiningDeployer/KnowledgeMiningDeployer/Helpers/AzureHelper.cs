@@ -225,6 +225,22 @@ namespace KnowledgeMiningDeployer
             CreateDeployment(json, parameters);
         }
 
+        internal static string GetStorageConnectionString(string name)
+        {
+            //add each storage account...
+            foreach (var sa in AzureHelper.AzureInstance.StorageAccounts.List())
+            {
+                if (sa.ResourceGroupName == Configuration.ResourceGroupName && sa.Name == name)
+                {
+                    string key = sa.GetKeys()[0].Value;
+                    string connString = $"DefaultEndpointsProtocol=https;AccountName={sa.Name};AccountKey={key};EndpointSuffix=core.windows.net";
+                    return connString;
+                }
+            }
+
+            return null;
+        }
+
         public static void CreateDeployment(FileInfo jsonFile, FileInfo paramatersFile, Hashtable tokens, string resourceGroupName)
         {
             if (AzureInstance == null)

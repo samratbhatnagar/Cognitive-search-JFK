@@ -1,5 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -103,5 +105,44 @@ namespace KnowledgeMiningDeployer.Classes
 
             return "";
         }
+
+        public static void CheckAzureDataSource_CosmosDb(dynamic ds)
+        {
+            //TODO
+        }
+
+        public static bool CheckAzureDataSource_StorageAccount_Blob(dynamic ds)
+        {
+            try
+            {
+                //Check the Blob storage connection string...
+                CloudStorageAccount storageAccount;
+                CloudStorageAccount.TryParse(ds.ConnectionString, out storageAccount);
+                CloudBlobClient c = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = c.GetContainerReference(ds.ContainerName);
+                bool exists = container.Exists();
+
+                if (!exists)
+                    container.Create();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Auth Error: Check your blob connection string {Configuration.BlobStorageConnectionString}.");
+                return false;
+            }
+        }
+
+        public static void CheckAzureDataSource_StorageAccount_Table(dynamic ds)
+        {
+            //TODO
+        }
+
+        public static void CheckAzureDataSource_AzureSql(dynamic ds)
+        {
+            //TODO
+        }
+
     }
 }
