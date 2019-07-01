@@ -39,9 +39,9 @@ namespace KnowledgeMiningDeployer
             RunPath = fi.Directory.FullName;
 
             Properties = new Hashtable();
-            SetProperty("functionUrl", "jfk-func01.azurewebsites.net");
-            SetProperty("apiUrl", "jfk-web02.azurewebsites.net");
-            SetProperty("uiUrl", "jfk-web01.azurewebsites.net");
+            SetProperty("functionUrl", Configuration.ResourcePrefix + "-func01.azurewebsites.net");
+            SetProperty("apiUrl", Configuration.ResourcePrefix + "-web02.azurewebsites.net");
+            SetProperty("uiUrl", Configuration.ResourcePrefix + "-web01.azurewebsites.net");
         }
 
         static public void SetProperty(string name, string value)
