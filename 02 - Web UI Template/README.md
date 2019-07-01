@@ -1,5 +1,6 @@
 # Cognitive Search UI Template
-This folder contains a basic web front end that can be used to quickly create a view of your search results.  With just a few simles steps, you can configure this template UI to query your newly created search index.
+
+This folder contains a basic web front end that can be used to quickly create a view of your search results.  With just a few simple steps, you can configure this template UI to query your newly created search index.
 
 The Cognitive Search Template contains four projects:
 
@@ -56,11 +57,49 @@ In the `CognitiveSearch.WebApi` project update the following fields in the `apps
 
 ![appsettings.json](media/appsettings-json.png "App settings")
 
+The settings in that you will need to update in the WebApi project's `appsettings.json` are below:
+
+```json
+// Optional
+"APPINSIGHTS_INSTRUMENTATIONKEY": "<your-application-insights-instrumentation key>",
+// The name of your search service
+"SearchServiceName": "<your-search-service-name>",
+// The key for your search service
+"SearchServiceKey": "<your-search-service-key>",
+// The API version of your search service. The current version is 2019-05-06, so you shouldn't have to change this.
+"SearchServiceApiVersion": "2019-05-06",
+// This is the name of your search index. "index-base" is the default value specified by the deployment project.
+"SearchIndexName": "index-base",
+// The name of your Azure Storage account.
+"StorageAccountName": "<your-storage-account-name>",
+// The access key for your Azure Storage account. Must have rights to read and write to Blob storage.
+"StorageAccountKey": "<your-storage-account-key>",
+// The name of the container in your Azure Storage account.
+"StorageAccountContainerName": "<your-container-name>"
+```
+
 ## Web
 
 In the `CognitiveSearch.Web` project update the following fields in the `appsettings.json` file to connect to your API, as well as provide some information about your organization, that will appear on the pages:
 
 ![appsettings.json](media/web-appsettings-json.png "App settings")
+
+The settings in that you will need to update in the Web project's `appsettings.json` are below:
+
+```json
+ // Optional
+"APPINSIGHTS_INSTRUMENTATIONKEY": "<your-application-insights-instrumentation key>",
+// This should remain set to https
+"ApiProtocol": "https",
+// This will be the deployed URL of your Web API + "/api"
+"ApiUrl": "<your-deployed-web-api-url>/api",
+// Name of your organization (e.g., Microsoft)
+"OrganizationName": "<your-organization-name>",
+ // The link to your organization's web site (e.g., https://www.microsoft.com)
+"OrganizationWebSiteUrl": "<your-organization-web-site>",
+// This is the default name and time of the site logo. If you would like to use a different image name and type, update this setting.
+"OrganizationLogo": "org-logo.svg"
+```
 
 ### Notes
 
