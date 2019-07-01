@@ -102,20 +102,9 @@ namespace KnowledgeMiningDeployer
             p.Value = Configuration.SearchSku;
             parameters.searchSku = p;
 
-
-            /*
-            parameters.azureAdminClientId = Configuration.AdminAzureClientId;
-            parameters.azureAdminClientSecret = Configuration.AdminAzureClientSecret;
-            parameters.adminUsername = Configuration.Username;
-            parameters.adminPassword = Configuration.Password;
-            parameters.prefix = Configuration.ResourcePrefix;
-            parameters.useSampleData = Configuration.UseSampleData;
-            parameters.blobStorageConnectionString = Configuration.BlobStorageConnectionString;
-            parameters.configFilePath = Configuration.ConfigFilePath;
-            parameters.customDataZip = Configuration.CustomDataZip;
-            parameters.bingEndPoint = Configuration.BingEndpoint;
-            parameters.bingKey = Configuration.BingKey;
-            */
+            p = new System.Dynamic.ExpandoObject();
+            p.Value = Configuration.DeploymentMode.ToString();
+            parameters.deploymentMode = p;
 
             string data = JsonConvert.SerializeObject(parameters);
 
@@ -154,11 +143,11 @@ namespace KnowledgeMiningDeployer
             AzureHelper.Initialize(Configuration.ResourceGroupName);
 
             //do quick check...try to connect to each data source...
-            if (!CheckConfiguration())
+            if (!CheckConfiguration() && !Configuration.UseSampleData)
                 return;
 
             //deploy the main template - Not needed, done in the arm template itself which then calls this exe via DSC.
-            if (Configuration.DeployMain && false)
+            if (Configuration.DeployMain)
                 DeployMain(Configuration.ResourceGroupName);
 
             //set all the configuration values...
@@ -296,7 +285,8 @@ namespace KnowledgeMiningDeployer
                 search.CreateKnowledgeSkillSet(skillSet);
 
             //create based on existing data sources in resource group
-            //search.CreateDataSources();
+            if (Configuration.UseSampleData)
+                search.CreateDataSources();
 
             //if they passed in a blob storage connection, then use that
             if (!string.IsNullOrEmpty(Configuration.BlobStorageConnectionString))
@@ -382,6 +372,13 @@ namespace KnowledgeMiningDeployer
                     Configuration.StorageAccountName = sa.Name;
                     var keys = sa.GetKeys();
                     Configuration.StorageAccountKey = keys[0].Value;
+
+                    if (Configuration.UseSampleData)
+                    {
+                        Configuration.BlobStorageConnectionString = $"DefaultEndpointsProtocol=https;AccountName={Configuration.StorageAccountName};AccountKey={Configuration.StorageAccountKey};EndpointSuffix=core.windows.net";
+                        Configuration.StorageContainer = "documents";
+                    }
+
                     break;
                 }
             }

@@ -282,7 +282,7 @@
     <Compile Include="Classes\KnowledgeStoreSkill.cs" />
     <Compile Include="Classes\SqlDbConfig.cs" />
     <Compile Include="Helpers\AzureHelper.cs" />
-    <Compile Include="AzureSearch.cs" />
+    <Compile Include="Helpers\AzureSearch.cs" />
     <Compile Include="Classes\PersonalizerConfig.cs" />
     <Compile Include="Classes\SearchConfig.cs" />
     <Compile Include="Classes\FormRecognizerConfig.cs" />
@@ -293,7 +293,7 @@
     <Compile Include="Classes\AnomalyDetectorConfig.cs" />
     <Compile Include="Classes\FunctionAppConfig.cs" />
     <Compile Include="Classes\Utility.cs" />
-    <Compile Include="Configuration.cs" />
+    <Compile Include="Classes\Configuration.cs" />
     <None Include="AzureTemplates\ApplicationInsightsKey_assign.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -331,7 +331,7 @@
     <Compile Include="Helpers\AzureStorage.cs" />
     <Compile Include="Helpers\FormRecognition.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
-    <Compile Include="InstallUtil.cs" />
+    <Compile Include="Classes\InstallUtil.cs" />
     <Compile Include="Models\AnomalyModel.cs" />
     <Compile Include="Models\BlobContext.cs" />
     <Compile Include="Models\CosmosDbConnectionString.cs" />

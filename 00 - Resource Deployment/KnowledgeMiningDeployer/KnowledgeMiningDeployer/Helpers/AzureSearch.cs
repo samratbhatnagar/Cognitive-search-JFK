@@ -398,6 +398,17 @@ namespace KnowledgeMiningDeployer
                     //add each storage account - blob
                     GetOrCreateBlobDataSource(searchClient, c.AccountName, DataSourceType.AzureBlob, c);
 
+                    //create an indexer for the data source
+                    var indexer = GetIndexerFromFile("base-indexer");
+                    indexer.Name = "base-indexer-" + c.AccountName;
+                    indexer.DataSourceName = c.AccountName;
+                    indexer.TargetIndexName = "base-index";
+                    indexer.SkillsetName = "base";
+
+                    DeleteIndexerIfExists(searchClient, indexer.Name);
+
+                    CreateIndexer(searchClient, indexer);
+
                     //add each storage account - table
                     c.AccountName = sa.Name + "table";
                     key = sa.GetKeys()[0].Value;

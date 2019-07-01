@@ -37,7 +37,7 @@
     },
     "githubRepo": {
       "type": "string",
-      "defaultValue": "https://github.com/givenscj/CogsDeployment/blob/master",
+      "defaultValue": "https://github.com/solliancenet/Cognitive-search-JFK/raw/km-deliverable/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/",
       "metadata": {
         "description": "The github location for deployment files."
       }
@@ -75,6 +75,13 @@
       "defaultValue": "basic",
       "metadata": {
         "description": "Size of the Azure Search instance."
+      }
+    },
+    "deploymentMode": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "Can be 0 or 1.  1 implies the deployment is running from ARM template."
       }
     }
   },
@@ -519,6 +526,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
+      "condition": "[equals(parameters('deploymentMode'), 1)]",
       "name": "[concat('prov-vm','/', 'dscExtension1')]",
       "apiVersion": "2018-06-01",
       "location": "westus2",
@@ -531,7 +539,7 @@
         "typeHandlerVersion": "2.19",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "ModulesUrl": "https://github.com/givenscj/CogsDeployment/raw/master/Deploy.zip",
+          "ModulesUrl": "https://github.com/solliancenet/Cognitive-search-JFK/raw/km-deliverable/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/Deploy.zip",
           "ConfigurationFunction": "Deploy.ps1\\Deploy",
           "Properties": {
             "MachineName": "prov-vm",

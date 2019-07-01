@@ -30,7 +30,7 @@ namespace KnowledgeMiningDeployer
         public static string StorageContainer { get; internal set; }
         public static string CognitiveServicesKey { get; internal set; }
         public static string CognitiveServicesResourceId { get; internal set; }
-        public static object AzureManagementApi { get; internal set; }
+        public static string AzureManagementApi { get; internal set; }
         public static bool UseSampleData { get; internal set; }
         public static string CognitiveServicesUrl { get; internal set; }
         public static string SearchServiceApiVersion { get; internal set; }
@@ -48,6 +48,7 @@ namespace KnowledgeMiningDeployer
         public static string AzureMapsKey { get; internal set; }
         public static bool DoDeployments { get; internal set; }
         public static string SearchSku { get; internal set; }
+        public static int DeploymentMode { get; internal set; }
 
         public static Hashtable LoadConfiguration(string filename)
         {
