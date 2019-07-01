@@ -142,8 +142,11 @@ namespace KnowledgeMiningDeployer
 
             AzureHelper.Initialize(Configuration.ResourceGroupName);
 
+            //create based on the data sources in configuration file
+            dynamic config = Configuration.Export(ConfigurationManager.AppSettings["Mode"]);
+
             //do quick check...try to connect to each data source...
-            if (!CheckConfiguration() && !Configuration.UseSampleData)
+            if (!CheckConfiguration(config) && !Configuration.UseSampleData)
                 return;
 
             //deploy the main template - Not needed, done in the arm template itself which then calls this exe via DSC.
@@ -206,11 +209,11 @@ namespace KnowledgeMiningDeployer
 
             if (funcApp == null || Configuration.DoDeployments)
             {
-                funcApp = DeployFunctionApp("func01", "CognitiveSearch.Skills");
+                funcApp = DeployFunctionApp("func01");
 
-                //this has to be done before we deploy the zip...funcation app changes will blow away storage connection
+                //this has to be done before we deploy the zip...function app changes will blow away storage connection
                 //wire up the config options
-                //SetupFunctionApp(funcApp, "CognitiveSearch.Skills");
+                SetupFunctionApp(funcApp, "CognitiveSearch.Skills");
 
                 //deploy the zip
                 var profile = funcApp.GetPublishingProfile();
@@ -269,9 +272,6 @@ namespace KnowledgeMiningDeployer
 
             SearchConfig sc = new SearchConfig();
 
-            //create based on the data sources in configuration file
-            dynamic config = Configuration.Export(ConfigurationManager.AppSettings["Mode"]);
-
             //indexes are independent of anything and can be created first
             foreach(dynamic index in config.Indexes)
             {
@@ -305,8 +305,28 @@ namespace KnowledgeMiningDeployer
             DeployPowerBI("", "");
         }
 
-        private static bool CheckConfiguration()
+        private static bool CheckConfiguration(dynamic config)
         {
+            //try each data source connection..
+            foreach (dynamic ds in config.datasources)
+            {
+                switch (ds.type.ToString().ToLower())
+                {
+                    case "sqlserver":
+                        CheckAzureDataSource_AzureSql(ds);
+                        break;
+                    case "table":
+                        CheckAzureDataSource_StorageAccount_Table(ds);
+                        break;
+                    case "blob":
+                        CheckAzureDataSource_StorageAccount_Blob(ds);
+                        break;
+                    case "cosmosdb":
+                        CheckAzureDataSource_CosmosDb(ds);
+                        break;
+                }
+            }
+
             try
             {
                 //Check the Blob storage connection string...
@@ -321,12 +341,50 @@ namespace KnowledgeMiningDeployer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Check your blob connection string.");
+                Console.WriteLine($"Auth Error: Check your blob connection string {Configuration.BlobStorageConnectionString}.");
                 return false;
             }
             
 
             return true;
+        }
+
+        private static void CheckAzureDataSource_CosmosDb(dynamic ds)
+        {
+            //TODO
+        }
+
+        private static bool CheckAzureDataSource_StorageAccount_Blob(dynamic ds)
+        {
+            try
+            {
+                //Check the Blob storage connection string...
+                CloudStorageAccount storageAccount;
+                CloudStorageAccount.TryParse(ds.ConnectionString, out storageAccount);
+                CloudBlobClient c = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = c.GetContainerReference(ds.ContainerName);
+                bool exists = container.Exists();
+
+                if (!exists)
+                    container.Create();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Auth Error: Check your blob connection string {Configuration.BlobStorageConnectionString}.");
+                return false;
+            }
+        }
+
+        private static void CheckAzureDataSource_StorageAccount_Table(dynamic ds)
+        {
+            //TODO
+        }
+
+        private static void CheckAzureDataSource_AzureSql(dynamic ds)
+        {
+            //TODO
         }
 
         private static ISqlServer GetSqlServer()
@@ -532,9 +590,9 @@ namespace KnowledgeMiningDeployer
             
         }
 
-        private static IFunctionApp DeployFunctionApp(string webName, string deploymentZipPath)
+        private static IFunctionApp DeployFunctionApp(string webName)
         {
-            Console.WriteLine($"Deploying function app [{webName}] with [{deploymentZipPath}]");
+            Console.WriteLine($"Deploying function app [{webName}]");
 
             IFunctionApp webApp = null;
 

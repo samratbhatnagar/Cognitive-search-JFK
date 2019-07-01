@@ -400,9 +400,9 @@ namespace KnowledgeMiningDeployer
 
                     //create an indexer for the data source
                     var indexer = GetIndexerFromFile("base-indexer");
-                    indexer.Name = "base-indexer-" + c.AccountName;
+                    indexer.Name = "base-indexer";
                     indexer.DataSourceName = c.AccountName;
-                    indexer.TargetIndexName = "base-index";
+                    indexer.TargetIndexName = "base";
                     indexer.SkillsetName = "base";
 
                     DeleteIndexerIfExists(searchClient, indexer.Name);
