@@ -654,3 +654,18 @@ This tool will do the following:
 ##  Deploy PowerBI Report
 
 A PowerBI report has been created that allows you to view the Cognitive Services skills enrichments.  These enrichments are sent to Azure Table Storage via the KnowledgeStore feature.  You simply need to download the PowerBI report, modify the data source and then refresh the data sources.  You will then be able to see all the enhancements your skill pipeline has added to your Azure Search index.
+
+###  Modify the data source
+
+-  Open PowerBI
+-  Click **Recent Sources**, select **jfkstorage**
+-  Right-click the **jfkstorage[1]** item, select **Edit**
+-  In the ribbon, click **Data source settings**
+-  Select the data source, then click **Change source**
+-  Enter the name of the storage account
+-  Click **OK**
+-  Click **Edit permissions**
+-  Click **Edit**
+-  Update the account key with the primary or secondary key
+-  Click **Save**
+-  Close all windows and refresh your data sources
