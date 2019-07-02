@@ -655,6 +655,16 @@ This tool will do the following:
 
 A PowerBI report has been created that allows you to view the Cognitive Services skills enrichments.  These enrichments are sent to Azure Table Storage via the KnowledgeStore feature.  You simply need to download the PowerBI report, modify the data source and then refresh the data sources.  You will then be able to see all the enhancements your skill pipeline has added to your Azure Search index.
 
+The PowerBI report is made up of the following 7 report tabs:
+
+-  Top Entities – for each of the four entities derived from the skill logic a table view
+-  Entities by Location – a map view of the locations derived from the skill logic
+-  Entities by organization - a treemap view of the organizations derived from the skill logic
+-  Entity by people - a treemap view of the people derived from the skill logic
+-  Images by celebrities - a treemap view of the celebrities derived from the skill logic
+-  Images by tags - a treemap view of the image tags derived from the skill logic
+-  Phrases - a treemap view of the phrases derived from the skill logic
+
 ###  Modify the data source
 
 -  Open PowerBI
