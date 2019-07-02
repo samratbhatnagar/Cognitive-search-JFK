@@ -34,7 +34,7 @@ namespace CognitiveSearch.Web
             var apiConfig = new ApiConfig
             {
                 BaseUrl = Configuration["ApiUrl"],
-                Protocol = Configuration["ApiProtocol"]
+                //Protocol = Configuration["ApiProtocol"]
             };
             services.AddSingleton(apiConfig);
 

@@ -34,7 +34,7 @@ namespace CognitiveSearch.Web.Controllers
         {
             if (string.IsNullOrEmpty(query))
             {
-                query = "*";
+                query = "";
             }
 
             var viewModel = new SearchViewModel

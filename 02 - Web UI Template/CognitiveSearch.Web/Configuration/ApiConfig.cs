@@ -2,8 +2,11 @@
 {
     public class ApiConfig
     {
-        public string Protocol { get; set; }
+        //public string Protocol { get; set; } = "https";
         public string BaseUrl { get; set; }
-        public string Url => $"{Protocol}://{BaseUrl}";
+        public string Url => 
+           BaseUrl.EndsWith("/")
+            ? $"{BaseUrl}api"
+            : $"{BaseUrl}/api";
     }
 }

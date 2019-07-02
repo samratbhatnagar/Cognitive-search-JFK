@@ -41,7 +41,7 @@ body {
     /* Set the fixed height of the footer here */
     height: 60px;
     line-height: 60px; /* Vertically center the text there */
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
 }
 
 .footer-content {
@@ -647,4 +647,11 @@ ul.breadcrumb li {
 .video-result {
     max-width: 100%;
     height: inherit;
+}
+
+.home-table {
+    justify-content: center;
+    max-width: 75%;
+    background-color: lightgray;
+    border: 1px solid black;
 }

@@ -22,7 +22,8 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     </environment>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
 </head>
 <body>
     <environment include="Development">
@@ -50,17 +51,23 @@
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
     <header>
-        <nav class="navbar navbar-custom border-bottom box-shadow mb-3 fixed-top">
+        <nav class="navbar navbar-bg border-bottom box-shadow mb-3 fixed-top">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/@AppConfig.Organization.Logo" alt="@@AppConfig.Organization.Name logo" title="@@AppConfig.Organization.Name Cognitive Search" height="20" asp-append-version="true" />
+                    <img id="navbar-img" alt="@AppConfig.Organization.Name logo" title="@AppConfig.Organization.Name Cognitive Search" class="logo-container logo-sgv" asp-append-version="true" />
                 </a>
                 <ul class="navbar-nav list-group-horizontal">
+                    <li class="nav-item pl-5">
+                        <a class="nav-link navbar-text" asp-area="" asp-controller="Admin" asp-action="Deploy">Deploy</a>
+                    </li>
                     <li class="nav-item pl-5">
                         <a class="nav-link navbar-text" asp-area="" asp-controller="Admin" asp-action="Customize">Customize</a>
                     </li>
                     <li class="nav-item pl-5">
                         <a class="nav-link navbar-text" asp-area="" asp-controller="Admin" asp-action="UploadData">Upload Files</a>
+                    </li>
+                    <li class="nav-item pl-5">
+                        <a class="nav-link navbar-text" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
                     </li>
                     <li class="nav-item pl-5">
                         <a class="nav-link navbar-text" asp-area="" asp-controller="Home" asp-action="About">About</a>

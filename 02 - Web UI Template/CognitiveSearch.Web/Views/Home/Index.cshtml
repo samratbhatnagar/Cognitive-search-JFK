@@ -3,14 +3,60 @@
 }
 
 <main role="main" class="col-md-12 px-4">
-    <div id="index-search" class="justify-content-center">
-        <div class="row">
+    <div id="index-search" class="justify-content-center bg-image">
+        @*<div class="row">
             <div class="logo-container">
                 <img class="logo" height="150" src="~/images/search-files.svg" />
             </div>
-        </div>
-        <div class="row">
-            <div class="searchbar-container">
+        </div>*@
+        <div class="row justify-content-center d-flex">
+            <table class="home-table">
+                <thead>
+                    <tr>
+                        <th width="260" class="justify-content-center">Healthcare</th>
+                        <th width="260" class="justify-content-center">Oil and Gas</th>
+                        <th width="260" class="justify-content-center">Retail</th>
+                        <th width="260" class="justify-content-center">Bring your own data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="~/images/healthcare_launcher_icon.png" height="150" /></td>
+                        <td><img src="~/images/oilandgas_launcher_icon.png" height="150" /></td>
+                        <td><img src="~/images/retail_launcher_icon.png" height="150" /></td>
+                        <td>
+                            <div class="searchbar-container">
+                                @using (Html.BeginForm("Search", "Search", FormMethod.Post))
+                                {
+                                    <div class="input-group">
+                                        @*<div class="searchbar">*@
+                                            <input type="hidden" class="search_input" name="query" placeholder="Search your data..." value="">
+                                            @*<button id="btn-search" type="submit" class="search_icon"><span class="ms-Icon ms-Icon--Search"></span></button>*@
+                                            <button id="btn-search" type="submit"><img class="logo" height="150" src="~/images/search-files.svg" /></button>
+                                        @*</div>*@
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Diabetes, high blood pressure, heart disease, heart attack, circulatory, respiratory, bronchitis, asthma, illnesses, Gastrointestinal, Patient readmission, risks, treatments, Cigarettes, overweight, Microsoft</span>
+                        </td>
+                        <td>
+                            <span>Upstream, Downstream, Pollution, crude oil, Real time leak detection, pipeline control, center, transient models (video analysis)</span>
+                        </td>
+                        <td>
+                            <span>Pipeline management, Customer profiling, Retail Marketing, Logistics, Estimation, consumption, predictive analytics, time series analysis, seasonality, Microsoft</span>
+                        </td>
+                        <td>
+                            <span>Automatically shows the key words powered by Knowledge Mining.</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            @*<div class="searchbar-container">
                 @using (Html.BeginForm("Search", "Search", FormMethod.Post))
                 {
                     <div class="input-group">
@@ -20,7 +66,7 @@
                         </div>
                     </div>
                 }
-            </div>
+            </div>*@
         </div>
     </div>
 </main>
