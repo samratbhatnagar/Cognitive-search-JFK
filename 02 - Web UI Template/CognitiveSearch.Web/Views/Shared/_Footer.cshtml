@@ -7,7 +7,7 @@
             &copy; @DateTime.Now.Year - @OrgConfig.Name
         </div>
         <a href="@OrgConfig.Url" target="_blank">
-            <img src="~/images/@OrgConfig.Logo" height="30" alt="@OrgConfig.Name logo" class="logo-container logo-sgv" />
+            <img src="~/images/@OrgConfig.Logo" height="30" alt="@OrgConfig.Name logo" class="logo-container logo-sgv" asp-append-version="true" />
         <div class="link-area">
             <a asp-area="" asp-action="Privacy" asp-controller="Home" class="footer-link">Privacy</a>
         </div>
