@@ -18,23 +18,16 @@
             <h1 class="h2">Cognitive Search Results</h1>
             <div id="view-switcher" class="btn-group pr-5" role="radiogroup" aria-label="Select results view">
                 <button type="button" data-view="list" class="btn btn-outline-primary btn-results-view" title="View results as list">
-                    <i class="ms-Icon ms-Icon--GroupedList"></i>
+                    <span class="ms-Icon ms-Icon--GroupedList"></span>
                 </button>
                 <button type="button" data-view="entitymap" class="btn btn-outline-primary btn-results-view" title="View results as entity map">
-                    <i class="ms-Icon ms-Icon--EngineeringGroup"></i>
+                    <span class="ms-Icon ms-Icon--EngineeringGroup"></span>
                 </button>
             </div>
         </div>
         <div id="search-results-container">
-            @if (string.IsNullOrWhiteSpace(Model.Query))
-            {
-                @await Html.PartialAsync("_SearchEmpty")
-            }
-            else
-            {
-                @await Html.PartialAsync("_SearchResults")
-                @await Html.PartialAsync("_EntityMap")
-            }
+            @await Html.PartialAsync("_SearchResults")
+            @await Html.PartialAsync("_EntityMap")
         </div>
     </div>
 </main>

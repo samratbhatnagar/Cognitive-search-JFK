@@ -473,11 +473,10 @@ audio {
 }
 
 .modal-dialog {
-    /*width: 100vw;
-    height: 100vh;
-    margin: 0 !important;*/
     width: calc(100vw - 40px);
+    max-width: calc(100vw - 40px);
     height: calc(100vh - 40px);
+    max-height: calc(100vh - 40px);
     margin: 20px;
 }
 
@@ -487,7 +486,6 @@ audio {
 }
 
 .ms-Pivot-content {
-    /*margin-top: 0px;*/
     height: calc(100% - 60px) !important;
 }
 
