@@ -13,18 +13,19 @@ namespace CognitiveSearch.Azure.Search
         private readonly SearchConfig _searchConfig;
         private readonly SearchServiceClient _searchClient;
 
-        public SearchClient(SearchConfig searchConfig)
+        // Client logs all searches in Application Insights
+        private readonly TelemetryClient _telemetryClient;
+        public static string _searchId;
+
+        public SearchClient(SearchConfig searchConfig, TelemetryClient telemetryClient)
         {
+            _telemetryClient = telemetryClient;
             _searchConfig = searchConfig;
             _searchClient = new SearchServiceClient(searchConfig.ServiceName, new SearchCredentials(searchConfig.Key));
 
             Schema = new SearchSchema().AddFields(_searchClient.Indexes.Get(_searchConfig.IndexName).Fields);
             Model = new SearchModel(Schema);
         }
-
-        // Client logs all searches in Application Insights
-        private static readonly TelemetryClient telemetryClient = new TelemetryClient();
-        public static string _searchId;
 
         public SearchSchema Schema { get; set; }
         public SearchModel Model { get; set; }
@@ -60,7 +61,7 @@ namespace CognitiveSearch.Azure.Search
                 {
                     var sp = await GenerateSearchParameters(searchFacets, selectFilter, currentPage);
                     sp.HighlightFields = new List<string> { "content" };
-                    if (!string.IsNullOrEmpty(telemetryClient.InstrumentationKey))
+                    if (!string.IsNullOrEmpty(_telemetryClient.InstrumentationKey))
                     {
                         var s = GenerateSearchId(indexClient, searchText, sp);
                         _searchId = s.Result;

@@ -17,18 +17,6 @@ namespace CognitiveSearch.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Search()
-        {
-            var viewModel = new SearchViewModel
-            {
-                AppConfig = _appConfig,
-                Query = string.Empty,
-                SearchId = string.Empty
-            };
-
-            return View(viewModel);
-        }
-
         [HttpPost]
         public IActionResult Search(string query)
         {
@@ -43,10 +31,6 @@ namespace CognitiveSearch.Web.Controllers
                 Query = query,
                 SearchId = string.Empty
             };
-
-            //TempData["query"] = query;
-            //TempData["searchId"] = string.Empty;
-            //TempData["applicationInstrumentationKey"] = _appConfig.AppInsights.InstrumentationKey;
 
             return View(viewModel);
         }

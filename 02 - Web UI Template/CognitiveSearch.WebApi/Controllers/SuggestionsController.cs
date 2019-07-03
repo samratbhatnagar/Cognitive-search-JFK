@@ -1,4 +1,6 @@
-﻿using CognitiveSearch.Azure.Search;
+﻿using CognitiveSearch.Azure.AppInsights;
+using CognitiveSearch.Azure.Search;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +12,18 @@ namespace CognitiveSearch.WebApi.Controllers
     [ApiController]
     public class SuggestionsController : ControllerBase
     {
+        private readonly AppInsightsConfig _appInsightsConfig;
         private readonly SearchConfig _searchConfig;
         private readonly SearchClient _searchClient;
+        private readonly TelemetryClient _telemetryClient;
 
-        public SuggestionsController(SearchConfig searchConfig)
+        public SuggestionsController(AppInsightsConfig appInsightsConfig, SearchConfig searchConfig, TelemetryClient telemetryClient)
         {
+            _appInsightsConfig = appInsightsConfig;
             _searchConfig = searchConfig;
-            _searchClient = new SearchClient(_searchConfig);
+            _telemetryClient = telemetryClient;
+            _telemetryClient.InstrumentationKey = _appInsightsConfig.InstrumentationKey;
+            _searchClient = new SearchClient(_searchConfig, _telemetryClient);
         }
 
         [HttpGet]

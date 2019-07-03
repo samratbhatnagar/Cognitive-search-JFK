@@ -33,7 +33,12 @@ namespace CognitiveSearch.WebApi
                 });
             });
 
-            services.AddApplicationInsightsTelemetry();
+            var appInsightsConfig = new AppInsightsConfig
+            {
+                InstrumentationKey = Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]
+            };
+            services.AddSingleton(appInsightsConfig);
+            services.AddApplicationInsightsTelemetry(appInsightsConfig.InstrumentationKey);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -53,12 +58,6 @@ namespace CognitiveSearch.WebApi
                 ContainerName = Configuration["StorageAccountContainerName"]
             };
             services.AddSingleton(storageConfig);
-
-            var appInsightsConfig = new AppInsightsConfig
-            {
-                InstrumentationKey = Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]
-            };
-            services.AddSingleton(appInsightsConfig);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

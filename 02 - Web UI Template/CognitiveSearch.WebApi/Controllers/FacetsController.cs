@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CognitiveSearch.Azure.AppInsights;
 using CognitiveSearch.Azure.Search;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +18,15 @@ namespace CognitiveSearch.WebApi.Controllers
         private readonly AppInsightsConfig _appInsightsConfig;
         private readonly SearchConfig _searchConfig;
         private readonly SearchClient _searchClient;
+        private readonly TelemetryClient _telemetryClient;
 
-        public FacetsController(AppInsightsConfig appInsightsConfig, SearchConfig searchConfig)
+        public FacetsController(AppInsightsConfig appInsightsConfig, SearchConfig searchConfig, TelemetryClient telemetryClient)
         {
             _appInsightsConfig = appInsightsConfig;
             _searchConfig = searchConfig;
-            _searchClient = new SearchClient(_searchConfig);
+            _telemetryClient = telemetryClient;
+            _telemetryClient.InstrumentationKey = _appInsightsConfig.InstrumentationKey;
+            _searchClient = new SearchClient(_searchConfig, _telemetryClient);
         }
 
         [HttpGet]

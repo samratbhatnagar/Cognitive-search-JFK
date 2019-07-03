@@ -1,5 +1,4 @@
-﻿//using CognitiveSearch.Azure.AppInsights;
-using CognitiveSearch.Azure.AppInsights;
+﻿using CognitiveSearch.Azure.AppInsights;
 using CognitiveSearch.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,18 +30,18 @@ namespace CognitiveSearch.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var apiConfig = new ApiConfig
-            {
-                BaseUrl = Configuration["ApiUrl"],
-                //Protocol = Configuration["ApiProtocol"]
-            };
-            services.AddSingleton(apiConfig);
-
             var appInsightsConfig = new AppInsightsConfig
             {
                 InstrumentationKey = Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]
             };
             services.AddSingleton(appInsightsConfig);
+            services.AddApplicationInsightsTelemetry(appInsightsConfig.InstrumentationKey);
+
+            var apiConfig = new ApiConfig
+            {
+                BaseUrl = Configuration["ApiUrl"]
+            };
+            services.AddSingleton(apiConfig);
 
             var orgConfig = new OrganizationConfig
             {
