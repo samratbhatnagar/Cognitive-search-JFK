@@ -17,7 +17,7 @@ In just a few steps, you can configure this template UI to query your search ind
 
 ## Customize
 
-From the home page, you can select the **Customize** link on the menu, to upload your own logo and set the header styles.
+From the home page, you can select the **Customize** link on the menu, to upload your own logo and set the header and footer styles.
 
 ![Customize your experience.](media/customize-page.png "Customize")
 
@@ -68,14 +68,14 @@ The settings in that you will need to update in the WebApi project's `appsetting
 "SearchServiceKey": "<your-search-service-key>",
 // The API version of your search service. The current version is 2019-05-06, so you shouldn't have to change this.
 "SearchServiceApiVersion": "2019-05-06",
-// This is the name of your search index. "index-base" is the default value specified by the deployment project.
+// This is the name of your search index. Default is 'index-base'.
 "SearchIndexName": "index-base",
 // The name of your Azure Storage account.
 "StorageAccountName": "<your-storage-account-name>",
 // The access key for your Azure Storage account. Must have rights to read and write to Blob storage.
 "StorageAccountKey": "<your-storage-account-key>",
-// The name of the container in your Azure Storage account.
-"StorageAccountContainerName": "<your-container-name>"
+// The name of the container in your Azure Storage account. Default is 'documents'
+"StorageAccountContainerName": "documents"
 ```
 
 ## Web
@@ -89,16 +89,12 @@ The settings in that you will need to update in the Web project's `appsettings.j
 ```json
  // Optional
 "APPINSIGHTS_INSTRUMENTATIONKEY": "<your-application-insights-instrumentation key>",
-// This should remain set to https
-"ApiProtocol": "https",
-// This will be the deployed URL of your Web API + "/api"
-"ApiUrl": "<your-deployed-web-api-url>/api",
+// This will be the deployed URL of your Web API"
+"ApiUrl": "<your-deployed-web-api-url>",
 // Name of your organization (e.g., Microsoft)
 "OrganizationName": "<your-organization-name>",
  // The link to your organization's web site (e.g., https://www.microsoft.com)
-"OrganizationWebSiteUrl": "<your-organization-web-site>",
-// This is the default name and time of the site logo. If you would like to use a different image name and type, update this setting.
-"OrganizationLogo": "org-logo.svg"
+"OrganizationWebSiteUrl": "<your-organization-web-site>"
 ```
 
 ### Notes
