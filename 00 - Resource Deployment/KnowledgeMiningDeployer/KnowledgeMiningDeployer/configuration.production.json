@@ -1,23 +1,41 @@
 ﻿{
-  "ResourceGroupName": "jfk-cjg",
-  "ResourcePrefix": "jfk",
+  "ResourceGroupName": "xyz-cjg",
+  "ResourcePrefix": "xyz",
   "SubscriptionId": "e433f371-e5e9-4238-abc2-7c38aa596a18",
   "AdminAzureClientId": "8ac3e3c9-d29c-4d15-b87e-9b6ec8cd9171",
   "AdminAzureClientSecret": "",
   "TenantId": "d280491c-b27a-41bf-9623-21b60cf430b3",
   "Region": "westus2",
-  "SearchServiceApiVersion": "2019-05-06",
-  "DeployMain": false,
-  "DoDeployments": false,
-  "BlobStorageConnectionString": "",
-  "StorageContainer": "documents",
-  "ConfigFilePath": "https://raw.githubusercontent.com/givenscj/CogsDeployment/master/configuration.development.json",
-  "CustomDataZip": "https://github.com/givenscj/CogsDeployment/blob/master/StarterDocuments.zip?raw=true",
+  "SearchServiceApiVersion": "2019-05-06-preview",
+  "SearchSku": "basic",
+  "DeployMain": true,
+  "DeploymentMode": 0,
+  "DoDeployments": true,
+  "UseSampleData": true,
+  "ConfigFilePath": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/configuration.development.json",
+  "CustomDataZip": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/CustomDocuments.zip",
   "Username": "s2admin",
   "Password": "Password.1!!",
-  "BingEndpoint": "",
-  "BingKey": "",
-  "UseSampleData": "true",
+  "Indexes": [
+    {
+      "name": "base",
+      "configuration": "base-index"
+    },
+    {
+      "name": "extended",
+      "configuration": "base-index"
+    }
+  ],
+  "Indexers": [
+    {
+      "name": "base-indexer",
+      "configuration": "base-indexer"
+    },
+    {
+      "name": "extended-indexer",
+      "configuration": "base-indexer"
+    }
+  ],
   "SkillSets": [
     {
       "name": "base",
@@ -25,79 +43,56 @@
       "cognitiveServices": {
       },
       "knowledgeStore": {
-        "storageConnectionString": "",
+        "storageConnectionString": "DefaultEndpointsProtocol=https;AccountName=jfkstorage;AccountKey=KDgTJWUMNKySnWrp6oE6eKPitrSBXpb+VZMeF5SYyd4vtM64A5xKagNIDKqLXKFT7pKrXZyF1SLB5WK4/O7THw==;EndpointSuffix=core.windows.net",
         "projections": [
           {
             "tables": [
               {
                 "tableName": "Document",
-                "generatedKeyName": "SomeId",
-                "source": "/document/content"
+                "generatedKeyName": "Documentid",
+                "source": "/document/tableprojection",
+                "sourceContext": null,
+                "inputs": []
               },
               {
                 "tableName": "KeyPhrases",
-                "generatedKeyName": "KeyPhraseId",
-                "source": "/document/keyphrases"
+                "generatedKeyName": "KeyPhrasesid",
+                "source": null,
+                "sourceContext": "/document/tableprojection/KeyPhrases/*",
+                "inputs": [
+                  {
+                    "name": "keyphrases",
+                    "source": "/document/tableprojection/KeyPhrases/*",
+                    "sourceContext": null,
+                    "inputs": []
+                  }
+                ]
               },
               {
                 "tableName": "Entities",
-                "generatedKeyName": "EntityId",
-                "source": "/document/entities"
+                "generatedKeyName": "Entitiesid",
+                "source": "/document/tableprojection/entities",
+                "sourceContext": null,
+                "inputs": []
+              },
+              {
+                "tableName": "Images",
+                "generatedKeyName": "Imagesid",
+                "source": "/document/tableprojection/Images/*",
+                "sourceContext": null,
+                "inputs": []
               }
-            ]
+            ],
+            "objects": []
           }
         ]
       },
       "skills": [
         {
-          "description": "Extract text (plain and structured) from image.",
-          "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
-          "context": "/document/normalized_images/*",
-          "defaultLanguageCode": "en",
-          "detectOrientation": true,
-          "inputs": [
-            {
-              "name": "image",
-              "source": "/document/normalized_images/*"
-            }
-          ],
-          "outputs": [
-            {
-              "name": "text"
-            }
-          ]
-        },
-        {
-          "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
-          "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
-          "context": "/document",
-          "insertPreTag": " ",
-          "insertPostTag": " ",
-          "inputs": [
-            {
-              "name": "text",
-              "source": "/document/content"
-            },
-            {
-              "name": "itemsToInsert",
-              "source": "/document/normalized_images/*/text"
-            },
-            {
-              "name": "offsets",
-              "source": "/document/normalized_images/*/contentOffset"
-            }
-          ],
-          "outputs": [
-            {
-              "name": "mergedText",
-              "targetName": "merged_text"
-            }
-          ]
-        },
-        {
           "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "name": "EntityRecognitionSkill",
           "description": null,
-          "context": "/document/content",
+          "context": "/document/merged_content",
           "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
           "defaultLanguageCode": "en",
           "minimumPrecision": null,
@@ -105,7 +100,7 @@
           "inputs": [
             {
               "name": "text",
-              "source": "/document/content",
+              "source": "/document/merged_content",
               "sourceContext": null,
               "inputs": []
             },
@@ -137,14 +132,15 @@
         },
         {
           "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+          "name": "KeyPhraseExtractionSkill",
           "description": null,
-          "context": "/document/content",
+          "context": "/document/merged_content",
           "defaultLanguageCode": "en",
           "maxKeyPhraseCount": null,
           "inputs": [
             {
               "name": "text",
-              "source": "/document/content",
+              "source": "/document/merged_content",
               "sourceContext": null,
               "inputs": []
             },
@@ -164,12 +160,13 @@
         },
         {
           "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+          "name": "LanguageDetectionSkill",
           "description": null,
           "context": "/document",
           "inputs": [
             {
               "name": "text",
-              "source": "/document/content",
+              "source": "/document/merged_content",
               "sourceContext": null,
               "inputs": []
             }
@@ -180,6 +177,848 @@
               "targetName": "language"
             }
           ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+          "name": "MergeSkill",
+          "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+          "context": "/document",
+          "insertPreTag": " ",
+          "insertPostTag": " ",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content"
+            },
+            {
+              "name": "itemsToInsert",
+              "source": "/document/normalized_images/*/text"
+            },
+            {
+              "name": "offsets",
+              "source": "/document/normalized_images/*/contentOffset"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "mergedText",
+              "targetName": "merged_content"
+            }
+          ]
+        },
+        {
+          "description": "Extract text (plain and structured) from image.",
+          "name": "OcrSkill",
+          "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+          "context": "/document/normalized_images/*",
+          "textExtractionAlgorithm": "printed",
+          "lineEnding": "Space",
+          "defaultLanguageCode": "en",
+          "detectOrientation": true,
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "text",
+              "targetName": "text"
+            },
+            {
+              "name": "layoutText",
+              "targetName": "layoutText"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+          "name": "#6",
+          "description": null,
+          "context": "/document/normalized_images/*",
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*",
+              "sourceContext": null,
+              "inputs": [
+                {
+                  "name": "tags",
+                  "source": "/document/normalized_images/*/imageTags",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "description",
+                  "source": "/document/normalized_images/*/imageCaption",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "celebrities",
+                  "source": "/document/normalized_images/*/imageCelebrities/*/detail/celebrities/*/name",
+                  "sourceContext": null,
+                  "inputs": []
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output",
+              "targetName": "imageprojection"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+          "name": "#7",
+          "description": null,
+          "context": "/document/normalized_images/*",
+          "defaultLanguageCode": "en",
+          "visualFeatures": [
+            "tags",
+            "description"
+          ],
+          "details": [
+            "celebrities"
+          ],
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "tags",
+              "targetName": "imageTags"
+            },
+            {
+              "name": "description",
+              "targetName": "imageCaption"
+            },
+            {
+              "name": "categories",
+              "targetName": "imageCelebrities"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+          "name": "#8",
+          "description": null,
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "metadata_storage_content_type",
+              "source": "/document/metadata_storage_content_type",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_size",
+              "source": "/document/metadata_storage_size",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_last_modified",
+              "source": "/document/metadata_storage_last_modified",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_content_md5",
+              "source": "/document/metadata_storage_content_md5",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_name",
+              "source": "/document/metadata_storage_name",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_path",
+              "source": "/document/metadata_storage_path",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_content_type",
+              "source": "/document/metadata_content_type",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_language",
+              "source": "/document/metadata_language",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "merged_content",
+              "source": "/document/merged_content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "KeyPhrases",
+              "source": "/document/merged_content/keyphrases/*",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "LanguageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "entities",
+              "source": "/document/merged_content",
+              "sourceContext": null,
+              "inputs": [
+                {
+                  "name": "People",
+                  "source": "/document/merged_content/people/*",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "Organizations",
+                  "source": "/document/merged_content/organizations/*",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "Locations",
+                  "source": "/document/merged_content/locations/*",
+                  "sourceContext": null,
+                  "inputs": []
+                }
+              ]
+            },
+            {
+              "name": "Images",
+              "source": "/document/normalized_images/*",
+              "sourceContext": null,
+              "inputs": [
+                {
+                  "name": "Images",
+                  "source": "/document/normalized_images/*/imageprojection/image",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "layoutText",
+                  "source": "/document/normalized_images/*/layoutText",
+                  "sourceContext": null,
+                  "inputs": []
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output",
+              "targetName": "objectprojection"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+          "name": "#9",
+          "description": null,
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "metadata_storage_content_type",
+              "source": "/document/metadata_storage_content_type",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_size",
+              "source": "/document/metadata_storage_size",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_last_modified",
+              "source": "/document/metadata_storage_last_modified",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_content_md5",
+              "source": "/document/metadata_storage_content_md5",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_name",
+              "source": "/document/metadata_storage_name",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_storage_path",
+              "source": "/document/metadata_storage_path",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_content_type",
+              "source": "/document/metadata_content_type",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "metadata_language",
+              "source": "/document/metadata_language",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "merged_content",
+              "source": "/document/merged_content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "KeyPhrases",
+              "source": "/document/merged_content/keyphrases/*",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "LanguageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "entities",
+              "source": "/document/merged_content",
+              "sourceContext": null,
+              "inputs": [
+                {
+                  "name": "People",
+                  "source": "/document/merged_content/people/*",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "Organizations",
+                  "source": "/document/merged_content/organizations/*",
+                  "sourceContext": null,
+                  "inputs": []
+                },
+                {
+                  "name": "Locations",
+                  "source": "/document/merged_content/locations/*",
+                  "sourceContext": null,
+                  "inputs": []
+                }
+              ]
+            },
+            {
+              "name": "Images",
+              "source": "/document/normalized_images/*/imageprojection/image",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output",
+              "targetName": "tableprojection"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extended",
+      "description": "All Function Skills",
+      "cognitiveServices": {
+      },
+      "knowledgeStore": {
+        "storageConnectionString": "DefaultEndpointsProtocol=https;AccountName=jfkstorage;AccountKey=KDgTJWUMNKySnWrp6oE6eKPitrSBXpb+VZMeF5SYyd4vtM64A5xKagNIDKqLXKFT7pKrXZyF1SLB5WK4/O7THw==;EndpointSuffix=core.windows.net",
+        "projections": [
+          {
+            "tables": [
+              {
+                "tableName": "Document",
+                "generatedKeyName": "Documentid",
+                "source": "/document/tableprojection",
+                "sourceContext": null,
+                "inputs": []
+              },
+              {
+                "tableName": "KeyPhrases",
+                "generatedKeyName": "KeyPhrasesid",
+                "source": null,
+                "sourceContext": "/document/tableprojection/KeyPhrases/*",
+                "inputs": [
+                  {
+                    "name": "keyphrases",
+                    "source": "/document/tableprojection/KeyPhrases/*",
+                    "sourceContext": null,
+                    "inputs": []
+                  }
+                ]
+              },
+              {
+                "tableName": "Entities",
+                "generatedKeyName": "Entitiesid",
+                "source": "/document/tableprojection/entities",
+                "sourceContext": null,
+                "inputs": []
+              },
+              {
+                "tableName": "Images",
+                "generatedKeyName": "Imagesid",
+                "source": "/document/tableprojection/Images/*",
+                "sourceContext": null,
+                "inputs": []
+              }
+            ],
+            "objects": []
+          }
+        ]
+      },
+      "skills": [
+        {
+          "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+          "context": "/document/normalized_images/*",
+          "defaultLanguageCode": "en",
+          "detectOrientation": true,
+          "inputs": [
+            {
+              "name": "image",
+              "source": "/document/normalized_images/*"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "text"
+            },
+            {
+              "name": "layoutText"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+          "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+          "context": "/document",
+          "insertPreTag": " ",
+          "insertPostTag": " ",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content"
+            },
+            {
+              "name": "itemsToInsert",
+              "source": "/document/normalized_images/*/text"
+            },
+            {
+              "name": "offsets",
+              "source": "/document/normalized_images/*/contentOffset"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "mergedText",
+              "targetName": "merged_text"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.SplitSkill",
+          "textSplitMode": "pages",
+          "maximumPageLength": 4000,
+          "defaultLanguageCode": "en",
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "textItems",
+              "targetName": "pages"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+          "context": "/document/pages/*",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/pages/*"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "keyPhrases",
+              "targetName": "keyPhrases"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "categories": [ "Organization" ],
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "organizations",
+              "targetName": "organizations"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "categories": [ "Location" ],
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "locations",
+              "targetName": "locations"
+            }
+          ]
+        },
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "categories": [ "Person" ],
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "persons",
+              "targetName": "persons"
+            }
+          ]
+        },
+        {
+          "name": "CustomSkillTemplate",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/CustomSkillTemplate",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/myinputfield",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "myoutputfield",
+              "targetName": "myoutputfield"
+            }
+          ]
+        },
+        {
+          "name": "EntitySearch",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/EntitySearch",
+          //"timeout": "PT90S",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "name",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "name",
+              "targetName": "name"
+            },
+            {
+              "name": "description",
+              "targetName": "description"
+            },
+            {
+              "name": "imageUrl",
+              "targetName": "imageUrl"
+            },
+            {
+              "name": "licenseAttribution",
+              "targetName": "licenseAttribution"
+            }
+          ]
+        },
+        {
+          "name": "ObjectDetectionSkill",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/ObjectDetectionSkill",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "objects",
+              "targetName": "objects"
+            }
+          ]
+        },
+        {
+          "name": "GetGeoPointFromName",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/GetGeoPointFromName",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "maingeopoint",
+              "targetName": "maingeopoint"
+            },
+            {
+              "name": "results",
+              "targetName": "results"
+            }
+          ]
+        },
+        {
+          "name": "translateskill",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/TranslateSkill",
+          "httpmethod": "POST",
+          "description": null,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "text",
+              "source": "/document/content",
+              "sourceContext": null,
+              "inputs": []
+            },
+            {
+              "name": "languageCode",
+              "source": "/document/language",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "translatedtext",
+              "targetName": "translatedtext"
+            }
+          ]
+        },
+        /*
+          {
+            "name": "AnalyzeForm",
+            "timeout": "PT90S",
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "uri": "https://{functionurl}/AnalyzeForm",
+            "httpmethod": "POST",
+            "description": "",
+            "context": "/document/content",
+            "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+            "defaultLanguageCode": "en",
+            "minimumPrecision": null,
+            "includeTypelessEntities": null,
+            "inputs": [
+              {
+                "name": "formUrl",
+                "source": "/document/storageUri",
+                "sourceContext": null,
+                "inputs": []
+              },
+              {
+                "name": "formSasToken",
+                "source": "/document/sasToken",
+                "sourceContext": null,
+                "inputs": []
+              }
+            ],
+            "outputs": [
+              {
+                "name": "address",
+                "targetName": "address"
+              },
+              {
+                "name": "recipient",
+                "targetName": "recipient"
+              }
+            ]
+          },
+        */
+        {
+          "name": "image-store",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/image-store",
+          "httpmethod": "POST",
+          "batchSize": 1,
+          "description": "",
+          "context": "/document/normalized_images/*",
+          "inputs": [
+            {
+              "name": "imageData",
+              "source": "/document/normalized_images/*/data"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "imageStoreUri",
+              "targetName": "imageStoreUri"
+            }
+          ]
+        },
+        {
+          "name": "hocr-generator",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/hocr-generator",
+          "httpmethod": "POST",
+          "description": "",
+          "batchSize": 1,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "ocrImageMetadataList",
+              "source": "/document/normalized_images/*/ocrImageMetadata",
+              "sourceContext": null,
+              "inputs": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "hocrDocument",
+              "targetName": "hocrdocument"
+            }
+          ]
+        },
+        {
+          "name": "doc-headers",
+          //"timeout": "PT90S",
+          "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+          "uri": "https://{functionurl}/doc-headers",
+          "httpmethod": "POST",
+          "description": null,
+          "batchSize": 1,
+          "context": "/document/content",
+          "categories": [ "Person", "Quantity", "Organization", "URL", "Email", "Location", "DateTime" ],
+          "defaultLanguageCode": "en",
+          "minimumPrecision": null,
+          "includeTypelessEntities": null,
+          "inputs": [
+            {
+              "name": "path",
+              "source": "/document/storageUri"
+            },
+            {
+              "name": "token",
+              "source": "/document/sasToken"
+            },
+            {
+              "name": "contentType",
+              "source": "/document/fileContentType"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "headings",
+              "targetName": "headings"
+            }
+          ]
         }
       ]
     }
@@ -188,6 +1027,7 @@
     {
       "indexer": "base-indexer-cosmos",
       "targetIndex": "base",
+      "skillset": "base",
       "type": "cosmosdb",
       "name": "jfk-cosmosdb",
       "connectionString": "https://jfk-cosmosdb.documents.azure.com:443/",
@@ -197,6 +1037,7 @@
     {
       "indexer": "base-indexer",
       "targetIndex": "base",
+      "skillset": "base",
       "type": "sqlserver",
       "name": "jfk-sql",
       "database": "jfk-db",
@@ -205,21 +1046,33 @@
     {
       "indexer": "base-indexer",
       "targetIndex": "base",
+      "skillset": "base",
       "type": "blob",
       "name": "blob",
       "AccountName": "jfkstorage",
-      "ConnectionString": "",
+      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=jfkstorage;AccountKey=KDgTJWUMNKySnWrp6oE6eKPitrSBXpb+VZMeF5SYyd4vtM64A5xKagNIDKqLXKFT7pKrXZyF1SLB5WK4/O7THw==;EndpointSuffix=core.windows.net",
       "ContainerName": "documents",
-      "SasToken": ""
+      "SasToken": "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-06-27T04:32:21Z&st=2019-06-26T20:32:21Z&spr=https&sig=Kqv29O0G9rOWOBcE0g6h8wVjGhuacdhD2Qb%2BxdoqQCY%3D"
+    },
+    {
+      "indexer": "base-indexer",
+      "targetIndex": "extended",
+      "skillset": "extended",
+      "type": "blob",
+      "name": "blob-extended",
+      "AccountName": "jfkstorage",
+      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=jfkstorage;AccountKey=KDgTJWUMNKySnWrp6oE6eKPitrSBXpb+VZMeF5SYyd4vtM64A5xKagNIDKqLXKFT7pKrXZyF1SLB5WK4/O7THw==;EndpointSuffix=core.windows.net",
+      "ContainerName": "documents",
+      "SasToken": "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-06-27T04:32:21Z&st=2019-06-26T20:32:21Z&spr=https&sig=Kqv29O0G9rOWOBcE0g6h8wVjGhuacdhD2Qb%2BxdoqQCY%3D"
     },
     {
       "indexer": "base-indexer",
       "targetIndex": "base",
+      "skillset": "base",
       "type": "table",
       "name": "table",
-      "ConnectionString": "",
-      "containers": [ "documents" ]
+      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=jfkstorage;AccountKey=KDgTJWUMNKySnWrp6oE6eKPitrSBXpb+VZMeF5SYyd4vtM64A5xKagNIDKqLXKFT7pKrXZyF1SLB5WK4/O7THw==;EndpointSuffix=core.windows.net",
+      "tables": [ "documents" ]
     }
   ]
-
 }

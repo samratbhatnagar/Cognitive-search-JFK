@@ -1,6 +1,6 @@
 ﻿{
-  "ResourceGroupName": "jfk-cjg",
-  "ResourcePrefix": "jfk",
+  "ResourceGroupName": "xyz-cjg",
+  "ResourcePrefix": "xyz",
   "SubscriptionId": "e433f371-e5e9-4238-abc2-7c38aa596a18",
   "AdminAzureClientId": "8ac3e3c9-d29c-4d15-b87e-9b6ec8cd9171",
   "AdminAzureClientSecret": "",
@@ -8,7 +8,7 @@
   "Region": "westus2",
   "SearchServiceApiVersion": "2019-05-06-preview",
   "SearchSku": "basic",
-  "DeployMain": false,
+  "DeployMain": true,
   "DeploymentMode": 0,
   "DoDeployments": true,
   "UseSampleData": true,
@@ -1030,8 +1030,8 @@
       "targetIndex": "base",
       "skillset": "base",
       "type": "cosmosdb",
-      "name": "jfk-cosmosdb",
-      "connectionString": "https://jfk-cosmosdb.documents.azure.com:443/",
+      "name": "xyz-cosmosdb",
+      "connectionString": "https://xyz-cosmosdb.documents.azure.com:443/",
       "containerId": "documents",
       "databaseId": "documents"
     },
@@ -1040,8 +1040,8 @@
       "targetIndex": "base",
       "skillset": "base",
       "type": "sqlserver",
-      "name": "jfk-sql",
-      "database": "jfk-db",
+      "name": "xyz-sql",
+      "database": "xyz-db",
       "tables": [ "documents", "tables" ]
     },
     {
@@ -1050,8 +1050,8 @@
       "skillset": "base",
       "type": "blob",
       "name": "blob",
-      "AccountName": "jfkstorage",
-      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=blah;AccountKey=blah;EndpointSuffix=core.windows.net",
+      "AccountName": "xyzstorage",
+      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=xyzstorage;AccountKey=blah;EndpointSuffix=core.windows.net",
       "ContainerName": "documents",
       "SasToken": "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-06-27T04:32:21Z&st=2019-06-26T20:32:21Z&spr=https&sig=Kqv29O0G9rOWOBcE0g6h8wVjGhuacdhD2Qb%2BxdoqQCY%3D"
     },

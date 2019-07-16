@@ -235,8 +235,8 @@ namespace KnowledgeMiningDeployer
 
             WarmUpSkills(skillset);
 
-            //supported knowledge store...
-            this.ApiVersion = "2019-05-06-Preview";
+            //min supported knowledge store...
+            //this.ApiVersion = "2019-05-06-Preview";
 
             // Currently, the SDK is broken in how it handles Http Headers, so if using a custom WebApiSkill, send to the REST API, and don't use the SDK service.
             Skillset ss = await CreateSkillsetViaApi(skillset);

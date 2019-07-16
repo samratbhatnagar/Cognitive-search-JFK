@@ -6,7 +6,7 @@
   "AdminAzureClientSecret": "",
   "TenantId": "",
   "Region": "",
-  "SearchServiceApiVersion": "2019-05-06",
+  "SearchServiceApiVersion": "2019-05-06-preview",
   "DeployMain": false,
   "DoDeployments": false,
   "BlobStorageConnectionString": "",
@@ -17,7 +17,7 @@
   "Password": "Password.1!!",
   "BingEndpoint": "",
   "BingKey": "",
-  "UseSampleData": "true",
+  "UseSampleData": true,
   "SkillSets": [
     {
       "name": "base",

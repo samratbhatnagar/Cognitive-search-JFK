@@ -30,7 +30,7 @@
     },
     "prefix": {
       "type": "string",
-      "defaultValue": "jfk",
+      "defaultValue": "xyz",
       "metadata": {
         "description": "A prefix added to all created resources."
       }
@@ -46,7 +46,7 @@
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "Whether to download and install the JFK sample files."
+        "description": "Whether to download and install sample files."
       }
     },
     "blobStorageConnectionString": {
@@ -99,7 +99,8 @@
         "name": "s0",
         "tier": "Standard"
       }
-    },
+    }
+    /*,
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "2015-05-01-preview",
@@ -115,7 +116,7 @@
     {
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2017-03-01-preview",
-      "name": "[concat(parameters('prefix'), '-sql', '/jfk-db')]",
+      "name": "[concat(parameters('prefix'), '-sql', '/', concat(parameters('prefix'), '-db')]",
       "location": "westus2",
       "dependsOn": [
         "[resourceId('Microsoft.Sql/servers', concat(parameters('prefix'),'-sql'))]"
@@ -131,7 +132,7 @@
         "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
         "zoneRedundant": false
       }
-    },
+    }*/,
     {
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2016-02-01-preview",
@@ -150,19 +151,15 @@
       "location": "westus2",
       "identity": {
         "type": "SystemAssigned"
-      },    
-    "sku",
-    :,
-    {
-      "name": "[parameters('searchSku')]"
-    },
-    "properties",
-    :,
-    {
-      "replicaCount": 1,
-      "partitionCount": 1,
-      "hostingMode": "default"
-    }
+      },
+      "sku": {
+        "name": "[parameters('searchSku')]"
+      },
+      "properties": {
+        "replicaCount": 1,
+        "partitionCount": 1,
+        "hostingMode": "default"
+      }
     },
     {
       "type": "Microsoft.CognitiveServices/accounts",
@@ -422,6 +419,7 @@
         "applicationId": "[concat(parameters('prefix'),'-insights')]"
       }
     },
+    /*
     {
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2015-04-08",
@@ -444,7 +442,7 @@
         },
         "capabilities": []
       }
-    },
+    },*/
     {
       "apiVersion": "2017-06-01",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -566,7 +564,7 @@
             "Region": "[resourceGroup().location]",
             "ResourceGroupName": "[resourceGroup().name]",
             "ResourcePrefix": "[parameters('prefix')]",
-            "SearchServiceApiVersion": "2019-05-06",
+            "SearchServiceApiVersion": "2019-05-06-preview",
             "UseSampleData": "[parameters('useSampleData')]",
             "BlobStorageConnectionString": "[parameters('blobStorageConnectionString')]",
             "ConfigFilePath": "[parameters('configFilePath')]",

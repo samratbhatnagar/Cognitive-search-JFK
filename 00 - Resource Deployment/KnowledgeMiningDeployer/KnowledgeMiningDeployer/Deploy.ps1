@@ -9,16 +9,13 @@ Configuration Deploy
 	  [System.String]$SubscriptionId,
 	  [System.String]$Region = "westus2",
 	  [System.String]$ResourceGroupName,
-	  [System.String]$ResourcePrefix = "jfk",
-	  [System.String]$SearchServiceApiVersion = "2019.05.06",
-	  [System.String]$UseSampleData = "true",
-	  [System.String]$BlobStorageConnectionString = "",
+	  [System.String]$ResourcePrefix = "xyz",
+	  [System.String]$SearchServiceApiVersion = "2019.05.06-Preview",
+	  [System.Boolean]$UseSampleData = $true,
 	  [System.String]$ConfigFilePath = "",
 	  [System.String]$CustomDataZip = "",
 	  [System.String]$Username = "",
-	  [System.String]$Password = "",
-	  [System.String]$BingEndPoint = "",
-	  [System.String]$BingKey = ""
+	  [System.String]$Password = ""
 
   )
 
@@ -32,6 +29,7 @@ Configuration Deploy
 
 				try
 				{
+					$githubUrl = "https://github.com/solliancenet/Cognitive-search-JFK/raw/km-deliverable/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/Deployment/";
 					$path = $using:dscworkingfolder;
 					write-verbose "Script started in $path";
 				
@@ -45,17 +43,18 @@ Configuration Deploy
 
 					write-verbose "Downloading web, functions and database";
 					#download the compiled web and functions...
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/CognitiveSearch.Skills.zip" -OutFile "$path/Deployment/CognitiveSearch.Skills.zip" -ErrorAction SilentlyContinue -Verbose
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/CognitiveSearch.UI.zip" -OutFile "$path/Deployment/CognitiveSearch.UI.zip" -ErrorAction SilentlyContinue -Verbose
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/documents.bacpac" -OutFile "$path/Deployment/documents.bacpac" -ErrorAction SilentlyContinue -Verbose
+					#
+					Invoke-WebRequest -Uri "$githubUrl/CognitiveSearch.Skills.zip" -ErrorAction SilentlyContinue -Verbose
+					Invoke-WebRequest -Uri "$githubUrl/CognitiveSearch.UI.zip" -OutFile "$path/Deployment/CognitiveSearch.UI.zip" -ErrorAction SilentlyContinue -Verbose
+					Invoke-WebRequest -Uri "$githubUrl/documents.bacpac" -OutFile "$path/Deployment/documents.bacpac" -ErrorAction SilentlyContinue -Verbose
 
-					write-verbose "Downloading JFK files";
-					#download the JFK files...
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/JFK.zip" -OutFile "$path/Deployment/JFK.zip" -ErrorAction SilentlyContinue -Verbose
+					write-verbose "Downloading sample files";
+					#download the sample files...
+					Invoke-WebRequest -Uri "$githubUrl/sample.zip" -OutFile "$path/Deployment/Sample.zip" -ErrorAction SilentlyContinue -Verbose
 
 					write-verbose "Downloading starter files";
 					#download extra started files...
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/StarterDocuments.zip" -OutFile "$path/Deployment/StarterDocuments.zip" -ErrorAction SilentlyContinue -Verbose
+					Invoke-WebRequest -Uri "$githubUrl/CustomDocuments.zip" -OutFile "$path/Deployment/CustomDocuments.zip" -ErrorAction SilentlyContinue -Verbose
 
 					#download any custom files from customer
 					if ($using:CustomDataZip)
@@ -67,8 +66,8 @@ Configuration Deploy
 
 					write-verbose "Downloading Support files";
 					#supporing files - since DSC deletes all the directories...
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/AzureTemplates.zip" -OutFile "$path/AzureTemplates.zip" -ErrorAction SilentlyContinue -Verbose
-					Invoke-WebRequest -Uri "https://github.com/givenscj/CogsDeployment/raw/master/Configuration.zip" -OutFile "$path/Configuration.zip" -ErrorAction SilentlyContinue -Verbose
+					Invoke-WebRequest -Uri "$githubUrl/AzureTemplates.zip" -OutFile "$path/AzureTemplates.zip" -ErrorAction SilentlyContinue -Verbose
+					Invoke-WebRequest -Uri "$githubUrl/Configuration.zip" -OutFile "$path/Configuration.zip" -ErrorAction SilentlyContinue -Verbose
 
 					write-verbose "Loading NewtonSoft.Json";
 					add-type -Path "$path/Newtonsoft.Json.dll" -ErrorAction SilentlyContinue;

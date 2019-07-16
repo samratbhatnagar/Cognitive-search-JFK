@@ -138,8 +138,10 @@ namespace KnowledgeMiningDeployer
 
         async public static Task Start()
         {
+            //initialize the configuration file/object
             Configuration.LoadWithMode(ConfigurationManager.AppSettings["Mode"]);
 
+            //init azure fluent stack
             AzureHelper.Initialize(Configuration.ResourceGroupName);
 
             //create based on the data sources in configuration file
@@ -156,7 +158,7 @@ namespace KnowledgeMiningDeployer
             //set all the configuration values...
             Task t1 = LoadConfiguration();
 
-            //check to see if we have to unzip the supporting files
+            //check to see if we have to unzip the supporting files for DSC mode
             if (!Directory.Exists("/AzureTemplates") && File.Exists("AzureTemplates.zip"))
             {
                 FileInfo zip = new FileInfo("AzureTemplates.zip");
@@ -165,6 +167,7 @@ namespace KnowledgeMiningDeployer
                 Utility.ExtractZipFile("AzureTemplates.zip", null, zip.DirectoryName + "\\" + zip.Name.Replace(zip.Extension, ""));
             }
 
+            //check to see if we have to unzip the supporting files for DSC mode
             if (!Directory.Exists("/Configuration") && File.Exists("Configuration.zip"))
             {
                 FileInfo zip = new FileInfo("Configuration.zip");
@@ -173,11 +176,11 @@ namespace KnowledgeMiningDeployer
                 Utility.ExtractZipFile("Configuration.zip", null, zip.DirectoryName + "\\" + zip.Name.Replace(zip.Extension, ""));
             }
             
-            if (Configuration.UseSampleData && false)
+            if (Configuration.UseSampleData)
             {
                 Console.WriteLine($"Deploying sample content");
 
-                UploadZipToStorageAccount(Configuration.StorageAccountName, Configuration.StorageAccountKey, Configuration.StorageContainer, "Deployment/JFK.zip");
+                UploadZipToStorageAccount(Configuration.StorageAccountName, Configuration.StorageAccountKey, Configuration.StorageContainer, "Deployment/Sample.zip");
 
                 if (!string.IsNullOrEmpty(Configuration.CustomDataZip))
                 {
@@ -188,7 +191,7 @@ namespace KnowledgeMiningDeployer
 
                 //TODO - add to cosmosdb
 
-                //add to azure sql - this database already has the data in it...
+                //add to azure sql - this database should already have the data in it...
                 try
                 {
                     Console.WriteLine($"Deploying sql server content");

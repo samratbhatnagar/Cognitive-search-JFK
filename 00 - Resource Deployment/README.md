@@ -12,7 +12,8 @@ You will need the following items before you can utilize this deployment tool:
 
 -  Paid Azure Subscription 
 -  Azure Application Client Id and Secret with access to your subscription to create a resource group and all the necessary items
--  Bing Instance (for the Bing Skill)
+
+You can also check out the list of [FAQs](./FAQs.md).
 
 ##  Configuration
 
@@ -37,9 +38,9 @@ Everything the tool needs to do the deployment is inside the configuration file.
 "TenantId": "GUID",  //the AAD tenantid
 "Region": "westus2",  //the region you want to deploy items too
 "SearchServiceApiVersion": "2019-05-06-Preview",  //the search service application version
-"DeployMain": false,  //whether to deploy the main ARM template
-"DoDeployments": false,  //whether to deploy the Web, API and function zip files
-"UseSampleData": "true", //whether to import the sample data
+"DeployMain": false,  //whether to deploy the main ARM template during cmd line deployment
+"DoDeployments": false,  //whether to deploy the Web, API and function zip files - normally done via the Arm template
+"UseSampleData": true, //whether to import the sample data
 "BlobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=blah;AccountKey=blah;EndpointSuffix=core.windows.net",  //the storage account you want to point to for indexing
 "StorageContainer": "documents",  //the container in the storage account to index
 "ConfigFilePath": "https://raw.githubusercontent.com/solliancenet/Cognitive-search-JFK/knowledge-mining/00%20-%20Resource%20Deployment/KnowledgeMiningDeployer/KnowledgeMiningDeployer/configuration.development.json",//an external config file you might want to reference when running from ARM deployment
@@ -51,16 +52,21 @@ Everything the tool needs to do the deployment is inside the configuration file.
 Follow these steps to create an Azure Client Id and Secret with the proper permissions:
 
 1.  Open the [Azure Portal](https://portal.azure.com)
-2.  Open the Azure Active Directory blad
+2.  Open the Azure Active Directory blade
 3.  Click **App registrations**
 4.  Click **+New registration**
 5.  Type a name, then click **Register**
-6.  In the azure portal, select **Subscriptions**
-7.  Select your target subscription
-8.  In the subscription blade, select **Access control (IAM)**
-9.  Click **+Add**, then select **Add role assignment**
-10.  Select the **owner** role
-11.  Search for your new Azure Ad Application, select it, then click **Save**
+6.  In the application blade, click **Certificates & secrets**
+7.  Click **New client secret**
+8.  For the description, type **KnowledgeDeploy**
+9.  For the **expires**, select **In 1 year**
+10.  Click **Add**
+11.  In the azure portal, select **Subscriptions**
+12.  Select your target subscription
+13.  In the subscription blade, select **Access control (IAM)**
+14.  Click **+Add**, then select **Add role assignment**
+15.  Select the **owner** role
+16.  Search for your new Azure Ad Application, select it, then click **Save**
 
 ### Azure Indexes and Indexers
 
@@ -629,6 +635,21 @@ You can create as many data sources as you want.  You simply set the type (cosmo
 
 ```
 
+##  Building\Running the tool
+
+Follow these steps to build the tool:
+
+1.  Clone this github to your local development machine.  
+2.  Open the KnowledgeMiningDeploy solution.  
+3.  Press Ctrl-Shift-B to build the solution, or press F5 to run it.
+
+>NOTE: You should ensure that you have populated the configuration file first.
+
+Depending on your development mode (Release or Debug), the executable will be located in:
+
+-   \00 - Resource Deployment\KnowledgeMiningDeployer\KnowledgeMiningDeployer\bin\Release
+-   \00 - Resource Deployment\KnowledgeMiningDeployer\KnowledgeMiningDeployer\bin\Debug
+
 ##  Installation
 
 Once you have setup the configuration.{mode}.json file, you will execute the KnowledgeMiningDeployer.exe tool.  You can review the source code for this tool via this repo.
@@ -679,3 +700,7 @@ The PowerBI report is made up of the following 7 report tabs:
 -  Update the account key with the primary or secondary key
 -  Click **Save**
 -  Close all windows and refresh your data sources
+
+### FAQs
+
+You can also check out the list of FAQs [here](./FAQs.md).

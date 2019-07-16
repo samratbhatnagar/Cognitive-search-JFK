@@ -376,7 +376,7 @@
     <None Include="Deployment\documents.bacpac">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Deployment\JFK.zip">
+    <None Include="Deployment\Sample.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Install.ps1">
